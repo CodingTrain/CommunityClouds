@@ -22,7 +22,7 @@ https://codingtrain.github.io/CommunityClouds/
 > who use Processing, p5.js, and all the related variants in their work.
 
 Interested? Find out more at the
-[Processing Community Day Page][1]
+[Processing Community Day Page][1].
 
 ## Contributing
 
