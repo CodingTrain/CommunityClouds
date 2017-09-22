@@ -2,7 +2,9 @@
 
 This software is for generating clouds for name tags for the Processing
 Community Day. You can try out all of the current submissions on the GitHub
-pages site [here][0]
+pages site:
+
+https://codingtrain.github.io/CommunityClouds/
 
 
 ## About Processing Community Day
@@ -30,14 +32,15 @@ can check out [Git and GitHub for Poets][2], otherwise feel free to fork this
 repository and create a Pull Request with your changes. Need help? Feel free
 to raise an issue if there's anything we can help you with!
 
-To add a new cloud generator, simply edit the generators.js file and create
+To add a new cloud generator, simply edit the `generators.js` file and create
 a new function following the example! Your new generator should then show up
 in the list on the main page!
 
 ### What are we looking for?
 
-Anything really! Perhapse you have a design in your mind,
-or perhaps you can take inspiration from this cloud from Taeyoon Choi:
+Anything really! Perhaps you have a design in your mind,
+or perhaps you can take inspiration from this cloud drawing from Processing Day organizer Taeyoon Choi:
+
 ![Cloud by Taeyoon Choi](cloud.png)
 
 [0]: https://codingtrain.github.io/CommunityClouds/
