@@ -78,3 +78,24 @@ function ellipseCloud() {
 }
 
 register(ellipseCloud, "Ellipse Cloud", "Raqbit");
+
+// Unicode Cloud by Sergio Fernández
+function unicodeCloud() {
+  var size = floor(min(width, height * 2));
+  textSize(size);
+
+  var widthOfCloud = size;
+  var heightOfCloud = widthOfCloud * 0.37;
+  var textX = (width - widthOfCloud) / 2;
+  var textY = height - (height - heightOfCloud) / 2;
+  textAlign(LEFT, BASELINE);
+  text("☁", textX, textY);
+
+  return [
+    textX + (widthOfCloud * 0.25),
+    textY - (heightOfCloud * 0.7),
+    widthOfCloud * 0.6,
+    heightOfCloud * 0.6
+  ];
+}
+register(unicodeCloud, "Unicode", "Sergio Fernández");
