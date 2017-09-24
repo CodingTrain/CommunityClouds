@@ -17,7 +17,7 @@ function rectangle() {
 }
 
 // Register your function with register(function, style_name, author_name)
-//register(rectangle, "Example", "example");
+register(rectangle, "Example", "example");
 
 /* ------  Add your custom cloud generators below! ------ */
 
@@ -26,8 +26,8 @@ function unicodeCloud() {
   var size = floor(min(width, height * 2));
   textSize(size);
 
-  var widthOfCloud = textWidth("☁");
-  var heightOfCloud = widthOfCloud * 0.35;
+  var widthOfCloud = size;
+  var heightOfCloud = widthOfCloud * 0.37;
   var textX = (width - widthOfCloud) / 2;
   var textY = height - (height - heightOfCloud) / 2;
   textAlign(LEFT, BASELINE);
