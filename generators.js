@@ -22,24 +22,24 @@ register(rectangle, "Example", "example");
 /* ------  Add your custom cloud generators below! ------ */
 
 function ellipseCloud() {
-  const CIRC_RADIUS = width / 8;
+  const circleRadius = width / 8;
 
-  const cloudWidth = width - 100 - CIRC_RADIUS;
-  const cloudHeight = height - 100 - CIRC_RADIUS;
+  const cloudWidth = width - 100 - circleRadius;
+  const cloudHeight = height - 100 - circleRadius;
 
   // Getting number of circles based on the width of the cloud and the cloud radius size.
-  const NUM_CIRCS = cloudWidth / (CIRC_RADIUS * 0.5) * 2;
+  const circleAmount = cloudWidth / (circleRadius * 0.5) * 2;
 
   push();
   translate(width / 2, height / 2);
 
   // Drawing outside circles (with stroke)
-  for (let i = 0; i < NUM_CIRCS; i++) {
+  for (let i = 0; i < circleAmount; i++) {
     drawOuterCirc(i);
   }
 
   // Drawing inner circles which hide the inner stroke of the outer circles
-  for (let i = 0; i < NUM_CIRCS; i++) {
+  for (let i = 0; i < circleAmount; i++) {
     drawInnerCirc(i);
   }
 
@@ -49,28 +49,28 @@ function ellipseCloud() {
   pop();
 
   function drawOuterCirc(num) {
-    const angle = TWO_PI / NUM_CIRCS * num;
+    const angle = TWO_PI / circleAmount * num;
 
-    const randomX = cloudWidth / 2 * cos(angle);
-    const randomY = cloudHeight / 2 * sin(angle);
+    const circleX = cloudWidth / 2 * cos(angle);
+    const circleY = cloudHeight / 2 * sin(angle);
 
     push();
-    translate(randomX, randomY);
-    ellipse(0, 0, CIRC_RADIUS, CIRC_RADIUS);
+    translate(circleX, circleY);
+    ellipse(0, 0, circleRadius, circleRadius);
     pop();
   }
 
   function drawInnerCirc(num) {
-    const angle = TWO_PI / NUM_CIRCS * num;
+    const angle = TWO_PI / circleAmount * num;
 
     // * 0.99 to still show the stroke of the outer circles
-    const randomX = cloudWidth / 2 * cos(angle) * 0.99;
-    const randomY = cloudHeight / 2 * sin(angle) * 0.99;
+    const circleX = cloudWidth / 2 * cos(angle) * 0.99;
+    const circleY = cloudHeight / 2 * sin(angle) * 0.99;
 
     push();
     noStroke();
-    translate(randomX, randomY);
-    ellipse(0, 0, CIRC_RADIUS, CIRC_RADIUS);
+    translate(circleX, circleY);
+    ellipse(0, 0, circleRadius, circleRadius);
     pop();
   }
 
