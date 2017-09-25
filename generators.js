@@ -99,3 +99,31 @@ function unicodeCloud() {
   ];
 }
 register(unicodeCloud, "Unicode", "Sergio Fernández");
+
+function flatBottomCloud() {
+  let radius = width / 4; // I don't really know where I messed up but for now just don't change the radius...
+  let cloudWidth = width - radius - 100;
+  let cloudHeight = height - radius - 100;
+  let circleCount  = cloudWidth / (radius*0.5);
+  
+  push();
+  translate(width / 2, height / 1.75);
+  ellipse(0,radius/4,cloudWidth,radius);
+  
+  for (let i = 0; i < circleCount; i++) {
+    let angle = -PI / circleCount * i;
+    
+    let x = cloudWidth / 2 * cos(angle);
+    let y = cloudHeight / 2 * sin(angle);
+
+    ellipse(x, y, radius, radius);
+  }
+  
+  noStroke();
+  ellipse(0, -radius/5, cloudWidth+radius/2, cloudHeight+radius/10);
+  pop();
+
+  return [100, 200, width - 200, height - 400];
+}
+
+register(flatBottomCloud, "Flat Bottom", "Merijn_DH");
