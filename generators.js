@@ -128,14 +128,14 @@ function flatBottomCloud() {
 
 register(flatBottomCloud, "Flat Bottom", "Merijn_DH");
 
-function kazakhCloud(radius = 150, min = 10, max = 13, overhang = PI / 12) {
+function kazakhCloud(radius = 200, min = 8, max = 10) {
     // This function draws a cloud which margins are inside of a "circle" with
     // a given radius. The circle is not perfect, its boundaries may vary
     // according to the value offset. Number of "peak" points is determined via
     // min and max values.
     let points = [];
     let offset = radius / 5;
-    let numPoints = Math.round(Math.random()*(max - min) + min);
+    let numPoints = Math.round(Math.random()*(max-min)+min);
     for (let i = 0; i < numPoints; i++) {
         // generating "peak" points of a cloud away from the center
         let angle = (TWO_PI / numPoints) * i;
@@ -150,6 +150,9 @@ function kazakhCloud(radius = 150, min = 10, max = 13, overhang = PI / 12) {
         let y = height / 2 - away * Math.sin(angle);
         points.push([x, y]);
     }
+    noStroke();
+    fill("#FFF");
+    ellipse(width / 2, height / 2, 2.3*radius, 2.3*radius);
     for (let i = 0; i < points.length; i++) {
         // drawing arcs with the center inbetween every pair of points
         let center = [];
@@ -169,27 +172,29 @@ function kazakhCloud(radius = 150, min = 10, max = 13, overhang = PI / 12) {
         // finally getting the angle using found 2 lines and trigonometry
         let angle = Math.acos(dist(x2Origin, 0, x1Origin, 0) / dist(center[0], center[1], x1Origin, 0));
         // drawing arcs with right angle offset according to the placement of the center
-        // also adding overhangs for prettiness
+        strokeWeight(10);
+        stroke("#000");
+        fill("#FFF");
         if (center[0] > width / 2 && center[1] < height / 2) {
-            arc(center[0], center[1], circleRadius, circleRadius, PI+angle-overhang, angle+overhang);
+            arc(center[0], center[1], circleRadius, circleRadius, PI+angle, angle);
         } else if (center[0] < width / 2 && center[1] < height / 2) {
-            arc(center[0], center[1], circleRadius, circleRadius, PI-angle-overhang, -angle+overhang);
+            arc(center[0], center[1], circleRadius, circleRadius, PI-angle, -angle);
         } else if (center[0] < width / 2 && center[1] > height / 2) {
-            arc(center[0], center[1], circleRadius, circleRadius, angle-overhang, PI+angle+overhang);
+            arc(center[0], center[1], circleRadius, circleRadius, angle, PI+angle);
         } else if (center[0] > width / 2 && center[1] > height / 2) {
-            arc(center[0], center[1], circleRadius, circleRadius, -angle-overhang, PI-angle+overhang);
+            arc(center[0], center[1], circleRadius, circleRadius, -angle, PI-angle);
         } else if (center[0] == width / 2 && center[1] < height / 2) {
             arc(center[0], center[1], circleRadius, circleRadius, PI, 0);
         } else if (center[0] == width / 2 && center[1] > height / 2) {
             arc(center[0], center[1], circleRadius, circleRadius, 0, PI);
         } else if (center[0] < width / 2 && center[1] == height / 2) {
-            arc(center[0], center[1], circleRadius, circleRadius, 0.5 * PI, 1.5 * PI);
+            arc(center[0], center[1], circleRadius, circleRadius, HALF_PI, PI + HALF_PI);
         } else if (center[0] > width / 2 && center[1] == height / 2) {
-            arc(center[0], center[1], circleRadius, circleRadius, 1.5 * PI, 0.5 * PI);
+            arc(center[0], center[1], circleRadius, circleRadius, PI + HALF_PI, HALF_PI);
         }
     }
     let rectSide = Math.round(Math.sqrt(2) * (radius - offset));
-    return [width / 2 - rectSide / 2, height / 2 - rectSide / 2, radius + offset, radius + offset];
+    return [width/2 - rectSide/2, height/2 - rectSide/2, radius+offset, radius+offset];
 }
 
 register(kazakhCloud, "Cloud from Kazakhstan", "Ilyas triple-o-zero");
