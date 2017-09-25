@@ -127,3 +127,69 @@ function flatBottomCloud() {
 }
 
 register(flatBottomCloud, "Flat Bottom", "Merijn_DH");
+
+function kazakhCloud(radius = 150, min = 10, max = 13, overhang = PI / 12) {
+    // This function draws a cloud which margins are inside of a "circle" with
+    // a given radius. The circle is not perfect, its boundaries may vary
+    // according to the value offset. Number of "peak" points is determined via
+    // min and max values.
+    let points = [];
+    let offset = radius / 5;
+    let numPoints = Math.round(Math.random()*(max - min) + min);
+    for (let i = 0; i < numPoints; i++) {
+        // generating "peak" points of a cloud away from the center
+        let angle = (TWO_PI / numPoints) * i;
+        let away;
+        while (true) {
+            away = Math.round(Math.random() * radius + offset);
+            if (Math.abs(away - radius) <= offset) {
+                break;
+            }
+        }
+        let x = width / 2 + away * Math.cos(angle);
+        let y = height / 2 - away * Math.sin(angle);
+        points.push([x, y]);
+    }
+    for (let i = 0; i < points.length; i++) {
+        // drawing arcs with the center inbetween every pair of points
+        let center = [];
+        let circleRadius;
+        if (i == points.length - 1) {
+            center = [(points[i][0] + points[0][0]) / 2, (points[i][1] + points[0][1]) / 2];
+            circleRadius = dist(points[i][0], points[i][1], points[0][0], points[0][1]);
+        } else {
+            center = [(points[i][0] + points[i+1][0]) / 2, (points[i][1] + points[i+1][1]) / 2];
+            circleRadius = dist(points[i][0], points[i][1], points[i+1][0], points[i+1][1]);
+        }
+        // finding slope and y-intercept for a line between center and point
+        let mCircle = (center[1] - points[i][1]) / (center[0] - points[i][0]);
+        let bCircle = center[1] - mCircle * center[0];
+        let x1Origin = (0 - bCircle) / mCircle; // finding line's intercept with X-axis
+        let x2Origin = center[0]; // another line is a projection of previous on X
+        // finally getting the angle using found 2 lines and trigonometry
+        let angle = Math.acos(dist(x2Origin, 0, x1Origin, 0) / dist(center[0], center[1], x1Origin, 0));
+        // drawing arcs with right angle offset according to the placement of the center
+        // also adding overhangs for prettiness
+        if (center[0] > width / 2 && center[1] < height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, PI+angle-overhang, angle+overhang);
+        } else if (center[0] < width / 2 && center[1] < height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, PI-angle-overhang, -angle+overhang);
+        } else if (center[0] < width / 2 && center[1] > height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, angle-overhang, PI+angle+overhang);
+        } else if (center[0] > width / 2 && center[1] > height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, -angle-overhang, PI-angle+overhang);
+        } else if (center[0] == width / 2 && center[1] < height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, PI, 0);
+        } else if (center[0] == width / 2 && center[1] > height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, 0, PI);
+        } else if (center[0] < width / 2 && center[1] == height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, 0.5 * PI, 1.5 * PI);
+        } else if (center[0] > width / 2 && center[1] == height / 2) {
+            arc(center[0], center[1], circleRadius, circleRadius, 1.5 * PI, 0.5 * PI);
+        }
+    }
+    let rectSide = Math.round(Math.sqrt(2) * (radius - offset));
+    return [width / 2 - rectSide / 2, height / 2 - rectSide / 2, radius + offset, radius + offset];
+}
+
+register(kazakhCloud, "Cloud from Kazakhstan", "Ilyas triple-o-zero");
