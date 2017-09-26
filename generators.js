@@ -257,3 +257,34 @@ function proudRoundCloud() {
 }
 
 register(proudRoundCloud, "Proud Round Cloud", "Brandon Blaschke");
+
+// rndCloud
+// Generates a cloud, by drawing ellipses of random width and height on locus of a regular ellipse
+// Couldn't add a nice looking stroke to the cloud :( TODO: Add a beautiful stroke
+function rndCloud(){
+  // Randomess - The main variable of the algorithm.
+  // Randomness is inversely proportional to time taken to generate
+  // Randomness is directly proportional to beauty (depends on viewers taste)
+
+  const randomness = random(20,100);
+  const r = width/2 - randomness;
+  let x, y;
+  push();
+    translate(width / 2, height / 2);
+    angleMode(DEGREES)
+    noStroke();
+    for(let i = 0; i <=360;)
+        {
+          x = r*cos(i);
+          y = 0.5* r*sin(i);
+          w = random(1,2) * randomness;
+          h = random(1,2) * randomness;
+            ellipse(x,y,w,h); //Draw the random ellipses
+            ellipse(0,0,r*2,r); //Draw main ellipse
+          i += randomness / 10;
+        }
+  pop();
+  return [100, 100, width - 200, height - 200];
+}
+
+register(rndCloud, "RNDCloud", "Haider Ali Punjabi (@haideralipunjabi)")
