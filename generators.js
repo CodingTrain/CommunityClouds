@@ -105,20 +105,20 @@ function flatBottomCloud() {
   let cloudWidth = width - radius - 100;
   let cloudHeight = height - radius - 100;
   let circleCount  = cloudWidth / (radius*0.5);
-  
+
   push();
   translate(width / 2, height / 1.75);
   ellipse(0,radius/4,cloudWidth,radius);
-  
+
   for (let i = 0; i < circleCount; i++) {
     let angle = -PI / circleCount * i;
-    
+
     let x = cloudWidth / 2 * cos(angle);
     let y = cloudHeight / 2 * sin(angle);
 
     ellipse(x, y, radius, radius);
   }
-  
+
   noStroke();
   ellipse(0, -radius/5, cloudWidth+radius/2, cloudHeight+radius/10);
   pop();
@@ -214,3 +214,46 @@ function fluffyCloud(){
 }
 
 register(fluffyCloud, "Fluffy", "egg303");
+
+//Draw a nice round cloud by Brandon Blaschke
+function proudRoundCloud() {
+
+  //Amount of circles in the cloud
+  let circleAmou = 15;
+
+  //Radius for surrounding clouds
+  let radius = 200;
+
+  strokeWeight(5);
+  fill(255);
+
+  //Position and set up drawing
+  push();
+  angleMode(DEGREES);
+  translate(width / 2, height / 2);
+
+  //Make outer edge of cloud by going in a circle around the name
+  for(let i = 0; i < circleAmou; i++) {
+    let angle = map(i, 0, circleAmou, 0, 360);
+    let x = 400 * cos(angle);
+    let y = 250 * sin(angle);
+    ellipse(x,y, radius, radius);
+  }
+
+  //Fill the inside with white circles to fill it
+  noStroke();
+  for(let i = 0; i < circleAmou; i++) {
+    let angle = map(i, 0, circleAmou, 0, 360);
+    let x = 200 * cos(angle);
+    let y = 200 * sin(angle);
+    ellipse(x,y, radius, radius);
+  }
+
+  //Fill the middle section
+  ellipse(0,0,950, 550);
+  pop();
+
+  return [100, 100, width - 200, height - 200];
+}
+
+register(proudRoundCloud, "Proud Round Cloud", "Brandon Blaschke");
