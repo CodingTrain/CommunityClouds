@@ -198,3 +198,19 @@ function kazakhCloud(radius = 200, min = 8, max = 10) {
 }
 
 register(kazakhCloud, "Cloud from Kazakhstan", "Ilyas triple-o-zero");
+
+function fluffyCloud(){
+  var cloudradius = 0.7*(width/2);
+  var angle = PI/2;
+  fill(255);
+  while(angle<(2.5*PI)){
+    ellipse(width/2+cos(angle)*cloudradius,height/2+sin(angle)*0.5*cloudradius,(width/2-sin(angle)*cloudradius)/3);
+    angle += (width/2-sin(angle)*cloudradius)/(3.9*cloudradius);
+  }
+  noStroke();
+  ellipse(width/2-4,height/2-cloudradius*0.075,cloudradius*2.4,cloudradius*1.24);
+  stroke(0);
+  return [120, 180, width - 240, height - 400];
+}
+
+register(fluffyCloud, "Fluffy", "egg303");
