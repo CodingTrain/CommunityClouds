@@ -1,0 +1,379 @@
+ /*body {
+  padding: 0;
+  padding: 5vh 0;
+  margin: 0;
+  background: #77B5FE;
+  text-align: center;
+}
+canvas {
+  vertical-align: top;
+  width: 90vw !important;
+  max-width: 1200px;
+  height: 80vh !important;
+  display: block;
+  margin: 20px auto;
+}
+select {
+  background: white;
+  padding: 5px;
+  border: 0px;
+}
+
+*/
+
+/* v v v Import Open Sans Normal 400, Normal 400 Italic, Bold 700, and Bold 700 Italic from Google Web Fonts  v v v */
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic);
+
+
+* {
+
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    color:#8c8c8b;
+    font-family: 'Open Sans', sans-serif;
+
+}
+
+body, html {
+
+    margin:0;
+    padding:0;
+    height:100%;
+    background:#fff;
+    font-size:16px;
+}
+
+/***************************************************************************************************************
+*
+*   v v v Begin page styling v v v
+*
+****************************************************************************************************************/
+
+.form-contain {
+
+    display: block;
+    width: 100%;
+    height: 200px;
+    margin: 0 auto;
+    text-align: left;
+    position:absolute;
+    bottom:0;
+    background: #f7f7f7;
+}
+
+.field-information {
+
+    position:absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    padding: 25px 25px 0px 25px;
+    overflow-y: auto;
+}
+
+.tooltip-title {
+
+    color: #2771fc;
+    font-weight: bold;
+
+}
+
+.form-contain p {
+
+    font-size: .9em;
+
+}
+
+.sketch-contain {
+    margin: 0 auto;
+    text-align: center;
+    -moz-text-align: center;
+}
+
+.fc-top {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+    padding: 0 18px;
+}
+
+.fc-lower {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: transparent;
+    padding: 0 18px;
+}
+
+.attribution {
+    display: table;
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    max-height: 31px;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 0;
+}
+
+.attribution-title {
+    color: #fff;
+    background: rgb(235, 0, 90);
+    display: table-cell;
+    font-size: .9rem;
+    padding: 6px 12px;
+    width: 1%;
+}
+
+.attribution-author {
+    background: #fff;
+    display: table-cell;
+    font-size: .9rem;
+    padding: 4px 12px;
+    border: 2px solid rgb(235, 0, 90);
+}
+
+.attribution-author span.by-sep{
+    color: rgb(195, 195, 195);
+}
+
+.attribution-author span.author-name{
+    color: rgb(235, 0, 90);
+}
+
+.gen-selector {
+    width: 100%;
+    max-width: 400px;
+    height: 31px;
+    background: #fff;
+}
+
+.gen-selector ul.select-input {
+    width: 100%;
+    height: 31px;
+    font-weight: 400;
+    font-size: .9rem;
+    padding: 6px 12px;
+    background: #fff;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    outline: none;
+    cursor: pointer;
+}
+
+/***************************************************************************************************************
+*
+*   ^ ^ ^ End setup page styling ^ ^ ^
+*
+****************************************************************************************************************/
+
+/***************************************************************************************************************
+*
+*   v v v Start styling inputs/buttons v v v
+*
+****************************************************************************************************************/
+
+input[type="submit"] {
+
+    color: #fff;
+    background: #2771fc;
+    padding: 7px 20px;
+    font-weight: 700;
+    font-size: .9em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    margin: 25px 0 0 0;
+    cursor: pointer;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+
+}
+
+input[type="submit"]:disabled {
+
+    color: #fff;
+    background: #d8d8d8;
+    padding: 7px 20px;
+    font-weight: 700;
+    font-size: .9em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    margin: 25px 0 0 0;
+    cursor: not-allowed;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+}
+
+input[type="submit"]:active {
+
+    color: #fff;
+    background: #2064e6;
+    padding: 7px 20px;
+    font-weight: 700;
+    font-size: .9em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    margin: 25px 0 0 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+}
+
+input[type="text"] {
+
+    padding: 4px 0 6px 0;
+    margin: 26px 0 0 0;
+    outline: none;
+    border: none;
+    border-bottom: 2px solid #d8d8d8;
+    background: transparent;
+    font-weight: 700;
+    font-size: 16px;
+    color:#8c8c8b;
+
+}
+
+input[type="text"].invalid {
+
+    border-bottom: 3px solid #f43939;
+
+}
+
+input[type="text"]:focus.invalid {
+
+    border-bottom: 3px solid #f43939;
+
+}
+
+input[type="text"]:focus {
+
+    padding: 4px 0 6px 0;
+    outline: none;
+    border: none;
+    border-bottom: 2px solid #2771fc;
+    color:#464c57;
+
+}
+
+form span {
+
+    position: relative;
+    width: 50%;
+    margin: 0;
+    height: 80px;
+    display: block;
+    overflow: hidden;
+
+}
+
+.label-field-empty {
+
+    position: absolute;
+    top: 30px;
+    font-size: 16px;
+    cursor: text;
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    transition: all .3s cubic-bezier(.57,.01,.1,1);
+
+}
+
+.label-field-focus {
+
+    position: absolute;
+    top: 12px;
+    font-size: 11.2px;
+    color: #2771fc;
+    cursor: text;
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+    transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+
+}
+
+span .error-info {
+
+    position: absolute;
+    bottom: 0px;
+    font-size: 13px;
+    color: #f43939;
+    cursor: text;
+    width:100%;
+    display:inline-block;
+    height:auto;
+    text-align: right;
+
+}
+
+.label-field-filled-nofocus {
+
+    position: absolute;
+    top: 12px;
+    font-size: 11.2px;
+    color: #acacac;
+    cursor: text;
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+    transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
+
+}
+
+form.clouds-form input[type="text"] {
+
+    display: block;
+    width: 100%;
+
+}
+
+
+
+/***************************************************************************************************************
+*
+*   ^ ^ ^ End styling inputs/buttons ^ ^ ^
+*
+****************************************************************************************************************/
+
+/***************************************************************************************************************
+*
+*   v v v Start generic styles v v v
+*
+****************************************************************************************************************/
+
+.l-float {
+
+    float: left;
+
+}
+
+.r-float {
+
+    float: right;
+
+}
+
+/***************************************************************************************************************
+*
+*   ^ ^ ^ End generic styles ^ ^ ^
+*
+****************************************************************************************************************/
