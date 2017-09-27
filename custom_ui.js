@@ -229,7 +229,7 @@ class MaterialText extends FormFields{
 }
 
 class MaterialSelect extends FormFields{
-    constructor(selectableOptions, toolTip) {
+    constructor(selectableOptions, toolTip, callback) {
         super();
         this._id                = this.setId();
         this._toolTip           = toolTip || "";
@@ -242,6 +242,7 @@ class MaterialSelect extends FormFields{
         this._allOptNode        = "";
         this._optionsNodes      = [];
         this._selectableOptions = selectableOptions;
+        this._changeCallback    = callback || "";
         this._nodesRef          = this.generateTree();
 
         this.addSelectorListeners();
@@ -308,6 +309,11 @@ class MaterialSelect extends FormFields{
             this.CurOptNode.innerHTML = this.Value;
         }
         this.AllOptNode.style.display = "none";
+
+        if(this.Callback != ""){
+            this.Callback();
+        }
+
     }
 
     addSelectorListeners(){
@@ -352,5 +358,9 @@ class MaterialSelect extends FormFields{
 
     get CurIndex(){
         return this._curIndex;
+    }
+
+    get Callback(){
+        return this._changeCallback;
     }
 }
