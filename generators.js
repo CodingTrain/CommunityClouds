@@ -288,3 +288,68 @@ function rndCloud(){
 }
 
 register(rndCloud, "RNDCloud", "Haider Ali Punjabi (@haideralipunjabi)")
+
+function cartoonCloud() {
+  //Inspired by the cloud drawing from Processing Day organizer Taeyoon Choi
+  function getRandMiniA() {
+    return random(0, PI/24);
+  }
+  let radius = height/2.4;
+  let angles = [0];
+  angleMode(RADIANS);
+
+  push();
+  translate(width/2, height/2);
+
+  //Fills the array with random angles that progressivly get bigger up until 2*PI
+  //This creates the bigger and smaller cloud blobs, making it feel more natural
+  let totalA = 0;
+  while (totalA < 2*PI) {
+    let a = random(PI/20, PI/6);
+    if (totalA + a > 2*PI) {
+      a = 2*PI - totalA;
+    }
+    totalA += a;
+    angles.push(totalA);
+  }
+
+  //We first draw the cloud using begin/endShape() so we can fill() it
+  noStroke();
+  fill(255);
+  beginShape();
+  vertex(2*radius*cos(angles[0]), 2*radius*sin(angles[0]));
+  for (let i = 0; i < angles.length; i++) {
+    let a = angles[i];
+    let deltaA = angles[(i+1)%angles.length] - a;
+    if (deltaA < 0)deltaA+=2*PI;
+    bezierVertex(
+      2*1.2*radius*cos(a + deltaA/3), 1.2*radius*sin(a + deltaA/3),
+      2*1.2*radius*cos(a + 2*deltaA/3), 1.2*radius*sin(a + 2*deltaA/3),
+      2*radius*cos(angles[(i+1)%angles.length]), radius*sin(angles[(i+1)%angles.length])
+    );
+  }
+  endShape();
+
+  //Now we draw the cloud 4 times, each time with a random offset
+  //This gives the cloud a cartoony feeling
+  stroke(0, 200);
+  for (let l = 0; l < 4; l++) {
+    for (let i = 0; i < angles.length; i++) {
+      //Draw a bezier curve with a random stroke, a touch of alpha and some RNG
+      let a = angles[i];
+      let deltaA = angles[(i+1)%angles.length] - a;
+      if (deltaA < 0){deltaA+=2*PI;}
+      strokeWeight(random(1,4));
+      bezier(
+        2*radius*cos(a), radius*sin(a),
+        2*1.2*radius*cos(a + deltaA/3- getRandMiniA()), 1.2*radius*sin(a + deltaA/3- getRandMiniA()),
+        2*1.2*radius*cos(a + 2*deltaA/3+ getRandMiniA()), 1.2*radius*sin(a + 2*deltaA/3+ getRandMiniA()),
+        2*radius*cos(angles[(i+1)%angles.length]), radius*sin(angles[(i+1)%angles.length])
+      );
+    }
+  }
+  pop();
+  return [width/2 - 2*radius/1.4, height/2 - radius / 1.4, 4 * radius / 1.4, 2 * radius / 1.4];
+}
+
+register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
