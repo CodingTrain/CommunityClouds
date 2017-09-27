@@ -1,4 +1,5 @@
 let nameInput,
+    selectionInput,
     generator_select,
     canvas,
     generators = [],
@@ -9,9 +10,10 @@ let nameInput,
 
 // Resizes the canvas to match the CSS
 function resize() {
-    let cHeight = window.innerHeight - formContainer.clientHeight,
+    let cHeight = window.innerHeight,
         cWidth = window.innerWidth > 500 ? min([window.innerWidth * .9, 960]) : window.innerWidth;
     resizeCanvas(cWidth, cHeight, false);
+
 }
 
 // When the window resizes
@@ -31,40 +33,55 @@ function setup() {
     canvas = createCanvas(1200, 1200);
     canvas.parent("sketchContain");
 
+    // *************************************************************************
+
     // Create list of selectable items
-
-    // Default random selection
-    let randOpt = createElement('li', 'Random');
-    randOpt.parent(selectInputAll[0]);
-    randOpt.elt.setAttribute('data-option-val', 'random');
-    randOpt.elt.setAttribute('data-option-selected', true);
-
-
+    // Begin selectable options object
+    let theSelectOptions = {
+        "default": "random",
+        "random": "Random"
+    };
+    // Finish populating theSelectOptions
     for (var i = 0; i < generators.length; i++) {
-        let tmp = createElement('li', generators[i].name);
-        tmp.parent(selectInputAll[0]);
-        tmp.elt.setAttribute('data-option-val', generators[i].name.toLowerCase());
+        theSelectOptions[generators[i].name.toLowerCase()] = generators[i].name;
     }
+    // Generate selector
+    selectionInput = new MaterialSelect(theSelectOptions, "");
+    // Add to clouds form
+    select("#cloudsFormGenerator").elt.appendChild(selectionInput.Nodes);
 
+    // *************************************************************************
 
     // Material Design input field
-    nameInput = new MaterialText("Input your name to preview it in the image.", "^([A-zÀ-ž\\d\\-\\s]{1,32})$", "Character set: a-z A-Z 0-9; 1-32 characters.", true, "user_name", "Name", "");
+    nameInput = new MaterialText("", "^([A-zÀ-ž\\d\\-\\s]{1,32})$", "Character set: a-z A-Z 0-9; 1-32 characters.", true, "user_name", "Name", "");
     // Add to clouds form
-    select("#cloudsForm").elt.appendChild(nameInput.Nodes);
+    select("#cloudsFormOptions").elt.appendChild(nameInput.Nodes);
     // Listen for value changes to redraw()
     nameInput.InputNode.addEventListener("input", redraw);
+
+    // *************************************************************************
+
+    // Material Design input field
+    colorInput = new MaterialText("", "(^[a-zA-Z]+$)|(#(?:[0-9a-fA-F]{2}){2,4}|#[0-9a-fA-F]{3}|(?:rgba?|hsla?)\\((?:\\d+%?(?:deg|rad|grad|turn)?(?:,|\\s)+){2,3}[\\s\\/]*[\\d\\.]+%?\\))", "Must be a valid color value; Hex, rgb, hsl, etc.", true, "bg_color", "Background Color", "");
+    // Add to clouds form
+    select("#cloudsFormOptions").elt.appendChild(colorInput.Nodes);
+    // Listen for value changes to redraw()
+    colorInput.InputNode.addEventListener("input", redraw);
+
+    // *************************************************************************
 
     noLoop();
     resize();
 }
 
 function draw() {
-    background(255, 255, 255);
+    let backgroundColor = colorInput.Valid ? colorInput.ValidInput : "#77B5FE";
+    document.getElementsByTagName("body")[0].style.background = backgroundColor;
+    background(backgroundColor);
     var generator;
-    var selected = selectedOption(selectInputAll[0]);
-    if (selected !== 'random') {
+    if (selectionInput.CurOpt !== 'random') {
         // Get generator chosen
-        generator = generators[+selected];
+        generator = generators[selectionInput.CurIndex - 2];
     } else {
         // Chose a random generator
         generator = random(generators);
@@ -83,7 +100,8 @@ function draw() {
 
     textSize(100);
     // Output the name (Hopefully within the bounds)
-    text(nameInput.Value, bounds[0], bounds[1], bounds[2], bounds[3]);
+    let theName = nameInput.ValidInput ? nameInput.ValidInput : "Example Name";
+    text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
     // Describe which design
     aTitle.innerHTML = generator.name;
     aAuthor.innerHTML = generator.creator;

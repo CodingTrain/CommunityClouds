@@ -1,5 +1,36 @@
-class MaterialText {
+class FormFields {
+
+        constructor(){
+            // Just in case
+        }
+
+        setId() {
+            let id = '',
+                length = 32,
+                charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (var i = length; i > 0; --i) {
+                id += charSet[Math.floor(Math.random() * charSet.length)]
+            }
+            return id;
+        }
+
+        hasClass(elem, cls) {
+            return (' ' + elem.className + ' ').indexOf(' ' + cls + ' ') > -1;
+        }
+
+        get Identifier(){
+            return this._id;
+        }
+
+        get Nodes(){
+            return this._nodesRef;
+        }
+
+}
+
+class MaterialText extends FormFields{
     constructor(toolTip, regExPattern, regExDesc, required, name, label, value) {
+        super();
         this._id            = this.setId();
         this._toolTip       = toolTip || "";
         this._regExPattern  = regExPattern || "";
@@ -8,6 +39,7 @@ class MaterialText {
         this._name          = name || "";
         this._label         = label || "";
         this._value         = value || "";
+        this._validInput    = "";
         this._containerNode = "";
         this._labelNode     = "";
         this._inputNode     = "";
@@ -15,16 +47,6 @@ class MaterialText {
         this._validity      = true;
 
         this.addTextFieldListeners();
-    }
-
-    setId() {
-        let id = '',
-            length = 32,
-            charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        for (var i = length; i > 0; --i) {
-            id += charSet[Math.floor(Math.random() * charSet.length)]
-        }
-        return id;
     }
 
     generateTree(){
@@ -68,16 +90,12 @@ class MaterialText {
 
     modifyTooltip(e) {
         let toolTip;
-        if(this.ToolTip && this.InputNode === document.activeElement) {
+        /**if(this.ToolTip && this.InputNode === document.activeElement) {
             toolTip = this.Label ? "<span class='tooltip-title'>" + this.Label + "</span></br>" + this.ToolTip : this.ToolTip;
             tooltipContainer.innerHTML = toolTip;
         } else {
-            tooltipContainer.innerHTML = defaultTooltip;
-        }
-    }
-
-    hasClass(elem, cls) {
-        return (' ' + elem.className + ' ').indexOf(' ' + cls + ' ') > -1;
+            return;
+        }**/
     }
 
     showErrorMessages() {
@@ -119,10 +137,12 @@ class MaterialText {
                 this.Validity = false;
             }
         }
+        if(this.Validity || this.Value == ""){
+            this.ValidInput = this.Value;
+        }
 
         this.showErrorMessages();
 
-        //changeSubmitState();
         return true;
     }
 
@@ -141,10 +161,6 @@ class MaterialText {
             this.validateInputEvent();
     }
 
-    get Identifier(){
-        return this._id;
-    }
-
     set Value(input){
         this._value = input;
     }
@@ -160,10 +176,6 @@ class MaterialText {
 
     get Name(){
         return this._name;
-    }
-
-    get Nodes(){
-        return this._nodesRef;
     }
 
     get InputNode(){
@@ -202,69 +214,143 @@ class MaterialText {
         this._validity = bool;
     }
 
-}
+    get Validity(){
+        return this._validity;
+    }
 
-class MaterialSelect {
+    get ValidInput(){
+        return this._validInput;
+    }
 
-}
-
-var textInputNodes     = document.querySelectorAll("form span input[type ='text']"),
-    selectInput        = document.querySelectorAll("form ul.select-input"),
-    selectInputAll     = document.querySelectorAll("form ul.select-input li.all-opt"),
-    selectInputCur     = document.querySelectorAll("form ul.select-input li.opt-cur"),
-    tooltipContainer   = document.getElementById('fieldInformation');
-    defaultTooltip     = tooltipContainer ? document.getElementById('fieldInformation').innerHTML : "",
-    validInput         = "";
-
-function changeSubmitState() {
-
-    var invalidInputs = document.querySelectorAll("[data-cannot-send='true']"),
-        emptyInputs = document.querySelectorAll(".label-field-empty [data-required='true']"),
-        submitButton = document.querySelectorAll("form input[type='submit']");
-
-    if(invalidInputs.length > 0 || emptyInputs.length > 0)
-    {
-        submitButton[0].disabled = true;
-        if(nameInput.value == ""){
-            validInput = "Example Name";
-        } else {
-            validInput = "Invalid input";
-        }
-    } else {
-        submitButton[0].disabled = false;
-        validInput = nameInput.value;
+    set ValidInput(input){
+        this._validInput = input;
     }
 
 }
 
-/**
- * Dropdown functions
- */
+class MaterialSelect extends FormFields{
+    constructor(selectableOptions, toolTip) {
+        super();
+        this._id                = this.setId();
+        this._toolTip           = toolTip || "";
+        this._value             = "";
+        this._containerNode     = "";
+        this._ulNode            = "";
+        this._curOpt            = "";
+        this._curIndex          = "";
+        this._curOptNode        = "";
+        this._allOptNode        = "";
+        this._optionsNodes      = [];
+        this._selectableOptions = selectableOptions;
+        this._nodesRef          = this.generateTree();
 
-function makeDropdownList(options){
-    let out;
-    for(let i in options){
-        let tmp = document.createElement('li');
-        tmp.innerHTML = i;
-        tmp.setAttribute('data-option-val', i.toLowerCase());
-        tmp.setAttribute('data-option-selected', false);
-        if(options[i].toLowerCase() == "default"){
-            tmp.setAttribute('data-option-selected', true);
-        }
+        this.addSelectorListeners();
     }
-    return out;
-}
 
-function selectedOption(parentNode){
-    for(let i in parentNode.childNodes){
-        let tmp = parentNode.childNodes[i];
-        if(tmp.getAttribute('data-option-selected') == 'true'){
-            return tmp.getAttribute('data-option-val');
-        }
+    generateTree(){
+        let s = document.createElement('div'), // Selector container
+            u = document.createElement('ul'),  // Outer ul
+            c = document.createElement('li'),  // Current option
+            a = document.createElement('li');  // All options
+
+            s.setAttribute('id', this.Identifier);
+            s.setAttribute('class', "selection-container");
+
+            u.setAttribute('class', 'select-input');
+
+            c.setAttribute('class', "opt-cur");
+            c.setAttribute('id', "optCur");
+
+            a.setAttribute('class', "all-opt");
+            a.setAttribute('id', "allOpt");
+            a.style.display = "none";
+
+            s.appendChild(u);
+            u.appendChild(c);
+            u.appendChild(a);
+
+            for(let i in this._selectableOptions){
+                let tmp = document.createElement('li');
+                if(i == 'default'){
+                    this.CurOpt = this._selectableOptions[i];
+                    this.CurIndex = Object.keys(this._selectableOptions).indexOf(this.CurOpt);
+                    this.Value = this._selectableOptions[this.CurOpt];
+                    continue;
+                }
+                tmp.innerHTML = this._selectableOptions[i];
+                tmp.setAttribute('data-option-val', i);
+                tmp.setAttribute('data-option-index', Object.keys(this._selectableOptions).indexOf(i));
+                tmp.setAttribute('class', 'material-select-option');
+                tmp.setAttribute('id', i.split(' ').join('_'));
+                this.Options.push(tmp);
+                this.CurOptNode = tmp;
+                a.appendChild(tmp);
+            }
+
+            c.innerHTML = this.Value;
+
+            this._containerNode = s;
+            this._ulNode        = u;
+            this._curOptNode    = c;
+            this._allOptNode    = a;
+
+            return s;
     }
-}
 
-function afterSelection(parentNode){
-    let cur = parentNode.querySelectorAll(".opt-cur");
-    console.log(cur);
+    chooseOptions(e){
+        if(e.target == this.CurOptNode){
+            this.AllOptNode.style.display = "block";
+            return;
+        } else if(this.hasClass(e.target, "material-select-option")){
+            this.CurOpt = e.target.getAttribute("data-option-val");
+            this.CurIndex = e.target.getAttribute("data-option-index");
+            this.Value = e.target.innerHTML;
+            this.CurOptNode.innerHTML = this.Value;
+        }
+        this.AllOptNode.style.display = "none";
+    }
+
+    addSelectorListeners(){
+            window.addEventListener("click", this.chooseOptions.bind(this));
+    }
+
+    set Value(input){
+        this._value = input;
+    }
+
+    get Value(){
+        return this._value;
+    }
+
+    get Options(){
+        return this._optionsNodes;
+    }
+
+    set CurOptNode(input){
+        this._curOptNode = input;
+    }
+
+    get CurOptNode(){
+        return this._curOptNode;
+    }
+
+    get AllOptNode(){
+        return this._allOptNode;
+    }
+
+    set CurOpt(input){
+        this._curOpt = input;
+    }
+
+    get CurOpt(){
+        return this._curOpt;
+    }
+
+    set CurIndex(input){
+        this._curIndex = input;
+    }
+
+    get CurIndex(){
+        return this._curIndex;
+    }
 }

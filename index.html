@@ -9,7 +9,7 @@
 
 <body>
     <div class="sketch-contain" id="sketchContain"></div>
-    <div class="form-contain">
+    <div class="form-contain-primary">
         <div class="fc-top">
             <div class="attribution" id="attribution">
                 <div class="attribution-title" id="aTitle"></div>
@@ -20,24 +20,16 @@
             </div>
         </div>
         <div class="fc-lower">
-            <form method="post" autocomplete="off" class="clouds-form" id="cloudsForm">
-                <div class="gen-selector" id="genSelector">
-                    <ul class="gen-options select-input" id="genOptions">
-                        <li class="opt-cur"></li>
-                        <li class="all-opt"></li>
-                    </ul>
-                </div>
-
-                <input class="r-float" type="submit" name="SubmitName" value="Submit Name" />
-            </form>
-            <div class="field-information" id="fieldInformation">
-                <p>
-
-                </p>
-                </br>
-            </div>
+            <form method="post" autocomplete="off" class="clouds-form" id="cloudsFormGenerator"></form>
         </div>
     </div>
+    <div class="form-contain-secondary">
+        <div class="fc-name">
+            <form method="post" autocomplete="off" class="clouds-form" id="cloudsFormOptions"></form>
+            <div class="field-information" id="fieldInformation"></div>
+        </div>
+    </div>
+
 </body>
 <script src="libraries/p5.js" type="text/javascript"></script>
 

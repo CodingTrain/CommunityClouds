@@ -1,29 +1,11 @@
- /*body {
-  padding: 0;
-  padding: 5vh 0;
-  margin: 0;
+ /*
   background: #77B5FE;
-  text-align: center;
-}
-canvas {
-  vertical-align: top;
-  width: 90vw !important;
-  max-width: 1200px;
-  height: 80vh !important;
-  display: block;
-  margin: 20px auto;
-}
-select {
-  background: white;
-  padding: 5px;
-  border: 0px;
-}
-
-*/
+  */
 
 /* v v v Import Open Sans Normal 400, Normal 400 Italic, Bold 700, and Bold 700 Italic from Google Web Fonts  v v v */
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
 
 
 * {
@@ -31,7 +13,7 @@ select {
     margin:0;
     padding:0;
     box-sizing: border-box;
-    color:#8c8c8b;
+    color:#959595;
     font-family: 'Open Sans', sans-serif;
 
 }
@@ -51,36 +33,89 @@ body, html {
 *
 ****************************************************************************************************************/
 
-.form-contain {
+.form-contain-primary {
 
+    opacity: .3;
     display: block;
-    width: 100%;
-    height: 200px;
+    width: 400px;
+    height: auto;
     margin: 0 auto;
     text-align: left;
     position:absolute;
-    bottom:0;
-    background: #f7f7f7;
+    top: 36px;
+    left: 36px;
+    background: #fff;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+    transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+}
+
+.form-contain-primary:hover {
+
+    opacity: 1;
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    transition: all .3s cubic-bezier(.57,.01,.1,1);
+}
+
+.form-contain-secondary {
+    opacity: .3;
+    display: block;
+    width: 400px;
+    height: auto;
+    margin: 0 auto;
+    text-align: left;
+    position:absolute;
+    bottom: 36px;
+    left: 36px;
+    padding: 12px 12px 6px 12px;
+    background: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+    transition: all .3s cubic-bezier(.57,.01,.1,1) .5s;
+}
+
+.form-contain-secondary:hover {
+
+    opacity: 1;
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    transition: all .3s cubic-bezier(.57,.01,.1,1);
 }
 
 .field-information {
 
     position:absolute;
     right: 0;
-    width: 50%;
-    height: 100%;
+    width: auto;
+    height: auto;
     padding: 25px 25px 0px 25px;
     overflow-y: auto;
 }
 
 .tooltip-title {
 
-    color: #2771fc;
+    color: #b300ff;
     font-weight: bold;
 
 }
 
-.form-contain p {
+.form-contain-primary p {
 
     font-size: .9em;
 
@@ -90,6 +125,7 @@ body, html {
     margin: 0 auto;
     text-align: center;
     -moz-text-align: center;
+    font-size: 0;
 }
 
 .fc-top {
@@ -97,7 +133,7 @@ body, html {
     width: 100%;
     height: auto;
     background: #fff;
-    padding: 0 18px;
+    padding: 0;
 }
 
 .fc-lower {
@@ -105,7 +141,15 @@ body, html {
     width: 100%;
     height: auto;
     background: transparent;
-    padding: 0 18px;
+    padding: 0;
+}
+
+.fc-name {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: transparent;
+    padding: 0;
 }
 
 .attribution {
@@ -121,7 +165,7 @@ body, html {
 
 .attribution-title {
     color: #fff;
-    background: rgb(235, 0, 90);
+    background: #b300ff;
     display: table-cell;
     font-size: .9rem;
     padding: 6px 12px;
@@ -133,7 +177,7 @@ body, html {
     display: table-cell;
     font-size: .9rem;
     padding: 4px 12px;
-    border: 2px solid rgb(235, 0, 90);
+    border: 2px solid #b300ff;
 }
 
 .attribution-author span.by-sep{
@@ -141,29 +185,66 @@ body, html {
 }
 
 .attribution-author span.author-name{
-    color: rgb(235, 0, 90);
+    color: #b300ff;
 }
 
-.gen-selector {
+.clouds-form .selection-container {
+    z-index: 1000;
+    position: relative;
+}
+
+.clouds-form .selection-container ul.select-input {
     width: 100%;
     max-width: 400px;
     height: 31px;
+    font-weight: 500;
+    font-size: .9rem;
     background: #fff;
+
 }
 
-.gen-selector ul.select-input {
-    width: 100%;
-    height: 31px;
-    font-weight: 400;
-    font-size: .9rem;
-    padding: 6px 12px;
-    background: #fff;
-    border: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    border-radius: 0;
-    outline: none;
+.clouds-form .selection-container ul.select-input:hover {
+
+}
+
+.clouds-form .selection-container ul.select-input li {
+    list-style-type: none;
     cursor: pointer;
+}
+
+.clouds-form .selection-container ul.select-input li.opt-cur {
+    padding: 6px 12px;
+}
+
+.clouds-form .selection-container ul.select-input li.opt-cur:after {
+    font-family:'FontAwesome';
+    content: "\f078";
+    float: right;
+    color: #b8b8b8;
+}
+
+.clouds-form .selection-container ul.select-input li.all-opt {
+    background: #fff;
+    max-height: 500px;
+    overflow:auto;
+    width: 100%;
+    z-index: 1000;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+}
+
+.clouds-form .selection-container ul.select-input li.all-opt li.material-select-option {
+    background: #fff;
+    width: 100%;
+    padding: 6px 12px 6px 10px;
+    border-left: 2px solid #fff;
+}
+
+.clouds-form .selection-container ul.select-input li.all-opt li.material-select-option:hover {
+    background: #f7f7f7;
+    color: #b300ff;
+    border-left: 2px solid #b300ff;
 }
 
 /***************************************************************************************************************
@@ -181,7 +262,7 @@ body, html {
 input[type="submit"] {
 
     color: #fff;
-    background: #2771fc;
+    background: #b300ff;
     padding: 7px 20px;
     font-weight: 700;
     font-size: .9em;
@@ -268,19 +349,19 @@ input[type="text"]:focus {
     padding: 4px 0 6px 0;
     outline: none;
     border: none;
-    border-bottom: 2px solid #2771fc;
+    border-bottom: 2px solid #b300ff;
     color:#464c57;
 
 }
 
 form span {
 
-    position: relative;
-    width: 50%;
+    width: 100%;
     margin: 0;
     height: 80px;
     display: block;
     overflow: hidden;
+    position: relative;
 
 }
 
@@ -302,7 +383,7 @@ form span {
     position: absolute;
     top: 12px;
     font-size: 11.2px;
-    color: #2771fc;
+    color: #b300ff;
     cursor: text;
     -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
     -moz-transition: all .3s cubic-bezier(.57,.01,.1,1), color .01s;
@@ -314,11 +395,12 @@ form span {
 span .error-info {
 
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
+    right: 0;
     font-size: 13px;
     color: #f43939;
     cursor: text;
-    width:100%;
+    width: auto;
     display:inline-block;
     height:auto;
     text-align: right;
@@ -343,6 +425,7 @@ form.clouds-form input[type="text"] {
 
     display: block;
     width: 100%;
+    max-width: 400px;
 
 }
 
