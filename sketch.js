@@ -1,81 +1,125 @@
-var name_input;
-var generator_select;
-var canvas = null;
-var generators = [];
+let nameInput,
+    selectionInput,
+    generator_select,
+    canvas,
+    generators = [],
+    formContainer = document.querySelectorAll(".form-contain")[0],
+    aTitle = document.getElementById("aTitle"),
+    aAuthor = document.getElementById("authorName"),
+    canRedraw = true,
+    backgroundColor = "#77B5FE";
 
 // Resizes the canvas to match the CSS
 function resize() {
-  var container = canvas.elt.getBoundingClientRect();
-  resizeCanvas(container.width, container.height, false);
+    let canParentStyle = window.getComputedStyle(canvas.elt.parentNode),
+        cWidth  = parseInt(canParentStyle.width),
+        cHeight = parseInt(canParentStyle.height);
+
+        cHeight -= parseInt(canParentStyle.paddingTop) + parseInt(canParentStyle.paddingBottom);
+        cWidth  -= parseInt(canParentStyle.paddingLeft) + parseInt(canParentStyle.paddingRight);
+    resizeCanvas(cWidth, cHeight, false);
+
+
 }
 
 // When the window resizes
 function windowResized() {
-  resize();
-  redraw();
+    resize();
+    redraw();
 }
 
 // When clicked
 function mousePressed() {
-  redraw();
+    redraw();
 }
 
 // On setup
 function setup() {
-  // Default canvas size
-  canvas = createCanvas(1200, 1200);
-  name_input = createInput('Your Name');
+    // Default canvas size
+    canvas = createCanvas(1200, 1200);
+    canvas.parent("sketchContain");
 
-  // Create the generator selection
-  generator_select = createSelect();
-  generator_select.option('Random', 'random');
-  for(var i = 0; i < generators.length; i++) {
-    generator_select.option(generators[i].name, i);
-  }
+    // *************************************************************************
 
-  // Disable re-rendering when unnecessary
-  noLoop();
+    // Create list of selectable items
+    // Begin selectable options object
+    let theSelectOptions = {
+        "default": "random",
+        "random": "Random"
+    };
+    // Finish populating theSelectOptions
+    for (var i = 0; i < generators.length; i++) {
+        theSelectOptions[generators[i].name.toLowerCase()] = generators[i].name;
+    }
+    // Generate selector
+    selectionInput = new MaterialSelect(theSelectOptions, "");
+    // Add to clouds form
+    select("#cloudsFormGenerator").elt.appendChild(selectionInput.Nodes);
 
-  // Render again when inputs change
-  name_input.input(redraw);
-  generator_select.changed(redraw);
-  resize();
+    // *************************************************************************
+
+    // Material Design input field
+    nameInput = new MaterialText("", "^([A-zÀ-ž\\d\\-\\s]{1,32})$", "Character set: a-z A-Z 0-9; 1-32 characters.", true, "user_name", "Name", "");
+    // Add to clouds form
+    select("#cloudsFormOptions").elt.appendChild(nameInput.Nodes);
+    // Listen for value changes to redraw()
+    nameInput.InputNode.addEventListener("input", redraw);
+
+    // *************************************************************************
+
+    noLoop();
+    resize();
+}
+
+function updateBg(color){
+    backgroundColor = color.toHEXString();
+    redraw();
 }
 
 function draw() {
-  background("#77B5FE");
-  var generator;
-  var selected = (generator_select.value());
-  if (selected !== 'random') {
-    // Get generator chosen
-    generator = generators[+selected];
-  } else {
-    // Chose a random generator
-    generator = random(generators);
-  }
-  // Establish our default cloud drawing paremeters.
-  strokeWeight(10);
-  stroke("#000");
-  fill("#FFF");
-  // Render the chosen cloud and
-  var bounds = generator.fn();
-  // Reset styles for the text
-  fill("#000");
-  strokeWeight(0);
-  textSize(16);
-  textAlign(CENTER, CENTER);
-  // Describe which design
-  text(generator.name + " by " + generator.creator, 0, height - 16, width, 16);
-  textSize(100);
-  // Output the name (Hopefully within the bounds)
-  text(name_input.value(), bounds[0], bounds[1], bounds[2], bounds[3]);
+    document.getElementsByTagName("body")[0].style.background = backgroundColor;
+    background(backgroundColor);
+    var generator;
+    if (selectionInput.CurOpt !== 'random') {
+        // Get generator chosen
+        generator = generators[selectionInput.CurIndex - 2];
+    } else {
+        // Chose a random generator
+        generator = random(generators);
+    }
+    scale(.5);
+    translate(width * .5, height * .5);
+
+    push();
+    // Establish our default cloud drawing paremeters.
+    strokeWeight(10);
+    stroke("#000");
+    fill("#FFF");
+    // Render the chosen cloud and
+    var bounds = generator.fn();
+    // Reset styles for the text
+    fill("#000");
+    strokeWeight(0);
+    textSize(16);
+    textAlign(CENTER, CENTER);
+
+    textSize(100);
+    // Output the name (Hopefully within the bounds)
+    let theName = nameInput.ValidInput ? nameInput.ValidInput : "Example Name";
+    text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
+    // Describe which design
+    aTitle.innerHTML = generator.name;
+    aAuthor.innerHTML = generator.creator;
+
+    pop();
+
 }
 
 // Register a new cloud generator.
 function register(fn, name, creator) {
-  generators.push({
-    fn: fn,
-    name: name,
-    creator: creator
-  });
+    generators.push({
+        fn: fn,
+        name: name,
+        creator: creator
+    });
 }
