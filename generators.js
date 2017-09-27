@@ -198,3 +198,47 @@ function kazakhCloud(radius = 200, min = 8, max = 10) {
 }
 
 register(kazakhCloud, "Cloud from Kazakhstan", "Ilyas triple-o-zero");
+
+// Sine wave based cloud
+function sineCloud() {
+  
+  noStroke();
+
+  // Setup steps
+  let steps = random(20,100);
+  let stepWidth = width/steps;
+  // Setup for sin
+  let angle = 0.0;
+  // What to increment angle by to get complete sine wave
+  let delta = PI / steps;
+
+  // Some noise
+  noiseSeed(random(Date.now()));
+
+  // My brain couldn't figure out how to draw negative height
+  // rectangles with a corner radius that didn't error out
+  // so let's just move everything and rotate it 180 degrees
+  push();
+  translate(width + stepWidth, height - height / 7);
+  rotate(PI);
+  
+  // Draw cloud
+  for(let i = 0; i < width-stepWidth; i += stepWidth) {
+    let stepHeight = sin(angle) * (height / 1.3);
+    // Jiggle the cloud about
+    push();
+    translate(i, noise(angle) * 50);
+    rect(0, 0, stepWidth + random(10,20), stepHeight, stepWidth);
+    pop();
+    // Increment angle
+    angle += delta;
+  }
+  pop();
+
+  // Safe zone
+  return [250, 120, width - 500, height - 250];
+}
+
+// Register your function with register(function, style_name, author_name)
+register(sineCloud, "Sine Cloud", "Ben Harvey");
+
