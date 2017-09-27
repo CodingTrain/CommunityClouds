@@ -105,20 +105,20 @@ function flatBottomCloud() {
   let cloudWidth = width - radius - 100;
   let cloudHeight = height - radius - 100;
   let circleCount  = cloudWidth / (radius*0.5);
-  
+
   push();
   translate(width / 2, height / 1.75);
   ellipse(0,radius/4,cloudWidth,radius);
-  
+
   for (let i = 0; i < circleCount; i++) {
     let angle = -PI / circleCount * i;
-    
+
     let x = cloudWidth / 2 * cos(angle);
     let y = cloudHeight / 2 * sin(angle);
 
     ellipse(x, y, radius, radius);
   }
-  
+
   noStroke();
   ellipse(0, -radius/5, cloudWidth+radius/2, cloudHeight+radius/10);
   pop();
@@ -198,3 +198,93 @@ function kazakhCloud(radius = 200, min = 8, max = 10) {
 }
 
 register(kazakhCloud, "Cloud from Kazakhstan", "Ilyas triple-o-zero");
+
+function fluffyCloud(){
+  var cloudradius = 0.7*(width/2);
+  var angle = PI/2;
+  fill(255);
+  while(angle<(2.5*PI)){
+    ellipse(width/2+cos(angle)*cloudradius,height/2+sin(angle)*0.5*cloudradius,(width/2-sin(angle)*cloudradius)/3);
+    angle += (width/2-sin(angle)*cloudradius)/(3.9*cloudradius);
+  }
+  noStroke();
+  ellipse(width/2-4,height/2-cloudradius*0.075,cloudradius*2.4,cloudradius*1.24);
+  stroke(0);
+  return [120, 180, width - 240, height - 400];
+}
+
+register(fluffyCloud, "Fluffy", "egg303");
+
+//Draw a nice round cloud by Brandon Blaschke
+function proudRoundCloud() {
+
+  //Amount of circles in the cloud
+  let circleAmou = 15;
+
+  //Radius for surrounding clouds
+  let radius = 200;
+
+  strokeWeight(5);
+  fill(255);
+
+  //Position and set up drawing
+  push();
+  angleMode(DEGREES);
+  translate(width / 2, height / 2);
+
+  //Make outer edge of cloud by going in a circle around the name
+  for(let i = 0; i < circleAmou; i++) {
+    let angle = map(i, 0, circleAmou, 0, 360);
+    let x = 400 * cos(angle);
+    let y = 250 * sin(angle);
+    ellipse(x,y, radius, radius);
+  }
+
+  //Fill the inside with white circles to fill it
+  noStroke();
+  for(let i = 0; i < circleAmou; i++) {
+    let angle = map(i, 0, circleAmou, 0, 360);
+    let x = 200 * cos(angle);
+    let y = 200 * sin(angle);
+    ellipse(x,y, radius, radius);
+  }
+
+  //Fill the middle section
+  ellipse(0,0,950, 550);
+  pop();
+
+  return [100, 100, width - 200, height - 200];
+}
+
+register(proudRoundCloud, "Proud Round Cloud", "Brandon Blaschke");
+
+// rndCloud
+// Generates a cloud, by drawing ellipses of random width and height on locus of a regular ellipse
+// Couldn't add a nice looking stroke to the cloud :( TODO: Add a beautiful stroke
+function rndCloud(){
+  // Randomess - The main variable of the algorithm.
+  // Randomness is inversely proportional to time taken to generate
+  // Randomness is directly proportional to beauty (depends on viewers taste)
+
+  const randomness = random(20,100);
+  const r = width/2 - randomness;
+  let x, y;
+  push();
+    translate(width / 2, height / 2);
+    angleMode(DEGREES)
+    noStroke();
+    for(let i = 0; i <=360;)
+        {
+          x = r*cos(i);
+          y = 0.5* r*sin(i);
+          w = random(1,2) * randomness;
+          h = random(1,2) * randomness;
+            ellipse(x,y,w,h); //Draw the random ellipses
+            ellipse(0,0,r*2,r); //Draw main ellipse
+          i += randomness / 10;
+        }
+  pop();
+  return [100, 100, width - 200, height - 200];
+}
+
+register(rndCloud, "RNDCloud", "Haider Ali Punjabi (@haideralipunjabi)")
