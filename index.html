@@ -24,8 +24,9 @@
         </div>
     </div>
     <div class="form-contain-secondary">
-        <div class="fc-name">
+        <div class="fc-name fc-bg-color">
             <form method="post" autocomplete="off" class="clouds-form" id="cloudsFormOptions"></form>
+            Background color: <input class="jscolor {onFineChange:'updateBg(this)'}" value="77B5FE">
             <div class="field-information" id="fieldInformation"></div>
         </div>
     </div>
@@ -36,7 +37,9 @@
 <script src="libraries/p5.dom.js" type="text/javascript"></script>
 <script src="libraries/p5.sound.js" type="text/javascript"></script>
 
+
 <script src="sketch.js" type="text/javascript"></script>
+<script src="jscolor/jscolor.min.js"></script>
 <script src="generators.js" type="text/javascript"></script>
 <script src="custom_ui.js" type="text/javascript"></script>
 

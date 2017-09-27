@@ -6,13 +6,19 @@ let nameInput,
     formContainer = document.querySelectorAll(".form-contain")[0],
     aTitle = document.getElementById("aTitle"),
     aAuthor = document.getElementById("authorName"),
-    canRedraw = true;
+    canRedraw = true,
+    backgroundColor = "#77B5FE";
 
 // Resizes the canvas to match the CSS
 function resize() {
-    let cHeight = window.innerHeight,
-        cWidth = window.innerWidth > 500 ? min([window.innerWidth * .9, 960]) : window.innerWidth;
+    let canParentStyle = window.getComputedStyle(canvas.elt.parentNode),
+        cWidth  = parseInt(canParentStyle.width),
+        cHeight = parseInt(canParentStyle.height);
+
+        cHeight -= parseInt(canParentStyle.paddingTop) + parseInt(canParentStyle.paddingBottom);
+        cWidth  -= parseInt(canParentStyle.paddingLeft) + parseInt(canParentStyle.paddingRight);
     resizeCanvas(cWidth, cHeight, false);
+
 
 }
 
@@ -61,21 +67,16 @@ function setup() {
 
     // *************************************************************************
 
-    // Material Design input field
-    colorInput = new MaterialText("", "(^[a-zA-Z]+$)|(#(?:[0-9a-fA-F]{2}){2,4}|#[0-9a-fA-F]{3}|(?:rgba?|hsla?)\\((?:\\d+%?(?:deg|rad|grad|turn)?(?:,|\\s)+){2,3}[\\s\\/]*[\\d\\.]+%?\\))", "Must be a valid color value; Hex, rgb, hsl, etc.", true, "bg_color", "Background Color", "");
-    // Add to clouds form
-    select("#cloudsFormOptions").elt.appendChild(colorInput.Nodes);
-    // Listen for value changes to redraw()
-    colorInput.InputNode.addEventListener("input", redraw);
-
-    // *************************************************************************
-
     noLoop();
     resize();
 }
 
+function updateBg(color){
+    backgroundColor = color.toHEXString();
+    redraw();
+}
+
 function draw() {
-    let backgroundColor = colorInput.Valid ? colorInput.ValidInput : "#77B5FE";
     document.getElementsByTagName("body")[0].style.background = backgroundColor;
     background(backgroundColor);
     var generator;
@@ -86,6 +87,10 @@ function draw() {
         // Chose a random generator
         generator = random(generators);
     }
+    scale(.5);
+    translate(width * .5, height * .5);
+
+    push();
     // Establish our default cloud drawing paremeters.
     strokeWeight(10);
     stroke("#000");
@@ -105,6 +110,9 @@ function draw() {
     // Describe which design
     aTitle.innerHTML = generator.name;
     aAuthor.innerHTML = generator.creator;
+
+    pop();
+
 }
 
 // Register a new cloud generator.

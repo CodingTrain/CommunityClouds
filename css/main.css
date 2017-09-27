@@ -74,7 +74,7 @@ body, html {
     position:absolute;
     bottom: 36px;
     left: 36px;
-    padding: 12px 12px 6px 12px;
+    padding: 12px;
     background: #fff;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -126,6 +126,9 @@ body, html {
     text-align: center;
     -moz-text-align: center;
     font-size: 0;
+    height: 100%;
+    width: 100%;
+    padding: 42px;
 }
 
 .fc-top {
