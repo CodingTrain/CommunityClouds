@@ -52,7 +52,7 @@ function setup() {
         theSelectOptions[generators[i].name.toLowerCase()] = generators[i].name;
     }
     // Generate selector
-    selectionInput = new MaterialSelect(theSelectOptions, "");
+    selectionInput = new MaterialSelect(theSelectOptions, "", redraw);
     // Add to clouds form
     select("#cloudsFormGenerator").elt.appendChild(selectionInput.Nodes);
 
