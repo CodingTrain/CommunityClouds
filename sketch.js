@@ -90,8 +90,8 @@ function draw() {
     scale(.5);
     translate(width * .5, height * .5);
 
-    push();
     // Establish our default cloud drawing paremeters.
+    angleMode(RADIANS);
     strokeWeight(10);
     stroke("#000");
     fill("#FFF");
@@ -110,8 +110,6 @@ function draw() {
     // Describe which design
     aTitle.innerHTML = generator.name;
     aAuthor.innerHTML = generator.creator;
-
-    pop();
 
 }
 
