@@ -386,28 +386,13 @@ function arbitraryCloud(){
 	let smallest_sub_cloud_width = 200;
 	let smallest_sub_cloud_height = 200;
 	
-	let x = [];
-	let y = [];
-	let w = [];
-	let h = [];
-	
 	for(let i = 0; i < number_random_sub_clouds; i++){
 		let rand_width = random(smallest_sub_cloud_width, cloud_width - 100);
 		let rand_height = random(smallest_sub_cloud_height, cloud_height - 100);
 		let rand_x = random(cloud_x + 10, cloud_width - rand_width);
 		let rand_y = random(cloud_y + 10, cloud_height - rand_height);
 		ellipse(rand_x, rand_y, rand_width, rand_height);
-		x.push(rand_x);
-		y.push(rand_y);
-		w.push(rand_width);
-		h.push(rand_height);
 	}
-	// text infos
-	let padding = 100;
-	let text_top = Math.min.apply(null, y) + padding;
-	let text_left = Math.min.apply(null, x) + padding;
-	let text_bottom = Math.max.apply(null, h) - padding;
-	let text_right = Math.max.apply(null, w) - padding;
-  return [text_left, text_top, text_bottom, text_right];
+  return [cloud_center.x, cloud_center.y, undefined, undefined];
 }
 register(arbitraryCloud, "Arbitrary cloud", "Hung Nguyen (fb.com/ZeroXCEH)");
