@@ -387,6 +387,7 @@ function cumulus() {
     arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
   });
 
+  textSize(spacing/2.5);
   return [x / 2, y-(spacing/1.7), x, spacing/1.6];
 }
 register(cumulus, "Cumulus", "Luke Flego");
