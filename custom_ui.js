@@ -47,6 +47,11 @@ class MaterialText extends FormFields{
         this._validity      = true;
 
         this.addTextFieldListeners();
+
+        document.getElementById("cloudsFormOptions").onkeypress = (e) => {
+            var key = e.charCode || e.keyCode || 0;
+            if (key == 13) e.preventDefault();
+        }
     }
 
     generateTree(){

@@ -354,6 +354,212 @@ function cartoonCloud() {
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 
+// arbitrary cloud by Hung
+function arbitraryCloud(){
+  let cloud_x = 50;
+  let cloud_y = 50;
+  let cloud_width = width - cloud_x * 2;
+	let cloud_height = height - cloud_y * 2;
+
+	let cloud_center_size = {
+		"width" : cloud_width - 300,
+		"height" : cloud_height - 300
+	};
+
+	let cloud_center = {
+		x: (width - cloud_center_size.width) / 2,
+		y: (height - cloud_center_size.height) / 2
+	};
+	ellipseMode(CORNER);
+	noStroke();
+	// center area for drawing text
+	ellipse(
+		cloud_center.x,
+		cloud_center.y,
+		cloud_center_size.width,
+		cloud_center_size.height
+	);
+	// generate random sub clouds
+
+	// sub clouds infos
+	let number_random_sub_clouds = 10;
+	let smallest_sub_cloud_width = 200;
+	let smallest_sub_cloud_height = 200;
+
+	for(let i = 0; i < number_random_sub_clouds; i++){
+		let rand_width = random(smallest_sub_cloud_width, cloud_width - 100);
+		let rand_height = random(smallest_sub_cloud_height, cloud_height - 100);
+		let rand_x = random(cloud_x + 10, cloud_width - rand_width);
+		let rand_y = random(cloud_y + 10, cloud_height - rand_height);
+		ellipse(rand_x, rand_y, rand_width, rand_height);
+	}
+  return [cloud_center.x, cloud_center.y, cloud_center_size.width, cloud_center_size.height];
+}
+register(arbitraryCloud, "Arbitrary cloud", "Hung Nguyen (fb.com/ZeroXCEH)");
+
+function shadowCloud() {
+
+  // A puffy cloud with a shadow by Arjen Klaverstijn info@arjenklaverstijn.com
+  // https://github.com/arjhun
+
+    angleMode(DEGREES);
+
+    let segments = 0,
+      radius = 600,
+      start = random(0, 360),
+      end = start + 360,
+      min = 20,
+      max = 40,
+      puff = max * 5,
+      cPoints = [];
+
+    for (let i = start; i < end;) {
+
+      segments = random(min, max);
+      //next segment
+      let nextV = i + segments;
+      // lets fill up the last segment with a reasonable one
+      if (end - nextV < max - (max - min / 2)) nextV = end;
+      //create coordinates for bezier segments
+      cPoints.push(
+        [radius * sin(i),
+        radius / 3 * cos(i),
+        (radius + puff) * sin(i),
+        (radius / 3 + puff) * cos(i),
+        (radius + puff) * sin(nextV),
+        (radius / 3 + puff) * cos(nextV),
+        radius * sin(nextV),
+        radius / 3 * cos(nextV)
+      ]);
+      i += segments
+      //if next vertex is at the end stop drawing
+      if (nextV == end) break;
+    }
+
+    function drawCloud(offSet) {
+      push();
+        translate(width / 2+offSet, height / 2+offSet);
+        beginShape();
+        for (let c = 0; c < cPoints.length; c++) {
+          vertex(cPoints[c][0] , cPoints[c][1] );
+          bezierVertex(cPoints[c][2] , cPoints[c][3] , cPoints[c][4] , cPoints[c][5] , cPoints[c][6] , cPoints[c][7] );
+        }
+        endShape();
+      pop();
+    }
+
+  //draw the actuall clouds
+
+  fill(0); // random shadow
+  drawCloud(random(20,100));
+
+  fill(255);
+  drawCloud(0);
+
+  return [width/2-radius, height/2 -(radius/3), radius*2, (radius/3)*2];
+}
+
+register(shadowCloud, "Cloud with Shadow", "Arjen Klaverstijn (@aklaverstijn)");
+
+function CircularCloud() {
+  // Draw big cloud parts
+  fill(255, 255, 255, 90);
+  for(let i = 0; i < 500; i++){
+    fill(255, 255, 255, 50);
+    //the bigger i; the more centered are the circles and the less likely they are outlined
+    let offsetVec = p5.Vector.random2D();
+    let scaleX = random(-600, 600) / (i * 0.001+1);
+    let scaleY = random(-300, 300) / (i * 0.001+1);
+    offsetVec.x *= scaleX;
+    offsetVec.y *= scaleY;
+    let outside = offsetVec.mag();
+    if(random(700) < outside && random() > 0.7){
+      strokeWeight(1);
+      //fill(200, 0, 0);
+    }
+
+    else strokeWeight(0);
+    ellipse(width/2 + offsetVec.x, height/2 + offsetVec.y,  random(50, width/4));
+  }
+
+  // Draw small cloud parts
+  fill(255, 255, 255, 90);
+  for(let i = 0; i < 500; i++){
+    fill(255, 255, 255, 50);
+    let offsetVec = p5.Vector.random2D();
+    let scaleX = random(-500, 500) / (i * 0.001+1);
+    let scaleY = random(-250, 250) / (i * 0.001+1);
+    offsetVec.x *= scaleX;
+    offsetVec.y *= scaleY;
+    let outside = offsetVec.mag();
+    if(random(3000) < outside && random() > 0.7){
+      strokeWeight(1);
+      //fill(200, 0, 0);
+    }
+    else strokeWeight(0);
+    ellipse(width/2 + offsetVec.x, height/2 + offsetVec.y,  random(10, width/8));
+  }
+
+
+  return [100, 100, width - 200, height - 200];
+}
+
+register(CircularCloud, "CircularCloud", "lokmeinmatz / Matthias");
+
+function cumulus() {
+  let cloud = [];
+  const x = width / 2,
+        y = height / 1.8,
+        humps = round(random(3, 7)),
+        diameter = width / humps,
+        spacing = diameter / 2,
+        mainHumpPos = 0.5, // 0 = left > 1 = right
+        piRatio = HALF_PI / (humps / (1 / mainHumpPos));
+
+  for (let i in [...Array(humps)]) {
+    // Start with smaller "puffs", larger in the middle, end with small again
+    let sine = 1 + sin(piRatio * i),
+        variance = random(1, 0.7 / mainHumpPos) * sine,
+        radius = spacing * variance,
+        newX = width/2 - x / 2 + spacing / 2 + spacing * i; // Seriously? That much effort to move half to the left then continue spacing to the right?
+    cloud.push([newX, y, radius]); // save the cloud so we can double draw, idk how else to do it
+  }
+
+  // draw black cloud with stroke
+  cloud.forEach(puff => {
+    strokeWeight(10);
+    arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
+  });
+
+  // draw white cloud without stroke
+  cloud.forEach(puff => {
+    fill(255);
+    strokeWeight(0);
+    arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
+  });
+
+  return [x / 2, 0, x, height];
+}
+register(cumulus, "Cumulus", "Luke Flego");
+
+function straubCloud() {
+  stroke(255);
+	let r1 = 400;
+	let r2 = 200;
+	translate(width / 2, height / 2);
+	beginShape();
+	for(let a = 0; a < 2 * PI;a += 0.001) {
+		let x = r1 * cos(a);
+		let y = r2 * (sin(a) + noise(a));
+		vertex(x, y);
+	}
+	endShape(CLOSE);
+	stroke(255, 0, 50);
+	rect(-200, 0, 400, 200);
+}
+
+register(straubCloud, "Straub Cloud", "edwin.straub")
+
 /**
  * To dra a square cloud composed of other squares
  */
