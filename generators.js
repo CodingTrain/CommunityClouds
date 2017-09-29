@@ -559,3 +559,45 @@ function straubCloud() {
 }
 
 register(straubCloud, "Straub Cloud", "edwin.straub")
+
+function lightning_cloud(x, y){
+	noStroke();
+	for (let i = 0; i < 100; i++){
+		const r = random(100);
+		ellipse(x + random(-100, 100), y + random(50, 150), r, r);
+	}
+
+
+	const lightning = function(x, y, strokeweight, length, depth = 1){
+		if (length < 1) return;
+		const nextDepth = [];
+		const intensity = sqrt(depth) * 10;
+		push();
+		noiseSeed(random(100));
+		stroke(255, 255, 255);
+		strokeWeight(strokeweight);
+
+		let xCurr, yCurr;
+		let xPrev = x, yPrev = y;
+		for (let offset = 0; offset < length; offset+=10){
+			xCurr = xPrev + map(noise(offset * 0.1), 0, 1, -1, 1) * intensity;
+			yCurr = y + offset
+			line(xPrev, yPrev, xCurr , yCurr);
+			xPrev = xCurr;
+			yPrev = yCurr;
+			nextDepth.push([xCurr, yCurr]);
+		}
+
+		pop();
+		
+		nextDepth.forEach((e) => {
+			for (let i = 0; i < random(-100, 4); i++)
+				lightning(e[0], e[1], strokeweight * 0.5, length * 0.4, depth + 1);
+		})
+
+	}
+
+	lightning(x , y + 100 , 5, 500);
+}
+
+register(lightingCloud, "Lightning Cloud", "Eitan Porat")
