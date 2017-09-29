@@ -91,6 +91,8 @@ function draw() {
     translate(width * .5, height * .5);
 
     // Establish our default cloud drawing paremeters.
+    rectMode(CORNER);
+  	ellipseMode(CENTER);
     angleMode(RADIANS);
     strokeWeight(10);
     stroke("#000");
