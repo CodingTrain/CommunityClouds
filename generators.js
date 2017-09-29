@@ -560,7 +560,7 @@ function straubCloud() {
 
 register(straubCloud, "Straub Cloud", "edwin.straub")
 
-function lightning_cloud(x, y){
+function lightning_cloud(x=0, y=0){
 	noStroke();
 	for (let i = 0; i < 100; i++){
 		const r = random(100);
@@ -600,4 +600,4 @@ function lightning_cloud(x, y){
 	lightning(x , y + 100 , 5, 500);
 }
 
-register(lightingCloud, "Lightning Cloud", "Eitan Porat")
+register(lighting_cloud, "Lightning Cloud", "Eitan Porat")
