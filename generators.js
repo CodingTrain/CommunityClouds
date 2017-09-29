@@ -393,6 +393,6 @@ function arbitraryCloud(){
 		let rand_y = random(cloud_y + 10, cloud_height - rand_height);
 		ellipse(rand_x, rand_y, rand_width, rand_height);
 	}
-  return [cloud_center.x, cloud_center.y, cloud_center_size.width, cloud_center_size.height];
+  return [width / 2 - ((width / 2 - cloud_center.x) / 2), cloud_center.y, cloud_center_size.width, cloud_center_size.height];
 }
 register(arbitraryCloud, "Arbitrary cloud", "Hung Nguyen (fb.com/ZeroXCEH)");
