@@ -558,4 +558,64 @@ function straubCloud() {
 	rect(-200, 0, 400, 200);
 }
 
-register(straubCloud, "Straub Cloud", "edwin.straub")
+register(straubCloud, "Straub Cloud", "edwin.straub");
+
+// created by georges Daou 29-sep-2017
+function randomSimpleCloud() {
+
+
+  let minWidthSub = (5 * width) / 100;
+  let maxWidthSub = (30 * width) / 100;
+
+  let minHeightSub = (70 * height) / 100;
+  let maxHeightSub = (85 * height) / 100;
+
+
+  let cloudWidth = width - floor(random(minWidthSub, maxWidthSub)) - 100;
+  let cloudHeight = height - floor(random(minHeightSub, maxHeightSub) - 100);
+
+  push();
+  translate(width / 2, height / 2);
+
+  noStroke();
+  fill(255);
+
+  //base papa cloud
+  ellipse(0, 0, cloudWidth, cloudHeight);
+
+  angleMode(DEGREES);
+
+
+
+
+  for (let angle = 0; angle < 360; angle += random(20, 30)) { //generating little cloudinette :)
+
+
+
+    //choose right coordinates for the cloudinette not too close to the edge
+
+    let x = ((cloudWidth / 2) * cos(angle));
+
+    if (abs(x) > cloudWidth / 2 - cloudWidth / 6)
+      continue;
+
+
+    let y = (cloudHeight / 2) * sin(angle);
+
+    //pushing the cloudinette a bit to the center for more realistic look
+    if (y >= 0)
+      y = random(y - 20, y);
+    else
+      y = random(y, y + 20);
+
+    // finally choose width and height in relation of the papa cloud size
+    ellipse(x, y, random(cloudWidth / 4, cloudWidth / 4 + 15), random(cloudHeight / 2, cloudHeight / 2 + 15));
+
+  }
+
+  pop();
+  return [100, 100, width - 200, height - 200];
+}
+register(randomSimpleCloud, "Simple Random Cloud", "Georges Daou");
+
+
