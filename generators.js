@@ -358,7 +358,7 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 function cumulus() {
   let cloud = [];
   const x = width / 2,
-        y = (height / 5) * 3,
+        y = height / 1.8,
         humps = round(random(3, 7)),
         diameter = width / humps,
         spacing = diameter / 2,
@@ -387,6 +387,6 @@ function cumulus() {
     arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
   });
 
-  return [width / 2, y-(spacing/1.7), width / 2, spacing/1.7];
+  return [x / 2, 0, x, height];
 }
 register(cumulus, "Cumulus", "Luke Flego");
