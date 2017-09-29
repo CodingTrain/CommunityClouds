@@ -568,7 +568,7 @@ function bubblyCloud() {
 
   for(var i = 0; i <= RANGE; i++) {
     let dist = i * (1 - SMALLEST) * 2 / RANGE - 1 - SMALLEST;
-    let diameter = width * (1 - dist * dist);
+    let diameter = (height < width ? height : width) * (1 - dist * dist) * 0.7;
     let shadow = i / RANGE * 255
 
     push();
