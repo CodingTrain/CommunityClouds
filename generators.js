@@ -356,8 +356,8 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 
 // arbitrary cloud by Hung
 function arbitraryCloud(){
-	let cloud_x = 50;
-	let cloud_y = 50;
+  let cloud_x = 50;
+  let cloud_y = 50;
   let cloud_width = width - cloud_x * 2;
 	let cloud_height = height - cloud_y * 2;
 	
@@ -386,13 +386,24 @@ function arbitraryCloud(){
 	let smallest_sub_cloud_width = 200;
 	let smallest_sub_cloud_height = 200;
 	
+	let sub_y = [];
+	
 	for(let i = 0; i < number_random_sub_clouds; i++){
 		let rand_width = random(smallest_sub_cloud_width, cloud_width - 100);
 		let rand_height = random(smallest_sub_cloud_height, cloud_height - 100);
 		let rand_x = random(cloud_x + 10, cloud_width - rand_width);
 		let rand_y = random(cloud_y + 10, cloud_height - rand_height);
 		ellipse(rand_x, rand_y, rand_width, rand_height);
+		sub_y.push(rand_y);
 	}
-  return [cloud_center.x, cloud_center.y, undefined, undefined];
+	// text infos
+	var sum = 0;
+	for( var i = 0; i < sub_y.length; i++ ){
+		sum += sub_y[i];
+	}
+
+	var avg = sum / sub_y.length;
+	let text_y = avg * 2;
+  return [cloud_center.x, text_y, width - 200, height - 200];
 }
 register(arbitraryCloud, "Arbitrary cloud", "Hung Nguyen (fb.com/ZeroXCEH)");
