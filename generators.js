@@ -460,3 +460,48 @@ function shadowCloud() {
 }
 
 register(shadowCloud, "Cloud with Shadow", "Arjen Klaverstijn (@aklaverstijn)");
+
+function CircularCloud() {
+  // Draw big cloud parts
+  fill(255, 255, 255, 90);
+  for(let i = 0; i < 500; i++){
+    fill(255, 255, 255, 50);
+    //the bigger i; the more centered are the circles and the less likely they are outlined
+    let offsetVec = p5.Vector.random2D();
+    let scaleX = random(-600, 600) / (i * 0.001+1);
+    let scaleY = random(-300, 300) / (i * 0.001+1);
+    offsetVec.x *= scaleX;
+    offsetVec.y *= scaleY;
+    let outside = offsetVec.mag();
+    if(random(700) < outside && random() > 0.7){
+      strokeWeight(1);
+      //fill(200, 0, 0);
+    }
+
+    else strokeWeight(0);
+    ellipse(width/2 + offsetVec.x, height/2 + offsetVec.y,  random(50, width/4));
+  }
+
+  // Draw small cloud parts
+  fill(255, 255, 255, 90);
+  for(let i = 0; i < 500; i++){
+    fill(255, 255, 255, 50);
+    let offsetVec = p5.Vector.random2D();
+    let scaleX = random(-500, 500) / (i * 0.001+1);
+    let scaleY = random(-250, 250) / (i * 0.001+1);
+    offsetVec.x *= scaleX;
+    offsetVec.y *= scaleY;
+    let outside = offsetVec.mag();
+    if(random(3000) < outside && random() > 0.7){
+      strokeWeight(1);
+      //fill(200, 0, 0);
+    }
+    else strokeWeight(0);
+    ellipse(width/2 + offsetVec.x, height/2 + offsetVec.y,  random(10, width/8));
+  }
+
+
+  return [100, 100, width - 200, height - 200];
+}
+
+register(CircularCloud, "CircularCloud", "lokmeinmatz / Matthias");
