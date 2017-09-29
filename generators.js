@@ -353,3 +353,67 @@ function cartoonCloud() {
 }
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
+
+function shadowCloud() {
+
+  // A puffy cloud with a shadow by Arjen Klaverstijn info@arjenklaverstijn.com
+  // https://github.com/arjhun
+
+    angleMode(DEGREES);
+
+    let segments = 0,
+      radius = 600,
+      start = random(0, 360),
+      end = start + 360,
+      min = 20,
+      max = 40,
+      puff = max * 5,
+      cPoints = [];
+
+    for (let i = start; i < end;) {
+
+      segments = random(min, max);
+      //next segment
+      let nextV = i + segments;
+      // lets fill up the last segment with a reasonable one
+      if (end - nextV < max - (max - min / 2)) nextV = end;
+      //create coordinates for bezier segments
+      cPoints.push(
+        [radius * sin(i),
+        radius / 3 * cos(i),
+        (radius + puff) * sin(i),
+        (radius / 3 + puff) * cos(i),
+        (radius + puff) * sin(nextV),
+        (radius / 3 + puff) * cos(nextV),
+        radius * sin(nextV),
+        radius / 3 * cos(nextV)
+      ]);
+      i += segments
+      //if next vertex is at the end stop drawing
+      if (nextV == end) break;
+    }
+
+    function drawCloud(offSet) {
+      push();
+        translate(width / 2+offSet, height / 2+offSet);
+        beginShape();
+        for (let c = 0; c < cPoints.length; c++) {
+          vertex(cPoints[c][0] , cPoints[c][1] );
+          bezierVertex(cPoints[c][2] , cPoints[c][3] , cPoints[c][4] , cPoints[c][5] , cPoints[c][6] , cPoints[c][7] );
+        }
+        endShape();
+      pop();
+    }
+
+  //draw the actuall clouds
+
+  fill(0); // random shadow
+  drawCloud(random(20,100));
+
+  fill(255);
+  drawCloud(0);
+
+  return [width/2-radius, height/2 -(radius/3), radius*2, (radius/3)*2];
+}
+
+register(shadowCloud, "Cloud with Shadow", "Arjen Klaverstijn (@aklaverstijn)");
