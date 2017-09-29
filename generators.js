@@ -353,3 +353,21 @@ function cartoonCloud() {
 }
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
+
+function perlinNoiseCloud() {
+  stroke(255);
+	let r1 = 400;
+	let r2 = 200;
+	translate(width / 2, height / 2);
+	beginShape();
+	for(let a = 0; a < 2 * PI;a += 0.001) {
+		let x = r1 * cos(a);
+		let y = r2 * (sin(a) + noise(a));
+		vertex(x, y);
+	}
+	endShape(CLOSE);
+	stroke(255, 0, 50);
+	rect(-200, 0, 400, 200);
+}
+
+register(perlinNoiseCloud, "Perlin Noise Cloud", "edwin.straub")
