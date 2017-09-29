@@ -357,7 +357,7 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 
 function cumulus() {
   let cloud = [];
-  const x = width / 2,
+  const x = width / 1.1,
         y = (height / 5) * 3,
         humps = round(random(3, 7)),
         diameter = width / humps,
@@ -376,7 +376,7 @@ function cumulus() {
 
   // draw black cloud with stroke
   cloud.forEach(puff => {
-    strokeWeight(6);
+    strokeWeight(10);
     arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
   });
 
@@ -387,7 +387,6 @@ function cumulus() {
     arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
   });
 
-  textSize(spacing/2.5);
   return [x / 2, y-(spacing/1.7), x, spacing/1.6];
 }
 register(cumulus, "Cumulus", "Luke Flego");
