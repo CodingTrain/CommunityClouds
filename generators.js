@@ -559,3 +559,37 @@ function straubCloud() {
 }
 
 register(straubCloud, "Straub Cloud", "edwin.straub")
+
+// Puffy Cloud
+function puffyCloud(){
+  const puffRadius = width/6;
+  const mainRadius = width/2.5;
+  let x, y;
+  let stack = [];
+  push();
+    translate(width / 2, height / 2);
+    angleMode(DEGREES)
+    noStroke();
+    fill(255, 255, 255);
+    ellipse(0, 0, mainRadius*2, mainRadius);
+    fill(0, 0, 0);
+    for(let i = 0; i <=360;) {
+        x = mainRadius * cos(i);
+        y = 0.5 * mainRadius * sin(i);
+        r = puffRadius * random(0.9, 1.5) * ((y+width) / width);
+        ellipse(x, y, r, r);
+        i += random(15, 25);
+        stack.push({x: x, y: y, r: r});
+    }
+    fill(255, 255, 255);
+    stack.forEach(function (puff) {
+        let x = puff.x * .97;
+        let y = puff.y * .97;
+        let r = puff.r * .985;
+        ellipse(x, y, r, r);
+    });
+  pop();
+  return [100, 100, width - 200, height - 200];
+}
+
+register(puffyCloud, "Puffy Cloud", "Cary Stanley (@carystanley)")
