@@ -357,7 +357,7 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 
 function cumulus() {
   let cloud = [];
-  const x = width / 1.1,
+  const x = width / 2,
         y = (height / 5) * 3,
         humps = round(random(3, 7)),
         diameter = width / humps,
@@ -370,7 +370,7 @@ function cumulus() {
     let sine = 1 + sin(piRatio * i),
         variance = random(1, 0.7 / mainHumpPos) * sine,
         radius = spacing * variance,
-        newX = x - x / 2 + spacing / 2 + spacing * i; // Seriously? That much effort to move half to the left then continue spacing to the right?
+        newX = width/2 - x / 2 + spacing / 2 + spacing * i; // Seriously? That much effort to move half to the left then continue spacing to the right?
     cloud.push([newX, y, radius]); // save the cloud so we can double draw, idk how else to do it
   }
 
@@ -387,6 +387,6 @@ function cumulus() {
     arc(puff[0], puff[1], puff[2], puff[2], PI, TAU, PIE);
   });
 
-  return [x / 2, y-(spacing/1.7), x, spacing/1.6];
+  return [width / 2, y-(spacing/1.7), x, spacing/1.6];
 }
 register(cumulus, "Cumulus", "Luke Flego");
