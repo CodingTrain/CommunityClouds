@@ -560,7 +560,7 @@ function straubCloud() {
 
 register(straubCloud, "Straub Cloud", "edwin.straub")
 
-function puffyCloud() {
+function bubblyCloud() {
     noStroke();
 
     const w = width - width / 3;
@@ -596,4 +596,4 @@ function puffyCloud() {
 
     return [offset.x, offset.y, w, h];
 }
-register(puffyCloud, "Puffy cloud", "Rodolphe Peccatte");
+register(bubblyCloud, "Bubbly cloud", "Rodolphe Peccatte");
