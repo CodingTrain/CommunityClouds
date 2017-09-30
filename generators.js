@@ -353,3 +353,26 @@ function cartoonCloud() {
 }
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
+
+
+function someCloud(){
+    angleMode(DEGREES);
+    translate(width/2, height/2);
+    
+    let fullDeg = 360,
+        sz = 2;
+    
+    noStroke();
+    fill(255)
+    arc(0, 0, 400 * sz, 310 * sz, 0, fullDeg)
+    
+    for(let i = 0;i <= fullDeg; i++){
+        let s = 200 * sz * sin(i);
+        let c = 150 * sz * cos(i);
+        arc(s, c, random(100), random(100), 0, fullDeg);
+    }
+
+    return [-350, -200, width - 200, height -200];
+}
+
+register(someCloud, "Some Cloud", "Indmind");
