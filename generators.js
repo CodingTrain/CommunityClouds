@@ -862,7 +862,6 @@ function curveVertexCloud() {
   let points = floor(random(5)) + 10;
   let cloud = [];
 
-  //                    using TWO_PI-0.1 to fix small errors
   for (let angle = 0; angle < TWO_PI-0.1; angle += TWO_PI/points) {
     let x = 2 * radius * cos(angle) + random(-20, 20);
     let y = radius * sin(angle) + random(-20, 20);
@@ -875,11 +874,10 @@ function curveVertexCloud() {
   push();
   translate(width/2, height/2);
 
-  fill(255);
+  noFill();
   stroke(255);
   strokeWeight(2);
 
-  // curves
   for (let i = 0; i < cloud.length-1; i++) {
     beginShape();
     curveVertex(0, 0);
@@ -888,13 +886,6 @@ function curveVertexCloud() {
     curveVertex(0, 0);
     endShape();
   }
-
-  //inner body
-  beginShape();
-  for (let i = 0; i < cloud.length-1; i++) {
-    vertex(cloud[i].x, cloud[i].y);
-  }
-  endShape(CLOSE);
 
   pop();
 
