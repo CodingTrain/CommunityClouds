@@ -100,7 +100,7 @@ function draw() {
     // Render the chosen cloud and
     var bounds = generator.fn();
     // Reset styles for the text
-    fill("#000");
+    fill(bounds.length > 4 ? bounds[4] : "#000");
     strokeWeight(0);
     textSize(16);
     textAlign(CENTER, CENTER);
