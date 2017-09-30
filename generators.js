@@ -564,23 +564,94 @@ function cumulus() {
 }
 register(cumulus, "Cumulus", "Luke Flego");
 
-function straubCloud() {
-  stroke(255);
+function arcClouds() {
+	// draws arc
+	function drawArc(c1, c2, c3) {
+		// first and second circle intersection points
+		let fs_int_points = circleIntersetc(c1.x, c1.y, c1.r,
+			c2.x, c2.y, c2.r);
+		// second and third circle intersection points
+		let st_int_points = circleIntersetc(c2.x, c2.y, c2.r,
+			c3.x, c3.y, c3.r);
+		//
+		let p0_x = fs_int_points[0];
+		let p0_y = fs_int_points[1];
+		let p1_x = st_int_points[0];
+		let p1_y = st_int_points[1];
+		//
+		let v = createVector(1, 0);
+		let v1 = createVector(p0_x - c2.x, p0_y - c2.y);
+		let v2 = createVector(p1_x - c2.x, p1_y - c2.y);
+		let startAngle = -angle(v1, v);
+		let endAngle = -angle(v2, v);
+		strokeWeight(3);
+		stroke(0);
+		arc(c2.x, c2.y, c2.r * 2, c2.r * 2, startAngle, endAngle);
+	}
+	// computes angle between 2 vectors, returns value between [0, 2*PI]
+	function angle(v1, v2) {
+		return Math.atan2(v1.x * v2.y - v1.y * v2.x, v1.x * v2.x + v1.y * v2.y);
+	}
+	// computes the intersection points between 2 circles
+	function circleIntersetc(x0, y0, r0, x1, y1, r1) {
+		//
+		let d = dist(x0, y0, x1, y1);
+		// distance between P0 and P2
+		let a = (r0 * r0 - r1 * r1 + d * d) / (2 * d);
+		let h = sqrt(r0 * r0 - a * a);
+		//
+		let x2 = x0 + a * (x1 - x0) / d;
+		let y2 = y0 + a * (y1 - y0) / d;
+		//
+		let intp1_x = x2 + h * (y1 - y0) / d;
+		let intp2_x = x2 - h * (y1 - y0) / d;
+		let intp1_y = y2 - h * (x1 - x0) / d;
+		let intp2_y = y2 + h * (x1 - x0) / d;
+		//
+		return [intp1_x, intp1_y, intp2_x, intp2_y];
+	}
+	noFill();
+	translate(width / 2, height / 2);
 	let r1 = 400;
 	let r2 = 200;
-	translate(width / 2, height / 2);
-	beginShape();
-	for(let a = 0; a < 2 * PI;a += 0.001) {
-		let x = r1 * cos(a);
-		let y = r2 * (sin(a) + noise(a));
-		vertex(x, y);
+	let increment = 0.5;
+	let firstCircle, secondCircle, thirdCircle;
+	let circles = [];
+	// create circles
+	for(let angle = 0;angle < 2 * PI;angle+=increment) {
+		let x = r1 * cos(angle);
+		let y = r2 * sin(angle);
+		let rr = random(100, 150);
+		circles.push({
+			x : x,
+			y : y,
+			r : rr
+		});
 	}
-	endShape(CLOSE);
-	stroke(255, 0, 50);
-	rect(-200, 0, 400, 200);
+	// draw arcs
+	for(let j = 0;j < circles.length - 2;j++) {
+		firstCircle = circles[j];
+		secondCircle = circles[j + 1];
+		thirdCircle = circles[j + 2];
+		if(firstCircle && secondCircle && thirdCircle) {
+			drawArc(firstCircle, secondCircle, thirdCircle);
+		}
+	}
+	//
+	firstCircle = circles[circles.length - 2];
+	secondCircle = circles[circles.length - 1];
+	thirdCircle = circles[0];
+	drawArc(firstCircle, secondCircle, thirdCircle);
+	//
+	firstCircle = circles[circles.length - 1];
+	secondCircle = circles[0];
+	thirdCircle = circles[1];
+	drawArc(firstCircle, secondCircle, thirdCircle);
+	//
+	return [-r1, -r2, 2 * r1, 2* r2];
 }
 
-register(straubCloud, "Straub Cloud", "edwin.straub");
+register(arcClouds, "Arc Cloud", "edwin.straub");
 
 // created by georges Daou 29-sep-2017
 function randomSimpleCloud() {
