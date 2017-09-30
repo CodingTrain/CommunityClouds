@@ -877,7 +877,7 @@ function drawBumpyCloud()
 	}
 	vertices.push(vertices[0]);
 	stroke(0);
-	noFill();
+	fill(255);
 	for (let i = 0; i < vertices.length - 1; i++)
 	{
 		let p1 = vertices[i];
@@ -891,9 +891,9 @@ function drawBumpyCloud()
 	fill(255);
 	ellipse(0, 0, cloudWidth, cloudHeight);
 	pop();
-
 	cloudWidth = cloudWidth * 4 / 5;
 	cloudHeight = cloudHeight * 4 / 5;
+
 	return [(width - cloudWidth) / 2, (height - cloudHeight) / 2, cloudWidth, cloudHeight];
 }
 
