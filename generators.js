@@ -84,7 +84,7 @@ function marmsCloud() {
 	var b = 200;
 	var xc = 200;
 	var yc = 100;
-	
+
 	var n = random(80,120);
 	for(var i = 0; i < n; i++){
 		var r = 2*random(30,50);
@@ -384,14 +384,14 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 function someCloud(){
     angleMode(DEGREES);
     translate(width/2, height/2);
-    
+
     let fullDeg = 360,
         sz = 2;
-    
+
     noStroke();
     fill(255)
     arc(0, 0, 400 * sz, 310 * sz, 0, fullDeg)
-    
+
     for(let i = 0;i <= fullDeg; i++){
         let s = 200 * sz * sin(i);
         let c = 150 * sz * cos(i);
@@ -856,3 +856,49 @@ function mcCloud() {
     return [offset.x, offset.y, w, h];
 }
 register(mcCloud, "Mc Cloud", "Rodolphe Peccatte");
+
+function curveVertexCloud() {
+  let radius = width/5;
+  let points = floor(random(5)) + 10;
+  let cloud = [];
+
+  //                    using TWO_PI-0.1 to fix small errors
+  for (let angle = 0; angle < TWO_PI-0.1; angle += TWO_PI/points) {
+    let x = 2 * radius * cos(angle) + random(-20, 20);
+    let y = radius * sin(angle) + random(-20, 20);
+
+    cloud.push(createVector(x,y));
+  }
+
+  cloud.push(cloud[0]);
+
+  push();
+  translate(width/2, height/2);
+
+  fill(255);
+  stroke(255);
+  strokeWeight(2);
+
+  // curves
+  for (let i = 0; i < cloud.length-1; i++) {
+    beginShape();
+    curveVertex(0, 0);
+    curveVertex(cloud[i].x, cloud[i].y);
+    curveVertex(cloud[i+1].x, cloud[i+1].y);
+    curveVertex(0, 0);
+    endShape();
+  }
+
+  //inner body
+  beginShape();
+  for (let i = 0; i < cloud.length-1; i++) {
+    vertex(cloud[i].x, cloud[i].y);
+  }
+  endShape(CLOSE);
+
+  pop();
+
+  return [width/2-radius*1.4, height/2-radius/2, width/2+radius*1.4, height/2+radius/2];
+}
+
+register(curveVertexCloud, "curveVertex() Cloud", "xperion");
