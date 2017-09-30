@@ -947,3 +947,253 @@ return [100, 100, width - 200, height - 200];
 }
 
 register(fluffyTriangle,"Fluffy triangle","WIPocket");
+
+function bitStoneRectCloud() {
+    // ++++++++++++++++++++++++ Settings +++++++++++++++++++++++++++++++++++++
+    // Margin to the outer space where the name could be placed
+    const BS_DRAW_RECT_OFFSET = 120;
+
+    // Margin to the outer space where the clouds start.
+    const BS_CLOUD_OFFSET = 30; // needs to be smaller than BS_DRAW_RECT_OFFSET!
+
+    // Maximum and minimum size of the cloud parts
+    const BS_CLOUD_MAX_SIZE = 80;
+    const BS_CLOUD_MIN_SIZE = 25;
+
+    // +++++++++++++++++++++++ Code ++++++++++++++++++++++++++++++++++++++++++
+    // Code starts here.
+    const BS_DRAW_RECT_DOUBLE_OFFSET = BS_DRAW_RECT_OFFSET * 2.0;
+    const BS_DRAW_RECT_WIDTH = width - BS_DRAW_RECT_DOUBLE_OFFSET;
+    const BS_DRAW_RECT_HEIGHT = height - BS_DRAW_RECT_DOUBLE_OFFSET;
+
+    const BS_CLOUD_WIDTH = width - BS_CLOUD_OFFSET * 2.0;
+    const BS_CLOUD_HEIGHT = height - BS_CLOUD_OFFSET * 2.0;
+
+    const BS_CLOUD_RANDOM_VALUE = BS_CLOUD_MAX_SIZE - BS_CLOUD_MIN_SIZE;
+
+    // possible rect types
+    const BS_RECT_LEFT = 0;
+    const BS_RECT_TOP_LEFT = 1;
+    const BS_RECT_BOTTOM_LEFT = 2;
+    const BS_RECT_TOP = 3;
+    const BS_RECT_BOTTOM = 4;
+    const BS_RECT_BOTTOM_RIGHT = 5;
+    const BS_RECT_RIGHT = 6;
+    const BS_RECT_TOP_RIGHT = 7;
+
+
+    let topRectList = [];
+    let bottomRectList = [];
+    let leftRectList = [];
+    let rightRectList = [];
+
+    // +++++++++ generate TOP
+    let currentX = 0;
+    let currentY = 0;
+    let nextY = 0;
+    let type = 0;
+    let size;
+
+    while(currentX < BS_CLOUD_WIDTH - (BS_CLOUD_MAX_SIZE)) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+
+        if(currentX < BS_CLOUD_WIDTH / 2.0) {
+            type = (nextY <= currentY ? BS_RECT_TOP_LEFT : BS_RECT_TOP);
+        } else {
+            if(topRectList.length <= 0) {type = BS_RECT_TOP;}
+            else {
+                let item = topRectList[topRectList.length - 1];
+                type = (item.y > currentY ? BS_RECT_TOP : BS_RECT_TOP_RIGHT);
+            }
+        }
+
+        topRectList.push({
+            x: currentX,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY = nextY;
+        currentX += size;
+    }
+
+    // ++++++++++ generate last TOP ELEMENT
+    topRectList.push({
+        x: currentX,
+        y: currentY,
+        size: BS_CLOUD_WIDTH - currentX,
+        type: BS_RECT_TOP
+    });
+
+    // ++++++++++ generate BOTTOM
+    currentX = 0;
+    currentY = BS_CLOUD_HEIGHT;
+    nextY = currentY;
+    type = 0;
+
+    while(currentX < BS_CLOUD_WIDTH - BS_CLOUD_MAX_SIZE) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+
+        if(currentX < BS_CLOUD_WIDTH / 2.0) {
+            type = (nextY <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_LEFT);
+        } else {
+            if(bottomRectList.length <= 0) {type = BS_RECT_BOTTOM;}
+            else {
+                let item = bottomRectList[bottomRectList.length - 1];
+                type = (item.y <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_RIGHT);
+            }
+        }
+
+        bottomRectList.push({
+            x: currentX,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY = nextY;
+        currentX += size;
+    }
+
+    // ++++++++++ generate last BOTTOM ELEMENT
+    bottomRectList.push({
+        x: currentX,
+        y: currentY,
+        size: BS_CLOUD_WIDTH - currentX,
+        type: BS_RECT_BOTTOM
+    });
+
+    // +++++++++++ generate LEFT
+    currentX = 0;
+    currentY = topRectList[0].y + topRectList[0].size;
+
+    while(currentY < (bottomRectList[0].y - bottomRectList[0].size - BS_CLOUD_MAX_SIZE)) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+
+        type = BS_RECT_LEFT;
+
+        leftRectList.push({
+            x: currentX - size,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY += size;
+    }
+
+    // +++++++++++ generate last LEFT ELEMENT
+    size = (bottomRectList[0].y - bottomRectList[0].size) - currentY;
+    leftRectList.push({
+        x: currentX - size,
+        y: currentY,
+        size: size,
+        type: BS_RECT_LEFT
+    });
+
+    // +++++++++++ generate RIGHT
+    currentX = topRectList[topRectList.length - 1].x + topRectList[topRectList.length - 1].size;
+    currentY = topRectList[topRectList.length - 1].y + topRectList[topRectList.length - 1].size;
+
+    while(currentY < (bottomRectList[bottomRectList.length - 1].y - BS_CLOUD_MAX_SIZE)) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        type = BS_RECT_RIGHT;
+
+        rightRectList.push({
+            x: currentX,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY += size;
+    }
+
+    // +++++++++++ generate last RIGHT ELEMENT
+    size = Math.abs((bottomRectList[bottomRectList.length - 1].y) - currentY);
+    rightRectList.push({
+        x: currentX,
+        y: currentY,
+        size: size,
+        type: BS_RECT_RIGHT
+    });
+
+
+    // draw rects
+    beginShape();
+    for(let i in topRectList) {
+        let item = topRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    for(let i in rightRectList) {
+        let item = rightRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    for(let i = bottomRectList.length - 1; i >= 0; i--) {
+        let item = bottomRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    for(let i = leftRectList.length - 1; i >= 0; i--) {
+        let item = leftRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    endShape();
+    fill(255);
+
+    function bs_drawRect(posX, posY, size, type) {
+        switch(type) {
+            case BS_RECT_LEFT:
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+            break;
+            case BS_RECT_TOP_LEFT:
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+            break;
+            case BS_RECT_BOTTOM_LEFT:
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+            break;
+            case BS_RECT_TOP:
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+            break;
+            case BS_RECT_BOTTOM:
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+            break;
+            case BS_RECT_BOTTOM_RIGHT:
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+            break;
+            case BS_RECT_RIGHT:
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+            break;
+            case BS_RECT_TOP_RIGHT:
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+            break;
+            default: break;
+        }
+    }
+
+    return [BS_DRAW_RECT_OFFSET, BS_DRAW_RECT_OFFSET, BS_DRAW_RECT_WIDTH, BS_DRAW_RECT_HEIGHT];
+}
+
+register(bitStoneRectCloud, "bit-stone rect cloud", "Kuno Zoltner (github: kzoltner)");
