@@ -59,7 +59,6 @@ function ellipseCloud() {
     ellipse(0, 0, circleRadius, circleRadius);
     pop();
   }
-
   function drawInnerCirc(num) {
     const angle = TWO_PI / circleAmount * num;
 
@@ -78,6 +77,34 @@ function ellipseCloud() {
 }
 
 register(ellipseCloud, "Ellipse Cloud", "Raqbit");
+
+function marmsCloud() {
+	noStroke();
+	var a = 400;
+	var b = 200;
+	var xc = 200;
+	var yc = 100;
+	
+	var n = random(80,120);
+	for(var i = 0; i < n; i++){
+		var r = 2*random(30,50);
+		var rx = r + random(-3,5);
+		var ry = r + random(-3,5);
+		var x = random(-a,a);
+		var y = random(-b,b);
+		while(((x-xc)/a)*((x-xc)/a) + ((y-yc)/b)*((y-yc)/b) > 1){
+			var x = random(-a,a);
+			var y = random(-b,b);
+		}
+		fill(210,210,210);
+		rect(xc+x,yc+y,rx,ry,10,10);
+		fill(255,255,255);
+		rect(xc+x+15,yc+y-15,rx,ry,10,10);
+	}
+	return [30,30,2*a-60,2*b-60];
+}
+
+register(marmsCloud, "Marms Cloud", "Henrique Martinez Rocamora");
 
 // Unicode Cloud by Sergio Fernández
 function unicodeCloud() {
