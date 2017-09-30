@@ -59,7 +59,6 @@ function ellipseCloud() {
     ellipse(0, 0, circleRadius, circleRadius);
     pop();
   }
-
   function drawInnerCirc(num) {
     const angle = TWO_PI / circleAmount * num;
 
@@ -78,6 +77,34 @@ function ellipseCloud() {
 }
 
 register(ellipseCloud, "Ellipse Cloud", "Raqbit");
+
+function marmsCloud() {
+	noStroke();
+	var a = 400;
+	var b = 200;
+	var xc = 200;
+	var yc = 100;
+	
+	var n = random(80,120);
+	for(var i = 0; i < n; i++){
+		var r = 2*random(30,50);
+		var rx = r + random(-3,5);
+		var ry = r + random(-3,5);
+		var x = random(-a,a);
+		var y = random(-b,b);
+		while(((x-xc)/a)*((x-xc)/a) + ((y-yc)/b)*((y-yc)/b) > 1){
+			var x = random(-a,a);
+			var y = random(-b,b);
+		}
+		fill(210,210,210);
+		rect(xc+x,yc+y,rx,ry,10,10);
+		fill(255,255,255);
+		rect(xc+x+15,yc+y-15,rx,ry,10,10);
+	}
+	return [30,30,2*a-60,2*b-60];
+}
+
+register(marmsCloud, "Marms Cloud", "Henrique Martinez Rocamora");
 
 // Unicode Cloud by Sergio Fernández
 function unicodeCloud() {
@@ -354,6 +381,28 @@ function cartoonCloud() {
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 
+function someCloud(){
+    angleMode(DEGREES);
+    translate(width/2, height/2);
+    
+    let fullDeg = 360,
+        sz = 2;
+    
+    noStroke();
+    fill(255)
+    arc(0, 0, 400 * sz, 310 * sz, 0, fullDeg)
+    
+    for(let i = 0;i <= fullDeg; i++){
+        let s = 200 * sz * sin(i);
+        let c = 150 * sz * cos(i);
+        arc(s, c, random(100), random(100), 0, fullDeg);
+    }
+
+    return [-350, -200, width - 200, height -200];
+}
+
+register(someCloud, "Some Cloud", "Indmind");
+
 // arbitrary cloud by Hung
 function arbitraryCloud(){
   let cloud_x = 50;
@@ -542,40 +591,204 @@ function cumulus() {
 }
 register(cumulus, "Cumulus", "Luke Flego");
 
-function straubCloud() {
-  stroke(255);
+function arcClouds() {
+	// draws arc
+	function drawArc(c1, c2, c3) {
+		// first and second circle intersection points
+		let fs_int_points = circleIntersetc(c1.x, c1.y, c1.r,
+			c2.x, c2.y, c2.r);
+		// second and third circle intersection points
+		let st_int_points = circleIntersetc(c2.x, c2.y, c2.r,
+			c3.x, c3.y, c3.r);
+		//
+		let p0_x = fs_int_points[0];
+		let p0_y = fs_int_points[1];
+		let p1_x = st_int_points[0];
+		let p1_y = st_int_points[1];
+		//
+		let v = createVector(1, 0);
+		let v1 = createVector(p0_x - c2.x, p0_y - c2.y);
+		let v2 = createVector(p1_x - c2.x, p1_y - c2.y);
+		let startAngle = -angle(v1, v);
+		let endAngle = -angle(v2, v);
+		strokeWeight(3);
+		stroke(0);
+		arc(c2.x, c2.y, c2.r * 2, c2.r * 2, startAngle, endAngle);
+	}
+	// computes angle between 2 vectors, returns value between [0, 2*PI]
+	function angle(v1, v2) {
+		return Math.atan2(v1.x * v2.y - v1.y * v2.x, v1.x * v2.x + v1.y * v2.y);
+	}
+	// computes the intersection points between 2 circles
+	function circleIntersetc(x0, y0, r0, x1, y1, r1) {
+		//
+		let d = dist(x0, y0, x1, y1);
+		// distance between P0 and P2
+		let a = (r0 * r0 - r1 * r1 + d * d) / (2 * d);
+		let h = sqrt(r0 * r0 - a * a);
+		//
+		let x2 = x0 + a * (x1 - x0) / d;
+		let y2 = y0 + a * (y1 - y0) / d;
+		//
+		let intp1_x = x2 + h * (y1 - y0) / d;
+		let intp2_x = x2 - h * (y1 - y0) / d;
+		let intp1_y = y2 - h * (x1 - x0) / d;
+		let intp2_y = y2 + h * (x1 - x0) / d;
+		//
+		return [intp1_x, intp1_y, intp2_x, intp2_y];
+	}
+	noFill();
+	translate(width / 2, height / 2);
 	let r1 = 400;
 	let r2 = 200;
-	translate(width / 2, height / 2);
-	beginShape();
-	for(let a = 0; a < 2 * PI;a += 0.001) {
-		let x = r1 * cos(a);
-		let y = r2 * (sin(a) + noise(a));
-		vertex(x, y);
+	let increment = 0.5;
+	let firstCircle, secondCircle, thirdCircle;
+	let circles = [];
+	// create circles
+	for(let angle = 0;angle < 2 * PI;angle+=increment) {
+		let x = r1 * cos(angle);
+		let y = r2 * sin(angle);
+		let rr = random(100, 150);
+		circles.push({
+			x : x,
+			y : y,
+			r : rr
+		});
 	}
-	endShape(CLOSE);
-	stroke(255, 0, 50);
-	rect(-200, 0, 400, 200);
+	// draw arcs
+	for(let j = 0;j < circles.length - 2;j++) {
+		firstCircle = circles[j];
+		secondCircle = circles[j + 1];
+		thirdCircle = circles[j + 2];
+		if(firstCircle && secondCircle && thirdCircle) {
+			drawArc(firstCircle, secondCircle, thirdCircle);
+		}
+	}
+	//
+	firstCircle = circles[circles.length - 2];
+	secondCircle = circles[circles.length - 1];
+	thirdCircle = circles[0];
+	drawArc(firstCircle, secondCircle, thirdCircle);
+	//
+	firstCircle = circles[circles.length - 1];
+	secondCircle = circles[0];
+	thirdCircle = circles[1];
+	drawArc(firstCircle, secondCircle, thirdCircle);
+	//
+	return [-r1, -r2, 2 * r1, 2* r2];
 }
 
-register(straubCloud, "Straub Cloud", "edwin.straub")
+register(arcClouds, "Arc Cloud", "edwin.straub");
+
+// created by georges Daou 29-sep-2017
+function randomSimpleCloud() {
+
+
+  let minWidthSub = (5 * width) / 100;
+  let maxWidthSub = (30 * width) / 100;
+
+  let minHeightSub = (70 * height) / 100;
+  let maxHeightSub = (85 * height) / 100;
+
+
+  let cloudWidth = width - floor(random(minWidthSub, maxWidthSub)) - 100;
+  let cloudHeight = height - floor(random(minHeightSub, maxHeightSub) - 100);
+
+  push();
+  translate(width / 2, height / 2);
+
+  noStroke();
+  fill(255);
+
+  //base papa cloud
+  ellipse(0, 0, cloudWidth, cloudHeight);
+
+  angleMode(DEGREES);
+
+
+
+
+  for (let angle = 0; angle < 360; angle += random(20, 30)) { //generating little cloudinette :)
+
+
+
+    //choose right coordinates for the cloudinette not too close to the edge
+
+    let x = ((cloudWidth / 2) * cos(angle));
+
+    if (abs(x) > cloudWidth / 2 - cloudWidth / 6)
+      continue;
+
+
+    let y = (cloudHeight / 2) * sin(angle);
+
+    //pushing the cloudinette a bit to the center for more realistic look
+    if (y >= 0)
+      y = random(y - 20, y);
+    else
+      y = random(y, y + 20);
+
+    // finally choose width and height in relation of the papa cloud size
+    ellipse(x, y, random(cloudWidth / 4, cloudWidth / 4 + 15), random(cloudHeight / 2, cloudHeight / 2 + 15));
+
+  }
+
+  pop();
+  return [100, 100, width - 200, height - 200];
+}
+register(randomSimpleCloud, "Simple Random Cloud", "Georges Daou");
+
+// Puffy Cloud
+function puffyCloud(){
+  const puffRadius = width/6;
+  const mainRadius = width/2.5;
+  let x, y;
+  let stack = [];
+  push();
+    translate(width / 2, height / 2);
+    angleMode(DEGREES)
+    noStroke();
+    fill(255, 255, 255);
+    ellipse(0, 0, mainRadius*2, mainRadius);
+    fill(0, 0, 0);
+    for(let i = 0; i <=360;) {
+        x = mainRadius * cos(i);
+        y = 0.5 * mainRadius * sin(i);
+        r = puffRadius * random(0.9, 1.5) * ((y+width) / width);
+        ellipse(x, y, r, r);
+        i += random(15, 25);
+        stack.push({x: x, y: y, r: r});
+    }
+    fill(255, 255, 255);
+    stack.forEach(function (puff) {
+        let x = puff.x * .97;
+        let y = puff.y * .97;
+        let r = puff.r * .985;
+        ellipse(x, y, r, r);
+    });
+  pop();
+  return [100, 100, width - 200, height - 200];
+}
+
+register(puffyCloud, "Puffy Cloud", "Cary Stanley (@carystanley)")
 
 function bubblyCloud() {
   let RANGE = 15;
   let SMALLEST = 0.1;
   let SHADOW_A = Math.PI / 4;
   let SHADOW_I = 1.3;
+  let SIDE = (height < width ? height : width)
 
   for(var i = 0; i <= RANGE; i++) {
     let dist = i * (1 - SMALLEST) * 2 / RANGE - 1 - SMALLEST;
-    let diameter = width * (1 - dist * dist);
+    let diameter = SIDE * (1 - dist * dist) * 0.7;
     let shadow = i / RANGE * 255
 
     push();
 
     translate(width / 2 - diameter / 2 + random(diameter), height / 2 - diameter / 2 + random(diameter));
 
-    fill(shadow / 4 + 190);
+    fill(shadow / 10 + 228);
     noStroke();
     smooth();
 
@@ -584,7 +797,7 @@ function bubblyCloud() {
     var start_a = SHADOW_A + 0.005 - Math.PI / 2;
     var stop_a = SHADOW_A - 0.005 + Math.PI / 2;
 
-    fill(shadow / 4 + 70);
+    fill(shadow / 10 + 150);
     arc(0, 0, diameter, diameter, start_a, stop_a, CHORD);
 
     let m_d = diameter * SHADOW_I;
@@ -597,14 +810,52 @@ function bubblyCloud() {
     let offset_x = -r_d * cos(SHADOW_A);
     let offset_y = -r_d * sin(SHADOW_A);
 
-    fill(shadow / 4 + 190);
+    fill(shadow / 10 + 228);
     arc(offset_x, offset_y, m_d, m_d, start_a, stop_a, CHORD);
 
     pop();
   }
+  return [(width - SIDE) / 2, (height - SIDE) / 2, SIDE, SIDE];
 }
-
 register(bubblyCloud, "Bubbly Cloud", "G4m3M4ni4c");
+
+function mcCloud() {
+    noStroke();
+
+    const w = width - width / 3;
+    const h = w / 4;
+    const dmin = w / 4;
+    const dmax = w / 2;
+    const offset = createVector((width - w) / 2, (height - h) / 2);
+    const gray = 240;
+
+    const getPosition = (i) => {
+        if (i < w) return createVector(i, 0);
+        if (i < w + h) return createVector(w, i - w);
+        if (i < w * 2 + h) return createVector(i - (w + h), h);
+        if (i < (w + h) * 2) return createVector(0, i - (w * 2 + h));
+        return null;
+    };
+
+    let i = random(dmax - dmin);
+    let pos;
+    while (pos = getPosition(i)) {
+        pos.add(offset);
+        var d = random(dmin, dmax);
+        for (let j = 0; j <= 20; j+=5) {
+          fill(gray, gray, gray, map(j, 0, 20, 100, 0));
+          ellipse(pos.x, pos.y + 50 + j, d);
+        }
+        fill(255, 255, 255);
+        ellipse(pos.x, pos.y, d);
+        i += d / 2;
+    }
+
+    rect(offset.x, offset.y, w, h);
+
+    return [offset.x, offset.y, w, h];
+}
+register(mcCloud, "Mc Cloud", "Rodolphe Peccatte");
 
 function drawBumpyCloud()
 {
