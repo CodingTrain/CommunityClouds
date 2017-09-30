@@ -609,10 +609,11 @@ register(bubblyCloud, "Bubbly Cloud", "G4m3M4ni4c");
 function drawBumpyCloud()
 {
 	push();
+	strokeWeight(5);
 	translate(width / 2, height / 2);
 	angleMode(DEGREES);
-	let cloudWidth = width / 4;
-	let cloudHeight = height / 4;
+	let cloudWidth = width / 2;
+	let cloudHeight = height / 2;
 	let vertices = [];
 
 	for (let i = random(5, 15); i < 360; i += random(20, 15))
@@ -624,7 +625,7 @@ function drawBumpyCloud()
 		});
 	}
 	vertices.push(vertices[0]);
-	stroke(1);
+	stroke(0);
 	noFill();
 	for (let i = 0; i < vertices.length - 1; i++)
 	{
@@ -639,6 +640,10 @@ function drawBumpyCloud()
 	fill(255);
 	ellipse(0, 0, cloudWidth, cloudHeight);
 	pop();
+	
+	cloudWidth = cloudWidth * 4 / 5;
+	cloudHeight = cloudHeight * 4 / 5;
+	return [(width - cloudWidth) / 2, (height - cloudHeight) / 2, cloudWidth, cloudHeight];
 }
 
 register(drawBumpyCloud, "Bumpy Cloud", "Fir3will");
