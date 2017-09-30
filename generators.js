@@ -384,14 +384,14 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 function someCloud(){
     angleMode(DEGREES);
     translate(width/2, height/2);
-    
+
     let fullDeg = 360,
         sz = 2;
-    
+
     noStroke();
     fill(255)
     arc(0, 0, 400 * sz, 310 * sz, 0, fullDeg)
-    
+
     for(let i = 0;i <= fullDeg; i++){
         let s = 200 * sz * sin(i);
         let c = 150 * sz * cos(i);
@@ -773,10 +773,10 @@ function puffyCloud(){
 register(puffyCloud, "Puffy Cloud", "Cary Stanley (@carystanley)")
 
 function bubblyCloud() {
-  let RANGE = 15;
+  let RANGE = 30;
   let SMALLEST = 0.1;
-  let SHADOW_A = Math.PI / 4;
-  let SHADOW_I = 1.3;
+  let SHADOW_A = Math.PI / 8 * 3;
+  let SHADOW_I = 1.1;
   let SIDE = (height < width ? height : width)
 
   for(var i = 0; i <= RANGE; i++) {
@@ -797,7 +797,7 @@ function bubblyCloud() {
     var start_a = SHADOW_A + 0.005 - Math.PI / 2;
     var stop_a = SHADOW_A - 0.005 + Math.PI / 2;
 
-    fill(shadow / 10 + 150);
+    fill(shadow / 10 + 200);
     arc(0, 0, diameter, diameter, start_a, stop_a, CHORD);
 
     let m_d = diameter * SHADOW_I;
@@ -815,7 +815,7 @@ function bubblyCloud() {
 
     pop();
   }
-  return [(width - SIDE) / 2, (height - SIDE) / 2, SIDE, SIDE];
+  return [(width - SIDE) / 2, (height - SIDE) / 2, SIDE, SIDE, 80];
 }
 register(bubblyCloud, "Bubbly Cloud", "G4m3M4ni4c");
 
