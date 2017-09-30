@@ -84,7 +84,7 @@ function marmsCloud() {
 	var b = 200;
 	var xc = 200;
 	var yc = 100;
-	
+
 	var n = random(80,120);
 	for(var i = 0; i < n; i++){
 		var r = 2*random(30,50);
@@ -891,10 +891,59 @@ function drawBumpyCloud()
 	fill(255);
 	ellipse(0, 0, cloudWidth, cloudHeight);
 	pop();
-	
+
 	cloudWidth = cloudWidth * 4 / 5;
 	cloudHeight = cloudHeight * 4 / 5;
 	return [(width - cloudWidth) / 2, (height - cloudHeight) / 2, cloudWidth, cloudHeight];
 }
 
 register(drawBumpyCloud, "Bumpy Cloud", "Fir3will");
+
+function fluffyTriangle(){
+	const cw = width - (width / 5); // Cloud width
+	const side = round(random(1)); // What side the inside triangle goes to
+	const bottomY = (height/3)*2;
+	const topY = height/3;
+	const topX = (width/5) + (side*(cw/3)) + (noise(100)*(cw/3));
+	const bs = cw/15;
+	// Noise used here to get random values close to the middle of the used values
+  fill(255);
+
+  // bottom
+	for(let x=width/5+random(bs); x<cw-random(bs); x+=random(bs/2+bs/4,bs-(bs/4))){
+		let av=bs/4;
+		ellipse(x,bottomY,bs+av,bs+av);
+	}
+
+	// left
+	var av;
+	let ld = dist(width/5,bottomY,topX,topY);
+	for(let i=0; i<ld; i+=random(bs/2+bs/4,bs-(bs/10))){
+		let x=map(i,0,ld,(width/5),topX);
+		let y=map(i,0,ld,bottomY,topY);
+		av=sin(map(i,0,ld,0,HALF_PI))*bs+(random(bs/3)*random(1));
+		ellipse(x,y,bs+av,bs+av);
+	}
+	//ellipse(topX,topY,bs+av+10,bs+av+10);
+
+	//right
+	  ld = dist(cw,bottomY,topX,topY);
+	for(let i=0; i<ld; i+=random(bs/2+bs/4,bs-(bs/10))){
+		let x=map(i,0,ld,(cw),topX);
+		let y=map(i,0,ld,bottomY,topY);
+		av=sin(map(i,0,ld,0,HALF_PI))*bs+(random(bs/3)*random(1));
+	  ellipse(x,y,bs+av,bs+av);
+	}
+
+	// Triangle to prevent full circle stroke
+	noStroke();
+	beginShape();
+   vertex(topX,topY-bs/6);
+   vertex(width/5-bs/6,bottomY+bs/6);
+   vertex(cw+bs/6,bottomY+bs/6);
+  endShape(CLOSE);
+
+return [100, 100, width - 200, height - 200];
+}
+
+register(fluffyTriangle,"Fluffy triangle","WIPocket");
