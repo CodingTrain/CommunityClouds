@@ -705,12 +705,7 @@ function randomSimpleCloud() {
 
   angleMode(DEGREES);
 
-
-
-
   for (let angle = 0; angle < 360; angle += random(20, 30)) { //generating little cloudinette :)
-
-
 
     //choose right coordinates for the cloudinette not too close to the edge
 
@@ -718,7 +713,6 @@ function randomSimpleCloud() {
 
     if (abs(x) > cloudWidth / 2 - cloudWidth / 6)
       continue;
-
 
     let y = (cloudHeight / 2) * sin(angle);
 
@@ -730,7 +724,6 @@ function randomSimpleCloud() {
 
     // finally choose width and height in relation of the papa cloud size
     ellipse(x, y, random(cloudWidth / 4, cloudWidth / 4 + 15), random(cloudHeight / 2, cloudHeight / 2 + 15));
-
   }
 
   pop();
