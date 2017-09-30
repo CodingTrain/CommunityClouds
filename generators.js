@@ -641,4 +641,4 @@ function mcCloud() {
 
     return [offset.x, offset.y, w, h];
 }
-register(mcCoud, "Mc Cloud", "Rodolphe Peccatte");
+register(mcCloud, "Mc Cloud", "Rodolphe Peccatte");
