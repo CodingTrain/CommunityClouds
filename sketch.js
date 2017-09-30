@@ -29,7 +29,7 @@ function windowResized() {
 }
 
 // When clicked
-function mousePressed() {
+function mouseReleased() {
     redraw();
 }
 
