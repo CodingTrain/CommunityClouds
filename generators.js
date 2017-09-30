@@ -1197,3 +1197,40 @@ function bitStoneRectCloud() {
 }
 
 register(bitStoneRectCloud, "bit-stone rect cloud", "Kuno Zoltner (github: kzoltner)");
+
+function curveVertexCloud() {
+  let radius = width/5;
+  let points = floor(random(5)) + 10;
+  let cloud = [];
+
+  for (let angle = 0; angle < TWO_PI-0.1; angle += TWO_PI/points) {
+    let x = 2 * radius * cos(angle) + random(-20, 20);
+    let y = radius * sin(angle) + random(-20, 20);
+
+    cloud.push(createVector(x,y));
+  }
+
+  cloud.push(cloud[0]);
+
+  push();
+  translate(width/2, height/2);
+
+  noFill();
+  stroke(255);
+  strokeWeight(2);
+
+  for (let i = 0; i < cloud.length-1; i++) {
+    beginShape();
+    curveVertex(0, 0);
+    curveVertex(cloud[i].x, cloud[i].y);
+    curveVertex(cloud[i+1].x, cloud[i+1].y);
+    curveVertex(0, 0);
+    endShape();
+  }
+
+  pop();
+
+  return [width/2-radius*1.4, height/2-radius/2, width/2+radius*1.4, height/2+radius/2];
+}
+
+register(curveVertexCloud, "curveVertex() Cloud", "xperion");
