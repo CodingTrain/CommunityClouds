@@ -59,7 +59,6 @@ function ellipseCloud() {
     ellipse(0, 0, circleRadius, circleRadius);
     pop();
   }
-
   function drawInnerCirc(num) {
     const angle = TWO_PI / circleAmount * num;
 
@@ -78,6 +77,34 @@ function ellipseCloud() {
 }
 
 register(ellipseCloud, "Ellipse Cloud", "Raqbit");
+
+function marmsCloud() {
+	noStroke();
+	var a = 400;
+	var b = 200;
+	var xc = 200;
+	var yc = 100;
+
+	var n = random(80,120);
+	for(var i = 0; i < n; i++){
+		var r = 2*random(30,50);
+		var rx = r + random(-3,5);
+		var ry = r + random(-3,5);
+		var x = random(-a,a);
+		var y = random(-b,b);
+		while(((x-xc)/a)*((x-xc)/a) + ((y-yc)/b)*((y-yc)/b) > 1){
+			var x = random(-a,a);
+			var y = random(-b,b);
+		}
+		fill(210,210,210);
+		rect(xc+x,yc+y,rx,ry,10,10);
+		fill(255,255,255);
+		rect(xc+x+15,yc+y-15,rx,ry,10,10);
+	}
+	return [30,30,2*a-60,2*b-60];
+}
+
+register(marmsCloud, "Marms Cloud", "Henrique Martinez Rocamora");
 
 // Unicode Cloud by Sergio Fernández
 function unicodeCloud() {
@@ -564,23 +591,94 @@ function cumulus() {
 }
 register(cumulus, "Cumulus", "Luke Flego");
 
-function straubCloud() {
-  stroke(255);
+function arcClouds() {
+	// draws arc
+	function drawArc(c1, c2, c3) {
+		// first and second circle intersection points
+		let fs_int_points = circleIntersetc(c1.x, c1.y, c1.r,
+			c2.x, c2.y, c2.r);
+		// second and third circle intersection points
+		let st_int_points = circleIntersetc(c2.x, c2.y, c2.r,
+			c3.x, c3.y, c3.r);
+		//
+		let p0_x = fs_int_points[0];
+		let p0_y = fs_int_points[1];
+		let p1_x = st_int_points[0];
+		let p1_y = st_int_points[1];
+		//
+		let v = createVector(1, 0);
+		let v1 = createVector(p0_x - c2.x, p0_y - c2.y);
+		let v2 = createVector(p1_x - c2.x, p1_y - c2.y);
+		let startAngle = -angle(v1, v);
+		let endAngle = -angle(v2, v);
+		strokeWeight(3);
+		stroke(0);
+		arc(c2.x, c2.y, c2.r * 2, c2.r * 2, startAngle, endAngle);
+	}
+	// computes angle between 2 vectors, returns value between [0, 2*PI]
+	function angle(v1, v2) {
+		return Math.atan2(v1.x * v2.y - v1.y * v2.x, v1.x * v2.x + v1.y * v2.y);
+	}
+	// computes the intersection points between 2 circles
+	function circleIntersetc(x0, y0, r0, x1, y1, r1) {
+		//
+		let d = dist(x0, y0, x1, y1);
+		// distance between P0 and P2
+		let a = (r0 * r0 - r1 * r1 + d * d) / (2 * d);
+		let h = sqrt(r0 * r0 - a * a);
+		//
+		let x2 = x0 + a * (x1 - x0) / d;
+		let y2 = y0 + a * (y1 - y0) / d;
+		//
+		let intp1_x = x2 + h * (y1 - y0) / d;
+		let intp2_x = x2 - h * (y1 - y0) / d;
+		let intp1_y = y2 - h * (x1 - x0) / d;
+		let intp2_y = y2 + h * (x1 - x0) / d;
+		//
+		return [intp1_x, intp1_y, intp2_x, intp2_y];
+	}
+	noFill();
+	translate(width / 2, height / 2);
 	let r1 = 400;
 	let r2 = 200;
-	translate(width / 2, height / 2);
-	beginShape();
-	for(let a = 0; a < 2 * PI;a += 0.001) {
-		let x = r1 * cos(a);
-		let y = r2 * (sin(a) + noise(a));
-		vertex(x, y);
+	let increment = 0.5;
+	let firstCircle, secondCircle, thirdCircle;
+	let circles = [];
+	// create circles
+	for(let angle = 0;angle < 2 * PI;angle+=increment) {
+		let x = r1 * cos(angle);
+		let y = r2 * sin(angle);
+		let rr = random(100, 150);
+		circles.push({
+			x : x,
+			y : y,
+			r : rr
+		});
 	}
-	endShape(CLOSE);
-	stroke(255, 0, 50);
-	rect(-200, 0, 400, 200);
+	// draw arcs
+	for(let j = 0;j < circles.length - 2;j++) {
+		firstCircle = circles[j];
+		secondCircle = circles[j + 1];
+		thirdCircle = circles[j + 2];
+		if(firstCircle && secondCircle && thirdCircle) {
+			drawArc(firstCircle, secondCircle, thirdCircle);
+		}
+	}
+	//
+	firstCircle = circles[circles.length - 2];
+	secondCircle = circles[circles.length - 1];
+	thirdCircle = circles[0];
+	drawArc(firstCircle, secondCircle, thirdCircle);
+	//
+	firstCircle = circles[circles.length - 1];
+	secondCircle = circles[0];
+	thirdCircle = circles[1];
+	drawArc(firstCircle, secondCircle, thirdCircle);
+	//
+	return [-r1, -r2, 2 * r1, 2* r2];
 }
 
-register(straubCloud, "Straub Cloud", "edwin.straub");
+register(arcClouds, "Arc Cloud", "edwin.straub");
 
 // created by georges Daou 29-sep-2017
 function randomSimpleCloud() {
@@ -758,3 +856,429 @@ function mcCloud() {
     return [offset.x, offset.y, w, h];
 }
 register(mcCloud, "Mc Cloud", "Rodolphe Peccatte");
+
+function drawBumpyCloud()
+{
+	push();
+	strokeWeight(5);
+	translate(width / 2, height / 2);
+	angleMode(DEGREES);
+	let cloudWidth = width / 2;
+	let cloudHeight = height / 2;
+	let vertices = [];
+
+	for (let i = random(5, 15); i < 360; i += random(20, 15))
+	{
+		vertices.push(
+		{
+			x: cos(i) * (cloudWidth / 2),
+			y: sin(i) * (cloudHeight / 2)
+		});
+	}
+	vertices.push(vertices[0]);
+	stroke(0);
+	fill(255);
+	for (let i = 0; i < vertices.length - 1; i++)
+	{
+		let p1 = vertices[i];
+		let p2 = vertices[i + 1];
+		let dx = p2.x - p1.x;
+		let dy = p2.y - p1.y;
+		let dst = sqrt(dx * dx + dy * dy);
+		ellipse((p1.x + p2.x) / 2, (p1.y + p2.y) / 2, dst, dst);
+	}
+	noStroke();
+	fill(255);
+	ellipse(0, 0, cloudWidth, cloudHeight);
+	pop();
+	cloudWidth = cloudWidth * 4 / 5;
+	cloudHeight = cloudHeight * 4 / 5;
+
+	return [(width - cloudWidth) / 2, (height - cloudHeight) / 2, cloudWidth, cloudHeight];
+}
+
+register(drawBumpyCloud, "Bumpy Cloud", "Fir3will");
+
+function fluffyTriangle(){
+	const cw = width - (width / 5); // Cloud width
+	const side = round(random(1)); // What side the inside triangle goes to
+	const bottomY = (height/3)*2;
+	const topY = height/3;
+	const topX = (width/5) + (side*(cw/3)) + (noise(100)*(cw/3));
+	const bs = cw/15;
+	// Noise used here to get random values close to the middle of the used values
+  fill(255);
+
+  // bottom
+	for(let x=width/5+random(bs); x<cw-random(bs); x+=random(bs/2+bs/4,bs-(bs/4))){
+		let av=bs/4;
+		ellipse(x,bottomY,bs+av,bs+av);
+	}
+
+	// left
+	var av;
+	let ld = dist(width/5,bottomY,topX,topY);
+	for(let i=0; i<ld; i+=random(bs/2+bs/4,bs-(bs/10))){
+		let x=map(i,0,ld,(width/5),topX);
+		let y=map(i,0,ld,bottomY,topY);
+		av=sin(map(i,0,ld,0,HALF_PI))*bs+(random(bs/3)*random(1));
+		ellipse(x,y,bs+av,bs+av);
+	}
+	//ellipse(topX,topY,bs+av+10,bs+av+10);
+
+	//right
+	  ld = dist(cw,bottomY,topX,topY);
+	for(let i=0; i<ld; i+=random(bs/2+bs/4,bs-(bs/10))){
+		let x=map(i,0,ld,(cw),topX);
+		let y=map(i,0,ld,bottomY,topY);
+		av=sin(map(i,0,ld,0,HALF_PI))*bs+(random(bs/3)*random(1));
+	  ellipse(x,y,bs+av,bs+av);
+	}
+
+	// Triangle to prevent full circle stroke
+	noStroke();
+	beginShape();
+   vertex(topX,topY-bs/6);
+   vertex(width/5-bs/6,bottomY+bs/6);
+   vertex(cw+bs/6,bottomY+bs/6);
+  endShape(CLOSE);
+
+return [100, 100, width - 200, height - 200];
+}
+
+register(fluffyTriangle,"Fluffy triangle","WIPocket");
+
+function bitStoneRectCloud() {
+    // ++++++++++++++++++++++++ Settings +++++++++++++++++++++++++++++++++++++
+    // Margin to the outer space where the name could be placed
+    const BS_DRAW_RECT_OFFSET = 120;
+
+    // Margin to the outer space where the clouds start.
+    const BS_CLOUD_OFFSET = 30; // needs to be smaller than BS_DRAW_RECT_OFFSET!
+
+    // Maximum and minimum size of the cloud parts
+    const BS_CLOUD_MAX_SIZE = 80;
+    const BS_CLOUD_MIN_SIZE = 25;
+
+    // +++++++++++++++++++++++ Code ++++++++++++++++++++++++++++++++++++++++++
+    // Code starts here.
+    const BS_DRAW_RECT_DOUBLE_OFFSET = BS_DRAW_RECT_OFFSET * 2.0;
+    const BS_DRAW_RECT_WIDTH = width - BS_DRAW_RECT_DOUBLE_OFFSET;
+    const BS_DRAW_RECT_HEIGHT = height - BS_DRAW_RECT_DOUBLE_OFFSET;
+
+    const BS_CLOUD_WIDTH = width - BS_CLOUD_OFFSET * 2.0;
+    const BS_CLOUD_HEIGHT = height - BS_CLOUD_OFFSET * 2.0;
+
+    const BS_CLOUD_RANDOM_VALUE = BS_CLOUD_MAX_SIZE - BS_CLOUD_MIN_SIZE;
+
+    // possible rect types
+    const BS_RECT_LEFT = 0;
+    const BS_RECT_TOP_LEFT = 1;
+    const BS_RECT_BOTTOM_LEFT = 2;
+    const BS_RECT_TOP = 3;
+    const BS_RECT_BOTTOM = 4;
+    const BS_RECT_BOTTOM_RIGHT = 5;
+    const BS_RECT_RIGHT = 6;
+    const BS_RECT_TOP_RIGHT = 7;
+
+
+    let topRectList = [];
+    let bottomRectList = [];
+    let leftRectList = [];
+    let rightRectList = [];
+
+    // +++++++++ generate TOP
+    let currentX = 0;
+    let currentY = 0;
+    let nextY = 0;
+    let type = 0;
+    let size;
+
+    while(currentX < BS_CLOUD_WIDTH - (BS_CLOUD_MAX_SIZE)) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+
+        if(currentX < BS_CLOUD_WIDTH / 2.0) {
+            type = (nextY <= currentY ? BS_RECT_TOP_LEFT : BS_RECT_TOP);
+        } else {
+            if(topRectList.length <= 0) {type = BS_RECT_TOP;}
+            else {
+                let item = topRectList[topRectList.length - 1];
+                type = (item.y > currentY ? BS_RECT_TOP : BS_RECT_TOP_RIGHT);
+            }
+        }
+
+        topRectList.push({
+            x: currentX,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY = nextY;
+        currentX += size;
+    }
+
+    // ++++++++++ generate last TOP ELEMENT
+    topRectList.push({
+        x: currentX,
+        y: currentY,
+        size: BS_CLOUD_WIDTH - currentX,
+        type: BS_RECT_TOP
+    });
+
+    // ++++++++++ generate BOTTOM
+    currentX = 0;
+    currentY = BS_CLOUD_HEIGHT;
+    nextY = currentY;
+    type = 0;
+
+    while(currentX < BS_CLOUD_WIDTH - BS_CLOUD_MAX_SIZE) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+
+        if(currentX < BS_CLOUD_WIDTH / 2.0) {
+            type = (nextY <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_LEFT);
+        } else {
+            if(bottomRectList.length <= 0) {type = BS_RECT_BOTTOM;}
+            else {
+                let item = bottomRectList[bottomRectList.length - 1];
+                type = (item.y <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_RIGHT);
+            }
+        }
+
+        bottomRectList.push({
+            x: currentX,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY = nextY;
+        currentX += size;
+    }
+
+    // ++++++++++ generate last BOTTOM ELEMENT
+    bottomRectList.push({
+        x: currentX,
+        y: currentY,
+        size: BS_CLOUD_WIDTH - currentX,
+        type: BS_RECT_BOTTOM
+    });
+
+    // +++++++++++ generate LEFT
+    currentX = 0;
+    currentY = topRectList[0].y + topRectList[0].size;
+
+    while(currentY < (bottomRectList[0].y - bottomRectList[0].size - BS_CLOUD_MAX_SIZE)) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+
+        type = BS_RECT_LEFT;
+
+        leftRectList.push({
+            x: currentX - size,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY += size;
+    }
+
+    // +++++++++++ generate last LEFT ELEMENT
+    size = (bottomRectList[0].y - bottomRectList[0].size) - currentY;
+    leftRectList.push({
+        x: currentX - size,
+        y: currentY,
+        size: size,
+        type: BS_RECT_LEFT
+    });
+
+    // +++++++++++ generate RIGHT
+    currentX = topRectList[topRectList.length - 1].x + topRectList[topRectList.length - 1].size;
+    currentY = topRectList[topRectList.length - 1].y + topRectList[topRectList.length - 1].size;
+
+    while(currentY < (bottomRectList[bottomRectList.length - 1].y - BS_CLOUD_MAX_SIZE)) {
+        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        type = BS_RECT_RIGHT;
+
+        rightRectList.push({
+            x: currentX,
+            y: currentY,
+            size: size,
+            type: type
+        });
+
+        currentY += size;
+    }
+
+    // +++++++++++ generate last RIGHT ELEMENT
+    size = Math.abs((bottomRectList[bottomRectList.length - 1].y) - currentY);
+    rightRectList.push({
+        x: currentX,
+        y: currentY,
+        size: size,
+        type: BS_RECT_RIGHT
+    });
+
+
+    // draw rects
+    beginShape();
+    for(let i in topRectList) {
+        let item = topRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    for(let i in rightRectList) {
+        let item = rightRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    for(let i = bottomRectList.length - 1; i >= 0; i--) {
+        let item = bottomRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    for(let i = leftRectList.length - 1; i >= 0; i--) {
+        let item = leftRectList[i];
+        bs_drawRect(item.x, item.y, item.size, item.type);
+    }
+    endShape();
+    fill(255);
+
+    function bs_drawRect(posX, posY, size, type) {
+        switch(type) {
+            case BS_RECT_LEFT:
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+            break;
+            case BS_RECT_TOP_LEFT:
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+            break;
+            case BS_RECT_BOTTOM_LEFT:
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+            break;
+            case BS_RECT_TOP:
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+            break;
+            case BS_RECT_BOTTOM:
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+                vertex(posX, posY);
+            break;
+            case BS_RECT_BOTTOM_RIGHT:
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+            break;
+            case BS_RECT_RIGHT:
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+                vertex(posX, posY + size);
+            break;
+            case BS_RECT_TOP_RIGHT:
+                vertex(posX, posY);
+                vertex(posX + size, posY);
+                vertex(posX + size, posY + size);
+            break;
+            default: break;
+        }
+    }
+
+    return [BS_DRAW_RECT_OFFSET, BS_DRAW_RECT_OFFSET, BS_DRAW_RECT_WIDTH, BS_DRAW_RECT_HEIGHT];
+}
+
+register(bitStoneRectCloud, "bit-stone rect cloud", "Kuno Zoltner (github: kzoltner)");
+
+function curveVertexCloud() {
+  let radius = width/5;
+  let points = floor(random(5)) + 10;
+  let cloud = [];
+
+  for (let angle = 0; angle < TWO_PI-0.1; angle += TWO_PI/points) {
+    let x = 2 * radius * cos(angle) + random(-20, 20);
+    let y = radius * sin(angle) + random(-20, 20);
+
+    cloud.push(createVector(x,y));
+  }
+
+  cloud.push(cloud[0]);
+
+  push();
+  translate(width/2, height/2);
+
+  noFill();
+  stroke(255);
+  strokeWeight(2);
+
+  for (let i = 0; i < cloud.length-1; i++) {
+    beginShape();
+    curveVertex(0, 0);
+    curveVertex(cloud[i].x, cloud[i].y);
+    curveVertex(cloud[i+1].x, cloud[i+1].y);
+    curveVertex(0, 0);
+    endShape();
+  }
+
+  pop();
+
+  return [width/2-radius*1.4, height/2-radius/2, width/2+radius*1.4, height/2+radius/2];
+}
+
+register(curveVertexCloud, "curveVertex() Cloud", "xperion");
+
+function noCloud() {
+    function drawCloud(points) {
+	stroke(bg);
+	beginShape();
+	for (var i = 0; i < points.length; i++) {
+	    vertex(points[i].x, points[i].y);
+	}
+	endShape(CLOSE);
+
+	stroke(0);
+	p = points[0];
+	for (var i = 1; i < points.length; i++) {
+    	    drawCloudArc(p, points[i]);
+	    p = points[i];
+	}
+
+	line(points[0].x, points[0].y, points[points.length-1].x, points[points.length-1].y);
+    }
+
+    function drawCloudArc(begin, end) {
+	function f(p,d) {
+	    return p[d] - ((center[d] - p[d])/2);
+	}
+	center = {"x": width/2, "y": height/2};
+	bezier(begin.x, begin.y, f(begin, "x"), f(begin,"y")-200, f(end, "x"), f(end, "y")-200, end.x, end.y);
+    }
+
+    function randomOffset(n) {
+	return random(n*2)-n;
+    }
+
+    p1 = {"x":200, "y":height-300};
+    p2 = {"x":(width/4)+randomOffset(100), "y":240+randomOffset(50)};
+    p3 = {"x":width*2/4+randomOffset(100), "y":150+randomOffset(50)};
+    p4 = {"x":150+(width*3/4)+randomOffset(100), "y":270+randomOffset(50)};
+    p5 = {"x":width-200, "y":height-300};
+
+    bg = 150;
+    fill(bg);
+    drawCloud([p1,p2,p3,p4,p5].map(function(e){return {"x":e.x+100,"y":e.y}}));
+    bg = 255;
+    fill(bg);
+    drawCloud([p1,p2,p3,p4,p5]);
+
+    return [100, 100, width - 200, height - 200];
+}
+register(noCloud, "There is no cloud", "rnoennig");
