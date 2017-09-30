@@ -719,5 +719,42 @@ function bubblyCloud() {
   }
   return [(width - SIDE) / 2, (height - SIDE) / 2, SIDE, SIDE];
 }
-
 register(bubblyCloud, "Bubbly Cloud", "G4m3M4ni4c");
+
+function mcCloud() {
+    noStroke();
+
+    const w = width - width / 3;
+    const h = w / 4;
+    const dmin = w / 4;
+    const dmax = w / 2;
+    const offset = createVector((width - w) / 2, (height - h) / 2);
+    const gray = 240;
+
+    const getPosition = (i) => {
+        if (i < w) return createVector(i, 0);
+        if (i < w + h) return createVector(w, i - w);
+        if (i < w * 2 + h) return createVector(i - (w + h), h);
+        if (i < (w + h) * 2) return createVector(0, i - (w * 2 + h));
+        return null;
+    };
+
+    let i = random(dmax - dmin);
+    let pos;
+    while (pos = getPosition(i)) {
+        pos.add(offset);
+        var d = random(dmin, dmax);
+        for (let j = 0; j <= 20; j+=5) {
+          fill(gray, gray, gray, map(j, 0, 20, 100, 0));
+          ellipse(pos.x, pos.y + 50 + j, d);
+        }
+        fill(255, 255, 255);
+        ellipse(pos.x, pos.y, d);
+        i += d / 2;
+    }
+
+    rect(offset.x, offset.y, w, h);
+
+    return [offset.x, offset.y, w, h];
+}
+register(mcCloud, "Mc Cloud", "Rodolphe Peccatte");
