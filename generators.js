@@ -1234,3 +1234,51 @@ function curveVertexCloud() {
 }
 
 register(curveVertexCloud, "curveVertex() Cloud", "xperion");
+
+function noCloud() {
+    function drawCloud(points) {
+	stroke(bg);
+	beginShape();
+	for (var i = 0; i < points.length; i++) {
+	    vertex(points[i].x, points[i].y);
+	}
+	endShape(CLOSE);
+
+	stroke(0);
+	p = points[0];
+	for (var i = 1; i < points.length; i++) {
+    	    drawCloudArc(p, points[i]);
+	    p = points[i];
+	}
+
+	line(points[0].x, points[0].y, points[points.length-1].x, points[points.length-1].y);
+    }
+
+    function drawCloudArc(begin, end) {
+	function f(p,d) {
+	    return p[d] - ((center[d] - p[d])/2);
+	}
+	center = {"x": width/2, "y": height/2};
+	bezier(begin.x, begin.y, f(begin, "x"), f(begin,"y")-200, f(end, "x"), f(end, "y")-200, end.x, end.y);
+    }
+
+    function randomOffset(n) {
+	return random(n*2)-n;
+    }
+
+    p1 = {"x":200, "y":height-300};
+    p2 = {"x":(width/4)+randomOffset(100), "y":240+randomOffset(50)};
+    p3 = {"x":width*2/4+randomOffset(100), "y":150+randomOffset(50)};
+    p4 = {"x":150+(width*3/4)+randomOffset(100), "y":270+randomOffset(50)};
+    p5 = {"x":width-200, "y":height-300};
+
+    bg = 150;
+    fill(bg);
+    drawCloud([p1,p2,p3,p4,p5].map(function(e){return {"x":e.x+100,"y":e.y}}));
+    bg = 255;
+    fill(bg);
+    drawCloud([p1,p2,p3,p4,p5]);
+
+    return [100, 100, width - 200, height - 200];
+}
+register(noCloud, "There is no cloud", "rnoennig");
