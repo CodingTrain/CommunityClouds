@@ -99,16 +99,21 @@ function draw() {
     fill("#FFF");
     // Render the chosen cloud and
     var bounds = generator.fn();
-    // Reset styles for the text
-    fill(bounds.length > 4 ? bounds[4] : "#000");
-    strokeWeight(0);
-    textSize(16);
-    textAlign(CENTER, CENTER);
 
-    textSize(100);
-    // Output the name (Hopefully within the bounds)
-    let theName = nameInput.ValidInput ? nameInput.ValidInput : "Example Name";
-    text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
+    if (bounds) {
+      // Reset styles for the text
+      fill(bounds.length > 4 ? bounds[4] : "#000");
+      strokeWeight(0);
+      textSize(16);
+      textAlign(CENTER, CENTER);
+
+      textSize(100);
+      // Output the name (Hopefully within the bounds)
+      let theName = nameInput.ValidInput ? nameInput.ValidInput : "Example Name";
+      text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
+    } else {
+      console.log(generator.name + " by " + generator.creator + ", did not return bounds.")
+    }
     // Describe which design
     aTitle.innerHTML = generator.name;
     aAuthor.innerHTML = generator.creator;
