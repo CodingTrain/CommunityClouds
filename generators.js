@@ -856,3 +856,45 @@ function mcCloud() {
     return [offset.x, offset.y, w, h];
 }
 register(mcCloud, "Mc Cloud", "Rodolphe Peccatte");
+
+function drawBumpyCloud()
+{
+	push();
+	strokeWeight(5);
+	translate(width / 2, height / 2);
+	angleMode(DEGREES);
+	let cloudWidth = width / 2;
+	let cloudHeight = height / 2;
+	let vertices = [];
+
+	for (let i = random(5, 15); i < 360; i += random(20, 15))
+	{
+		vertices.push(
+		{
+			x: cos(i) * (cloudWidth / 2),
+			y: sin(i) * (cloudHeight / 2)
+		});
+	}
+	vertices.push(vertices[0]);
+	stroke(0);
+	noFill();
+	for (let i = 0; i < vertices.length - 1; i++)
+	{
+		let p1 = vertices[i];
+		let p2 = vertices[i + 1];
+		let dx = p2.x - p1.x;
+		let dy = p2.y - p1.y;
+		let dst = sqrt(dx * dx + dy * dy);
+		ellipse((p1.x + p2.x) / 2, (p1.y + p2.y) / 2, dst, dst);
+	}
+	noStroke();
+	fill(255);
+	ellipse(0, 0, cloudWidth, cloudHeight);
+	pop();
+	
+	cloudWidth = cloudWidth * 4 / 5;
+	cloudHeight = cloudHeight * 4 / 5;
+	return [(width - cloudWidth) / 2, (height - cloudHeight) / 2, cloudWidth, cloudHeight];
+}
+
+register(drawBumpyCloud, "Bumpy Cloud", "Fir3will");
