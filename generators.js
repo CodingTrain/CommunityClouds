@@ -561,6 +561,51 @@ function straubCloud() {
 register(straubCloud, "Straub Cloud", "edwin.straub")
 
 function bubblyCloud() {
+  let RANGE = 15;
+  let SMALLEST = 0.1;
+  let SHADOW_A = Math.PI / 4;
+  let SHADOW_I = 1.3;
+
+  for(var i = 0; i <= RANGE; i++) {
+    let dist = i * (1 - SMALLEST) * 2 / RANGE - 1 - SMALLEST;
+    let diameter = width * (1 - dist * dist);
+    let shadow = i / RANGE * 255
+
+    push();
+
+    translate(width / 2 - diameter / 2 + random(diameter), height / 2 - diameter / 2 + random(diameter));
+
+    fill(shadow / 4 + 190);
+    noStroke();
+    smooth();
+
+    ellipse(0, 0, diameter - 1, diameter - 1);
+
+    var start_a = SHADOW_A + 0.005 - Math.PI / 2;
+    var stop_a = SHADOW_A - 0.005 + Math.PI / 2;
+
+    fill(shadow / 4 + 70);
+    arc(0, 0, diameter, diameter, start_a, stop_a, CHORD);
+
+    let m_d = diameter * SHADOW_I;
+    let ad = asin(diameter / m_d);
+
+    start_a = SHADOW_A - ad;
+    stop_a = SHADOW_A + ad;
+
+    let r_d = sqrt(m_d * m_d - diameter * diameter) / 2
+    let offset_x = -r_d * cos(SHADOW_A);
+    let offset_y = -r_d * sin(SHADOW_A);
+
+    fill(shadow / 4 + 190);
+    arc(offset_x, offset_y, m_d, m_d, start_a, stop_a, CHORD);
+
+    pop();
+  }
+}
+register(bubblyCloud, "Bubbly Cloud", "G4m3M4ni4c");
+
+function mcCloud() {
     noStroke();
 
     const w = width - width / 3;
@@ -596,4 +641,4 @@ function bubblyCloud() {
 
     return [offset.x, offset.y, w, h];
 }
-register(bubblyCloud, "Bubbly cloud", "Rodolphe Peccatte");
+register(mcCoud, "Mc Cloud", "Rodolphe Peccatte");
