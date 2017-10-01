@@ -1,11 +1,9 @@
 let nameInput,
     selectionInput,
-    generator_select,
     canvas,
     generators = [],
     titleElement = document.getElementById("attrib-title"),
-    authorElement = document.getElementById("attrib-author"),
-    canRedraw = true,
+    authorElement = document.getElementById("author-name"),
     backgroundColor = "#77B5FE";
 
 // Resizes the canvas to match the CSS
@@ -31,7 +29,7 @@ function setup() {
     canvas = createCanvas(window.innerWidth, window.innerHeight);
     canvas.parent("sketch-contain");
     // When clicked
-    canvas.elt.addEventListener('click', redraw)
+    canvas.elt.addEventListener("click", redraw);
     noLoop();
     resize();
 
@@ -43,10 +41,13 @@ function setup() {
         };
     // Finish populating selectOptions
     generators.forEach((n, i) => {
-            selectOptions[n.name.toLowerCase()] = n.name;
+            selectOptions[n.name.toLowerCase()] = {
+                    value: n.name,
+                    group: "community"
+                };
         });
     // Generate selector
-    selectionInput = new MaterialSelect(selectOptions, "", redraw);
+    selectionInput = new MaterialSelect(selectOptions, "", true, redraw);
     // Add to clouds form
     select("#clouds-form-generator").elt.appendChild(selectionInput.nodesRef);
 

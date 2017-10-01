@@ -43,7 +43,7 @@ html {
 }
 
 .form-contain,
-.selection-container .all-opt,
+.selection-container .opt-all,
 input[type="submit"] {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
@@ -73,7 +73,6 @@ input[type="submit"] {
     bottom: 36px;
     left: 36px;
     padding: 12px;
-    border-radius: 5px;
 }
 
 .field-information {
@@ -136,11 +135,11 @@ input[type="submit"] {
     border: 2px solid #b300ff;
 }
 
-#attrib-author .by-sep{
+#attrib-author .by-sep {
     color: #c3c3c3;
 }
 
-#attrib-author #author-name{
+#attrib-author #author-name {
     color: #b300ff;
 }
 
@@ -158,20 +157,17 @@ input[type="submit"] {
     background: #fff;
 }
 
-.selection-container ul.select-input:hover {
-}
-
-.selection-container ul.select-input li {
+.selection-container li {
     list-style-type: none;
     cursor: pointer;
 }
 
-.opt-cur {
+.selection-container .opt-cur {
     padding: 6px 12px;
     position: relative;
 }
 
-.opt-cur:after {
+.selection-container .opt-cur:after {
 	content: '';
 	display: inline-block;
 	height: 6px;
@@ -182,17 +178,40 @@ input[type="submit"] {
 	position: absolute;
 	top: 50%;
     right: 0%;
-    margin-top: -6px;
+    margin-top: -3px;
     margin-right: 15px;
-	transform: rotate(135deg);
+	transform: rotate(315deg);
+    transition: all 150ms;
 }
 
-.selection-container .all-opt {
+.selection-container.showing .opt-cur:after {
+    margin-top: -6px;
+    transform: rotate(135deg);
+}
+
+.selection-container .opt-all {
     background: #fff;
-    max-height: 500px;
-    overflow: auto;
+    min-height: 100px;
+    max-height: calc(100vh - 300px);
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: scroll;
     width: 100%;
     z-index: 1000;
+    transition: opacity 200ms;
+}
+
+.selection-container.showing .opt-all {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.group {
+    padding: 8px 0;
+}
+
+.group:not(:last-child) {
+    border-bottom: 2px solid hsl(0, 0%, 96%);
 }
 
 .selection-container .material-select-option {
@@ -211,9 +230,13 @@ input[type="submit"] {
 
 /* Styling inputs/buttons */
 
-input:not(.jscolor) {
+input {
     border: none;
     outline: none;
+}
+
+input.jscolor {
+	padding: 2px 6px;
 }
 
 input[type="submit"] {
@@ -242,13 +265,15 @@ input[type="submit"]:active {
 }
 
 input[type="text"] {
-    padding: 4px 0 6px 0;
-    margin: 26px 0 0 0;
-    border-bottom: 2px solid #d8d8d8;
-    background: transparent;
+    width: 100%;
+    max-width: 400px;
+    padding: 4px 0 6px;
+    margin-top: 26px;
     font-weight: 700;
     font-size: 16px;
-    color: #8c8c8b;
+    color: #8c8c8c;
+    background: transparent;
+    border-bottom: 2px solid #d8d8d8;
 }
 
 input[type="text"]:focus {
@@ -256,8 +281,7 @@ input[type="text"]:focus {
     color: #464c57;
 }
 
-input[type="text"].invalid,
-input[type="text"].invalid:focus {
+input[type="text"].invalid {
     border-bottom: 3px solid #f43939;
 }
 
@@ -268,21 +292,25 @@ form .text {
     position: relative;
 }
 
-.label-field-empty,
-.label-field-focus {
-    position: absolute;
+.label-field {
+    font-size: 16px;
     cursor: text;
+    position: absolute;
+    top: 30px;
     transition: all 300ms, color 100ms;
 }
 
-.label-field-empty {
-    top: 30px;
-    font-size: 16px;
-}
-
+.label-field-filled,
 .label-field-focus {
     top: 12px;
     font-size: 11px;
+}
+
+.label-field-filled {
+    color: #acacac;
+}
+
+.label-field-focus {
     color: #b300ff;
 }
 
@@ -297,19 +325,4 @@ span .error-info {
     display: inline-block;
     height: auto;
     text-align: right;
-}
-
-.label-field-filled-nofocus {
-    position: absolute;
-    top: 12px;
-    font-size: 11.2px;
-    color: #acacac;
-    cursor: text;
-    transition: all 300ms, color 100ms;
-}
-
-.clouds-form input[type="text"] {
-    display: block;
-    width: 100%;
-    max-width: 400px;
 }
