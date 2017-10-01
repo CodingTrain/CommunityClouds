@@ -1330,3 +1330,12 @@ function CloudyCloud()
   return [-130,-50,130*2,50*2];
 }
 register(CloudyCloud, "Radnomly Generated Cloud", "this.Zohir")
+
+function CloudyMcCloudson(){
+  for(var i = 0; i<15;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+  return [700, 200, 400,400];
+}
+register(CloudyMcCloudson, "Cloudy McCloudson", "Marius Bauer");
