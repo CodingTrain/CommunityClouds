@@ -28,16 +28,13 @@ function windowResized() {
     redraw();
 }
 
-// When clicked
-function mouseClicked() {
-    redraw();
-}
-
 // On setup
 function setup() {
     // Default canvas size
     canvas = createCanvas(window.innerWidth, window.innerHeight);
     canvas.parent("sketch-contain");
+    // When clicked
+    canvas.elt.addEventListener("click", redraw);
     noLoop();
     resize();
 
