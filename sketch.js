@@ -3,11 +3,15 @@ let nameInput,
     generator_select,
     canvas,
     generators = [],
+    generator,
+    bounds,
     formContainer = document.querySelectorAll(".form-contain")[0],
     aTitle = document.getElementById("aTitle"),
     aAuthor = document.getElementById("authorName"),
     canRedraw = true,
-    backgroundColor = "#77B5FE";
+    backgroundColor = "#77B5FE",
+    download = document.getElementById("download"),
+    canvasSvg;
 
 // Resizes the canvas to match the CSS
 function resize() {
@@ -29,7 +33,7 @@ function windowResized() {
 }
 
 // When clicked
-function mousePressed() {
+function mouseClicked() {
     redraw();
 }
 
@@ -59,7 +63,7 @@ function setup() {
     // *************************************************************************
 
     // Material Design input field
-    nameInput = new MaterialText("", "^([A-zÀ-ž\\d\\-\\s]{1,32})$", "Character set: a-z A-Z 0-9; 1-32 characters.", true, "user_name", "Name", "");
+    nameInput = new MaterialText("", "", "Character set: a-z A-Z 0-9; 1-32 characters.", true, "user_name", "Name", "");
     // Add to clouds form
     select("#cloudsFormOptions").elt.appendChild(nameInput.Nodes);
     // Listen for value changes to redraw()
@@ -76,19 +80,17 @@ function updateBg(color){
     redraw();
 }
 
-function draw() {
+function handleDrawing(isSvg){
+    push();
+
     document.getElementsByTagName("body")[0].style.background = backgroundColor;
     background(backgroundColor);
-    var generator;
-    if (selectionInput.CurOpt !== 'random') {
-        // Get generator chosen
-        generator = generators[selectionInput.CurIndex - 2];
-    } else {
-        // Chose a random generator
-        generator = random(generators);
-    }
+
     scale(.5);
     translate(width * .5, height * .5);
+    if(isSvg){
+        translate(0, height * .25);
+    }
 
     // Establish our default cloud drawing paremeters.
     angleMode(RADIANS);
@@ -96,7 +98,7 @@ function draw() {
     stroke("#000");
     fill("#FFF");
     // Render the chosen cloud and
-    var bounds = generator.fn();
+    bounds = generator.fn();
     // Reset styles for the text
     fill("#000");
     strokeWeight(0);
@@ -110,6 +112,43 @@ function draw() {
     // Describe which design
     aTitle.innerHTML = generator.name;
     aAuthor.innerHTML = generator.creator;
+
+    pop();
+}
+
+function draw() {
+
+    if (selectionInput.CurOpt !== 'random') {
+        // Get generator chosen
+        generator = generators[selectionInput.CurIndex - 2];
+    } else {
+        // Chose a random generator
+        generator = random(generators);
+    }
+
+    let canStyleWidth  = parseInt(canvas.elt.style.width),
+        canStyleHeight = parseInt(canvas.elt.style.height) + 200;
+
+    let tmpContext = canvas.drawingContext;
+    canvasSvg = new C2S(canStyleWidth, canStyleHeight);
+    canvas.drawingContext = canvasSvg;
+    handleDrawing(true);
+
+    let theSVG   = canvasSvg.getSerializedSvg(true),
+        svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
+        svgUrl   = URL.createObjectURL(svgBlob);
+
+    download.setAttribute("href", svgUrl);
+    download.setAttribute("download", generator.name.split(' ').join('_') + ".svg");
+
+    canvas.drawingContext = tmpContext;
+
+    loadImage(svgUrl, function(img){
+        push();
+        translate(0, height * -.125);
+        image(img, 0, 0);
+        pop();
+    });
 
 }
 
