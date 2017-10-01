@@ -122,8 +122,6 @@ function draw() {
         generator = random(generators);
     }
 
-    console.log(selectionInput.curOpt);
-
     let canStyleWidth  = parseInt(canvas.elt.style.width),
         canStyleHeight = parseInt(canvas.elt.style.height) + 200;
 
