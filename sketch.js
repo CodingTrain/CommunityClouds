@@ -23,14 +23,11 @@ function windowResized() {
     redraw();
 }
 
-<<<<<<< HEAD
 // When clicked
 function mouseReleased() {
     redraw();
 }
 
-=======
->>>>>>> 2c22ea777b8404fddce4c0c75a5a080b0191ea3e
 // On setup
 function setup() {
     // Default canvas size
