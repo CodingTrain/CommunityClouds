@@ -66,7 +66,7 @@ function updateBg(color) {
     redraw();
 }
 
-function handleDrawing(isSvg){
+function handleDrawing(){
     push();
 
     document.getElementsByTagName("body")[0].style.background = backgroundColor;
@@ -74,9 +74,6 @@ function handleDrawing(isSvg){
 
     scale(.5);
     translate(width * .5, height * .5);
-    if(isSvg){
-        translate(0, height * .25);
-    }
 
     // Establish our default cloud drawing paremeters.
     rectMode(CORNER);
@@ -127,7 +124,7 @@ function draw() {
     }
 
     let canStyleWidth  = parseInt(canvas.elt.style.width),
-        canStyleHeight = parseInt(canvas.elt.style.height) + 200;
+        canStyleHeight = parseInt(canvas.elt.style.height);
 
     let tmpContext = canvas.drawingContext;
 
@@ -137,10 +134,8 @@ function draw() {
 
     canvasSvg = new C2S(canStyleWidth, canStyleHeight);
     canvas.drawingContext = canvasSvg;
-    // We must set the seeds again, presumably because the drawing context changed,
-    // and I believe it stores the seed. Not verified.
+
     randomSeed(theSeed);
-    noiseSeed(theSeed);
     handleDrawing(true);
     let theSVG   = canvasSvg.getSerializedSvg(true),
         svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
