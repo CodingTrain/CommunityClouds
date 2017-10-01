@@ -16,9 +16,6 @@ function resize() {
     let parStyle = window.getComputedStyle(canvas.elt.parentNode),
         cWidth = parseInt(parStyle.width),
         cHeight = parseInt(parStyle.height);
-
-    cHeight -= parseInt(parStyle.paddingTop) + parseInt(parStyle.paddingBottom);
-    cWidth -= parseInt(parStyle.paddingLeft) + parseInt(parStyle.paddingRight);
     resizeCanvas(cWidth, cHeight, true);
 }
 
@@ -112,7 +109,13 @@ function handleDrawing(isSvg){
     pop();
 }
 
+function genRandomSeed(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 function draw() {
+
+    let theSeed = genRandomSeed(1, 100);
 
     if (selectionInput.curOpt !== 'random') {
         // Get generator chosen
@@ -120,16 +123,27 @@ function draw() {
     } else {
         // Chose a random generator
         generator = random(generators);
+
     }
+
+    console.log("ran");
 
     let canStyleWidth  = parseInt(canvas.elt.style.width),
         canStyleHeight = parseInt(canvas.elt.style.height) + 200;
 
     let tmpContext = canvas.drawingContext;
+
+    randomSeed(theSeed);
+    noiseSeed(theSeed);
+    handleDrawing();
+
     canvasSvg = new C2S(canStyleWidth, canStyleHeight);
     canvas.drawingContext = canvasSvg;
+    // We must set the seeds again, presumably because the drawing context changed,
+    // and I believe it stores the seed. Not verified.
+    randomSeed(theSeed);
+    noiseSeed(theSeed);
     handleDrawing(true);
-
     let theSVG   = canvasSvg.getSerializedSvg(true),
         svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
         svgUrl   = URL.createObjectURL(svgBlob);
@@ -139,12 +153,8 @@ function draw() {
 
     canvas.drawingContext = tmpContext;
 
-    loadImage(svgUrl, function(img){
-        push();
-        translate(0, height * -.125);
-        image(img, 0, 0);
-        pop();
-    });
+    randomSeed();
+    noiseSeed();
 
 }
 
