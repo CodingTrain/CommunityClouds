@@ -102,7 +102,7 @@ function draw() {
 
       textSize(100);
       // Output the name (Hopefully within the bounds)
-      let theName = nameInput.ValidInput ? nameInput.ValidInput : "Example Name";
+      let theName = nameInput.validInput ? nameInput.validInput : "Example Name";
       text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
     } else {
       console.log(generator.name + " by " + generator.creator + ", did not return bounds.")
