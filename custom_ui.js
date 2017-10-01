@@ -269,7 +269,7 @@ class MaterialSelect extends FormFields {
         return s;
     }
 
-    chooseOptions(e) { // selectionInput.containerNode
+    chooseOptions(e) {
         let target = e.target;
         let isCurOpt = target === this.curOptNode;
         if(isCurOpt) {
@@ -292,6 +292,6 @@ class MaterialSelect extends FormFields {
 
     addSelectorListeners(){
         let chooseOptions = this.chooseOptions.bind(this);
-        window.addEventListener("click", chooseOptions);
+        this.containerNode.addEventListener("click", chooseOptions);
     }
 }
