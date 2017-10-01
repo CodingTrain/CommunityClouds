@@ -21,6 +21,15 @@ register(rectangle, "Example", "example");
 
 /* ------  Add your custom cloud generators below! ------ */
 
+function CloudyMcCloudson(){
+  for(var i = 0; i<15;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+    return [700, 200, 400,400];
+}
+register(CloudyMcCloudson, "RNDCloud", "Marius Bauer");
+
 function ellipseCloud() {
   const circleRadius = width / 8;
 
@@ -1281,39 +1290,39 @@ register(noCloud, "There is no cloud", "rnoennig");
  */
 function squareBlueCloud()
 {
-  
+
   noStroke();
   rectMode(CENTER);
-  
+
   // Blue palette
   var palette = ['#012f4b', '#6697bb', '#03396f', '#012345', '#345577', '#00a9ff', '#007199', '#0000ff' ];
   var maxSquare = 40;
-  
+
   // Function to draw n concentric squares from a center (x, y)
   function putSquare(x, y, s, n) {
-    
+
     for (var i = n - 1; i >= 0; --i) {
-      
+
       fill(palette[floor(random(0, palette.length))]);
       rect(x, y, s * (i + 1), s * (i + 1));
     }
   }
-  
+
   // Main body
   var maxLen = floor(min(width, height) / 20);
   putSquare(width / 2, height / 2, maxLen, 15);
-  
+
   // Sub clouds
   for (var i = 0; i < maxSquare; ++i) {
-  
+
   	putSquare(
-      random((width / 2) - maxLen * 8, (width / 2) + maxLen * 8), 
-      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8), 
-      maxLen, 
+      random((width / 2) - maxLen * 8, (width / 2) + maxLen * 8),
+      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8),
+      maxLen,
       floor(random(1, 6))
     );
   }
-  
+
   return [width / 2, height / 2, maxLen * 15, maxLen * 15, "77F"];
 }
 
