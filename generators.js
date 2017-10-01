@@ -1281,40 +1281,52 @@ register(noCloud, "There is no cloud", "rnoennig");
  */
 function squareBlueCloud()
 {
-  
+
   noStroke();
   rectMode(CENTER);
-  
+
   // Blue palette
   var palette = ['#012f4b', '#6697bb', '#03396f', '#012345', '#345577', '#00a9ff', '#007199', '#0000ff' ];
   var maxSquare = 40;
-  
+
   // Function to draw n concentric squares from a center (x, y)
   function putSquare(x, y, s, n) {
-    
+
     for (var i = n - 1; i >= 0; --i) {
-      
+
       fill(palette[floor(random(0, palette.length))]);
       rect(x, y, s * (i + 1), s * (i + 1));
     }
   }
-  
+
   // Main body
   var maxLen = floor(min(width, height) / 20);
   putSquare(width / 2, height / 2, maxLen, 15);
-  
+
   // Sub clouds
   for (var i = 0; i < maxSquare; ++i) {
-  
+
   	putSquare(
-      random((width / 2) - maxLen * 8, (width / 2) + maxLen * 8), 
-      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8), 
-      maxLen, 
+      random((width / 2) - maxLen * 8, (width / 2) + maxLen * 8),
+      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8),
+      maxLen,
       floor(random(1, 6))
     );
   }
-  
+
   return [width / 2, height / 2, maxLen * 15, maxLen * 15, "77F"];
 }
 
 register(squareBlueCloud, "Square Blue Cloud", "Juan Sebastian Robles");
+
+function CloudyCloud()
+{
+	//I'm really sorry about this one xD
+	translate(width/2,height/2);
+	noStroke();
+	for(let i = 0; i < 30; i++)
+		ellipse(random(-130,130),random(-15,25),random(50,200));
+
+  return [-130,-50,130*2,50*2];
+}
+register(CloudyCloud, "Radnomly Generated Cloud", "this.Zohir")
