@@ -9,7 +9,8 @@ let nameInput,
     authorElement = document.getElementById("author-name"),
     backgroundColor = "#77B5FE",
     download = document.getElementById("download"),
-    canvasSvg;
+    canvasSvg,
+    theSeed;
 
 // Resizes the canvas to match the CSS
 function resize() {
@@ -59,6 +60,7 @@ function setup() {
     select("#clouds-form-options").elt.appendChild(nameInput.nodesRef);
     // Listen for value changes to redraw()
     nameInput.inputNode.addEventListener("input", redraw);
+
 }
 
 function updateBg(color) {
@@ -110,9 +112,30 @@ function genRandomSeed(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+function setSvgDownload(e){
+    let tmpContext = canvas.drawingContext;
+
+    let canStyleWidth  = parseInt(canvas.elt.style.width),
+        canStyleHeight = parseInt(canvas.elt.style.height);
+
+    canvasSvg = new C2S(canStyleWidth, canStyleHeight);
+    canvas.drawingContext = canvasSvg;
+
+    randomSeed(theSeed);
+    handleDrawing();
+    let theSVG   = canvasSvg.getSerializedSvg(true),
+        svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
+        svgUrl   = URL.createObjectURL(svgBlob);
+
+    download.setAttribute("href", svgUrl);
+    canvas.drawingContext = tmpContext;
+}
+
 function draw() {
 
-    let theSeed = genRandomSeed(1, 100);
+    download.removeEventListener("mousedown", setSvgDownload);
+
+    theSeed = genRandomSeed(1, 100);
 
     if (selectionInput.curOpt !== 'random') {
         // Get generator chosen
@@ -123,28 +146,13 @@ function draw() {
 
     }
 
-    let canStyleWidth  = parseInt(canvas.elt.style.width),
-        canStyleHeight = parseInt(canvas.elt.style.height);
-
-    let tmpContext = canvas.drawingContext;
-
     randomSeed(theSeed);
     noiseSeed(theSeed);
     handleDrawing();
 
-    canvasSvg = new C2S(canStyleWidth, canStyleHeight);
-    canvas.drawingContext = canvasSvg;
-
-    randomSeed(theSeed);
-    handleDrawing(true);
-    let theSVG   = canvasSvg.getSerializedSvg(true),
-        svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
-        svgUrl   = URL.createObjectURL(svgBlob);
-
-    download.setAttribute("href", svgUrl);
     download.setAttribute("download", generator.name.split(' ').join('_') + ".svg");
 
-    canvas.drawingContext = tmpContext;
+    download.addEventListener("mousedown", setSvgDownload);
 
     randomSeed();
     noiseSeed();
