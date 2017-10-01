@@ -72,8 +72,8 @@ function handleDrawing(){
     document.getElementsByTagName("body")[0].style.background = backgroundColor;
     background(backgroundColor);
 
-    scale(.5);
-    translate(width * .5, height * .5);
+    //scale(.5);
+    //translate(width * .5, height * .5);
 
     // Establish our default cloud drawing paremeters.
     rectMode(CORNER);
