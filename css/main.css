@@ -215,7 +215,6 @@ input[type="submit"] {
 }
 
 .selection-container .material-select-option {
-    background: #fff;
     width: 100%;
     padding: 6px 12px 6px 10px;
     border-left: 2px solid #fff;
