@@ -1341,6 +1341,38 @@ function CloudyMcCloudson(){
 }
 register(CloudyMcCloudson, "Cloudy McCloudson", "Marius Bauer");
 
+function MaxTaylorCloud() {
+    let clouds = []
+    // Play with these to get the desired effect
+    const showBorder = true
+    const showTransparency = false;
+    const puffyNess = 40
+    const radius = 150
+    
+    for (let i = 0; i < puffyNess; i++) {
+        let x = width/2 + map(Math.random(), 0, 1, -200, 200)
+        let y = height/2 + map(Math.random(), 0, 1, -100, 100)
+        clouds.push({ x, y })
+
+        if (!showBorder) { continue; }
+        
+        noFill()
+        strokeWeight(5)
+        stroke(0)
+        ellipse(x, y, radius, radius)
+    }
+    
+    for (let cloud of clouds) {
+        noStroke()
+        fill(255, 255, 255, (!showBorder && showTransparency) ? map(Math.random(), 0, 1, 170, 255) : 255);
+        ellipse(cloud.x, cloud.y, radius, radius)
+    }
+
+    return [width/2 - 150, height/2 - 50, 300, 100]
+}
+
+register(MaxTaylorCloud, "Cloudy McCloudFace", "Max Taylor");
+
 // Koch snowflake-shaped cloud
 function kochSnowCloud() {
   stroke(0);
