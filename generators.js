@@ -1379,9 +1379,11 @@ function kochSnowCloud() {
   strokeWeight(2);
   fill(255);
 
-  let pos = createVector(450, 600);
+  let flake_size = width / 5;
+
+  let pos = createVector((width - flake_size) / 2, 3 * height / 4);
   let angle = 0;
-  let yscale = 0.8;
+  let yscale = height / width;
 
   function move(r) {
     pos.add(createVector(r * Math.cos(angle), r * Math.sin(angle) * yscale));
@@ -1389,7 +1391,7 @@ function kochSnowCloud() {
 
   beginShape();
   for (let i = 0; i < 13; i++) {
-    koch(250);
+    koch(flake_size);
     angle -= 2 * PI / 13;
   }
   endShape(CLOSE);
@@ -1409,10 +1411,9 @@ function kochSnowCloud() {
     }
   }
 
-  return [150, 0, 850, 400];
+  return [(width - 3.5 * flake_size) / 2, height / 6, flake_size * 3.5, height / 3];
 }
 
-// Register your function with register(function, style_name, author_name)
 register(kochSnowCloud, "Koch Snow-Cloud", "Kristian Wichmann");
 
 function AbdulCloud(){
