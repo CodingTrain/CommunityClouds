@@ -28,15 +28,15 @@ function windowResized() {
 
 function keyReleased() {
     if (keyCode == UP_ARROW || keyCode == LEFT_ARROW) {
-        selectionInput.CurIndex--;
-        if (selectionInput.CurIndex < 2) selectionInput.CurIndex = generators.length;
+        selectionInput.curIndex--;
+        if (selectionInput.curIndex < 2) selectionInput.curIndex = generators.length;
         redraw();
     } else if (keyCode == DOWN_ARROW || keyCode == RIGHT_ARROW) {
-        selectionInput.CurIndex++;
-        if (selectionInput.CurIndex < 3 || selectionInput.CurIndex >= generators.length) selectionInput.CurIndex = 2;
+        selectionInput.curIndex++;
+        if (selectionInput.curIndex < 3 || selectionInput.curIndex >= generators.length) selectionInput.curIndex = 2;
         redraw();
     }
-    selectionInput.CurOpt = Object.keys(selectionInput.SelectableOptions)[selectionInput.CurIndex]
+    selectionInput.curOpt = Object.keys(selectionInput.selectableOptions)[selectionInput.curIndex]
     
     return false;
 }
