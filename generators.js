@@ -353,3 +353,56 @@ function cartoonCloud() {
 }
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
+
+
+function unstableCloud() {
+
+  // Utils
+  const DEBUG = true
+  const debugColor = (alpha=150) => color(random(255), random(255), random(255), alpha)
+  const cloudColor = (alpha=255) => color(255, alpha)
+  const createCloud = (pos, d) => {return{pos: pos, d: d}}
+  const drawCanvasBackground = () => {
+    noStroke()
+    fill(0,0,0,25)
+    rect(0, 0, width, height)
+  }
+  const drawCloudBase = (pos, w, h) => {
+    noStroke()
+    DEBUG ? fill(debugColor()) : fill(cloudColor())
+    rect(pos.x, pos.y, w, h)
+  }
+  const drawPuffyCloud = (cloud) => {
+    noStroke()
+    DEBUG ? fill(debugColor()) : fill(cloudColor())
+    ellipse(cloud.pos.x, cloud.pos.y, cloud.d, cloud.d)
+  }
+
+  // Variable factores
+  const sizeFactor = 1
+  const rndBaseHeight = 50
+
+  // Cloud base
+  const baseWidth = 1100 * sizeFactor
+  const baseHeight = (250 + random(rndBaseHeight)) * sizeFactor
+  const baseCenter = createVector(width*.5, height*.6)
+  const basePos = createVector(baseCenter.x - baseWidth *.5, baseCenter.y - baseHeight *.5)
+
+  // Puffy clouds
+  let puffyDiameter = baseHeight
+  let puffyRadius = puffyDiameter*.5
+  let puffyPos = createVector(basePos.x, basePos.y + baseHeight - puffyRadius)
+  const puffyLeft = createCloud(puffyPos, puffyDiameter)
+  const puffyRight = createCloud(puffyPos.copy().add(baseWidth, 0), puffyDiameter)
+
+  // Draw
+  if(DEBUG) drawCanvasBackground()
+  drawCloudBase(basePos, baseWidth, baseHeight)
+  drawPuffyCloud(puffyLeft)
+  drawPuffyCloud(puffyRight)
+  
+  return [basePos.x, basePos.y - baseHeight*.1, baseWidth, baseHeight]
+
+}
+
+register(unstableCloud, "A Cloud", "@unstablectrl")
