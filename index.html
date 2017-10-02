@@ -1,46 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>CommunityClouds</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
-
 <body>
-    <div class="sketch-contain" id="sketchContain"></div>
-    <div class="form-contain-primary">
+    <div id="sketch-contain"></div>
+    <div class="form-contain" id="form-primary">
         <div class="fc-top">
-            <div class="attribution" id="attribution">
-                <div class="attribution-title" id="aTitle"></div>
-                <div class="attribution-author" id="aAuthor">
+            <div class="attribution">
+                <div id="attrib-title"></div>
+                <div id="attrib-author">
                     <span class="by-sep"> by </span>
-                    <span class="author-name" id="authorName"> by </span>
+                    <span id="author-name"></span>
                 </div>
             </div>
         </div>
         <div class="fc-lower">
-            <form method="post" autocomplete="off" class="clouds-form" id="cloudsFormGenerator"></form>
+            <form method="post" autocomplete="off" class="clouds-form" id="clouds-form-generator"></form>
         </div>
     </div>
-    <div class="form-contain-secondary">
+    <div class="form-contain" id="form-secondary">
         <div class="fc-name fc-bg-color">
-            <form method="post" autocomplete="off" class="clouds-form" id="cloudsFormOptions"></form>
+            <form method="post" autocomplete="off" class="clouds-form" id="clouds-form-options"></form>
             Background color: <input class="jscolor {onFineChange:'updateBg(this)'}" value="77B5FE">
-            <div class="field-information" id="fieldInformation"></div>
+            <div class="field-information"></div>
         </div>
     </div>
 
+    <a class="download-svg" id="download">Download SVG</a>
+
+
+    <script src="https://cdn.rawgit.com/gliffy/canvas2svg/master/canvas2svg.js" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/addons/p5.dom.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/addons/p5.sound.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"></script>
+
+    <script src="sketch.js" type="text/javascript"></script>
+    <script src="custom_ui.js" type="text/javascript"></script>
+    <script src="generators.js" type="text/javascript"></script>
 </body>
-<script src="libraries/p5.js" type="text/javascript"></script>
-
-<script src="libraries/p5.dom.js" type="text/javascript"></script>
-<script src="libraries/p5.sound.js" type="text/javascript"></script>
-
-
-<script src="sketch.js" type="text/javascript"></script>
-<script src="jscolor/jscolor.min.js"></script>
-<script src="generators.js" type="text/javascript"></script>
-<script src="custom_ui.js" type="text/javascript"></script>
-
 </html>

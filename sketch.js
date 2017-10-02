@@ -1,25 +1,23 @@
 let nameInput,
     selectionInput,
-    generator_select,
     canvas,
     generators = [],
+    generator,
+    bounds,
     formContainer = document.querySelectorAll(".form-contain")[0],
-    aTitle = document.getElementById("aTitle"),
-    aAuthor = document.getElementById("authorName"),
-    canRedraw = true,
-    backgroundColor = "#77B5FE";
+    titleElement = document.getElementById("attrib-title"),
+    authorElement = document.getElementById("author-name"),
+    backgroundColor = "#77B5FE",
+    download = document.getElementById("download"),
+    canvasSvg,
+    theSeed;
 
 // Resizes the canvas to match the CSS
 function resize() {
-    let canParentStyle = window.getComputedStyle(canvas.elt.parentNode),
-        cWidth  = parseInt(canParentStyle.width),
-        cHeight = parseInt(canParentStyle.height);
-
-        cHeight -= parseInt(canParentStyle.paddingTop) + parseInt(canParentStyle.paddingBottom);
-        cWidth  -= parseInt(canParentStyle.paddingLeft) + parseInt(canParentStyle.paddingRight);
-    resizeCanvas(cWidth, cHeight, false);
-
-
+    let parStyle = window.getComputedStyle(canvas.elt.parentNode),
+        cWidth = parseInt(parStyle.width),
+        cHeight = parseInt(parStyle.height);
+    resizeCanvas(cWidth, cHeight, true);
 }
 
 // When the window resizes
@@ -28,96 +26,144 @@ function windowResized() {
     redraw();
 }
 
-// When clicked
-function mousePressed() {
-    redraw();
-}
-
 // On setup
 function setup() {
     // Default canvas size
-    canvas = createCanvas(1200, 1200);
-    canvas.parent("sketchContain");
-
-    // *************************************************************************
+    canvas = createCanvas(window.innerWidth, window.innerHeight);
+    canvas.parent("sketch-contain");
+    // When clicked
+    canvas.elt.addEventListener("click", redraw);
+    noLoop();
+    resize();
 
     // Create list of selectable items
     // Begin selectable options object
-    let theSelectOptions = {
-        "default": "random",
-        "random": "Random"
-    };
-    // Finish populating theSelectOptions
-    for (var i = 0; i < generators.length; i++) {
-        theSelectOptions[generators[i].name.toLowerCase()] = generators[i].name;
-    }
+    let selectOptions = {
+            "default": "random",
+            "random": "Random"
+        };
+    // Finish populating selectOptions
+    generators.forEach((n, i) => {
+            selectOptions[n.name.toLowerCase()] = {
+                    value: n.name,
+                    group: "community"
+                };
+        });
     // Generate selector
-    selectionInput = new MaterialSelect(theSelectOptions, "", redraw);
+    selectionInput = new MaterialSelect(selectOptions, "", true, redraw);
     // Add to clouds form
-    select("#cloudsFormGenerator").elt.appendChild(selectionInput.Nodes);
-
-    // *************************************************************************
+    select("#clouds-form-generator").elt.appendChild(selectionInput.nodesRef);
 
     // Material Design input field
-    nameInput = new MaterialText("", "^([A-zÀ-ž\\d\\-\\s]{1,32})$", "Character set: a-z A-Z 0-9; 1-32 characters.", true, "user_name", "Name", "");
+    nameInput = new MaterialText("", "", "", true, "user_name", "Name", "");
     // Add to clouds form
-    select("#cloudsFormOptions").elt.appendChild(nameInput.Nodes);
+    select("#clouds-form-options").elt.appendChild(nameInput.nodesRef);
     // Listen for value changes to redraw()
-    nameInput.InputNode.addEventListener("input", redraw);
+    nameInput.inputNode.addEventListener("input", redraw);
 
-    // *************************************************************************
-
-    noLoop();
-    resize();
 }
 
-function updateBg(color){
+function updateBg(color) {
     backgroundColor = color.toHEXString();
     redraw();
 }
 
-function draw() {
+function handleDrawing(){
+    push();
+
     document.getElementsByTagName("body")[0].style.background = backgroundColor;
     background(backgroundColor);
-    var generator;
-    if (selectionInput.CurOpt !== 'random') {
-        // Get generator chosen
-        generator = generators[selectionInput.CurIndex - 2];
-    } else {
-        // Chose a random generator
-        generator = random(generators);
-    }
-    scale(.5);
-    translate(width * .5, height * .5);
+
+    scale(.7);
+    translate(width * .2, height * .2);
 
     // Establish our default cloud drawing paremeters.
+    rectMode(CORNER);
+  	ellipseMode(CENTER);
     angleMode(RADIANS);
     strokeWeight(10);
     stroke("#000");
     fill("#FFF");
     // Render the chosen cloud and
-    var bounds = generator.fn();
-    // Reset styles for the text
-    fill("#000");
-    strokeWeight(0);
-    textSize(16);
-    textAlign(CENTER, CENTER);
+    bounds = generator.fn();
 
-    textSize(100);
-    // Output the name (Hopefully within the bounds)
-    let theName = nameInput.ValidInput ? nameInput.ValidInput : "Example Name";
-    text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
+    if (bounds) {
+      // Reset styles for the text
+      fill(bounds.length > 4 ? bounds[4] : "#000");
+      strokeWeight(0);
+      textSize(16);
+      textAlign(CENTER, CENTER);
+
+      textSize(100);
+      // Output the name (Hopefully within the bounds)
+      let theName = nameInput.validInput ? nameInput.validInput : "Example Name";
+      text(theName, bounds[0], bounds[1], bounds[2], bounds[3]);
+    } else {
+      console.log(generator.name + " by " + generator.creator + ", did not return bounds.")
+    }
     // Describe which design
-    aTitle.innerHTML = generator.name;
-    aAuthor.innerHTML = generator.creator;
+    titleElement.innerHTML = generator.name;
+    authorElement.innerHTML = generator.creator;
+
+    pop();
+}
+
+function genRandomSeed(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function setSvgDownload(e){
+    let tmpContext = canvas.drawingContext;
+
+    let canStyleWidth  = parseInt(canvas.elt.style.width),
+        canStyleHeight = parseInt(canvas.elt.style.height);
+
+    canvasSvg = new C2S(canStyleWidth, canStyleHeight);
+    canvas.drawingContext = canvasSvg;
+
+    randomSeed(theSeed);
+    handleDrawing();
+    let theSVG   = canvasSvg.getSerializedSvg(true),
+        svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
+        svgUrl   = URL.createObjectURL(svgBlob);
+
+    download.setAttribute("href", svgUrl);
+    canvas.drawingContext = tmpContext;
+}
+
+function draw() {
+
+    download.removeEventListener("mousedown", setSvgDownload);
+
+    theSeed = genRandomSeed(1, 100);
+
+    if (selectionInput.curOpt !== 'random') {
+        // Get generator chosen
+        generator = generators[selectionInput.curIndex - 2];
+    } else {
+        // Chose a random generator
+        generator = random(generators);
+
+    }
+
+    randomSeed(theSeed);
+    noiseSeed(theSeed);
+    handleDrawing();
+
+    download.setAttribute("download", generator.name.split(' ').join('_') + ".svg");
+
+    download.addEventListener("mousedown", setSvgDownload);
+
+    randomSeed();
+    noiseSeed();
 
 }
 
 // Register a new cloud generator.
 function register(fn, name, creator) {
     generators.push({
-        fn: fn,
-        name: name,
-        creator: creator
-    });
+            fn: fn,
+            name: name,
+            creator: creator
+        });
 }
