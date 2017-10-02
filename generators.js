@@ -1372,3 +1372,45 @@ function MaxTaylorCloud() {
 }
 
 register(MaxTaylorCloud, "Cloudy McCloudFace", "Max Taylor");
+
+// Koch snowflake-shaped cloud
+function kochSnowCloud() {
+  stroke(0);
+  strokeWeight(2);
+  fill(255);
+
+  let pos = createVector(450, 600);
+  let angle = 0;
+  let yscale = 0.8;
+
+  function move(r) {
+    pos.add(createVector(r * Math.cos(angle), r * Math.sin(angle) * yscale));
+  }
+
+  beginShape();
+  for (let i = 0; i < 13; i++) {
+    koch(250);
+    angle -= 2 * PI / 13;
+  }
+  endShape(CLOSE);
+
+  function koch(r) {
+    if (r > 5) {
+      koch(r / 3);
+      angle += PI / 3;
+      koch(r / 3);
+      angle -= 2 * PI / 3;
+      koch(r / 3);
+      angle += PI / 3
+      koch(r / 3);
+    } else {
+      vertex(pos.x, pos.y);
+      move(r);
+    }
+  }
+
+  return [150, 0, 850, 400];
+}
+
+// Register your function with register(function, style_name, author_name)
+register(kochSnowCloud, "Koch Snow-Cloud", "Kristian Wichmann");
