@@ -307,6 +307,10 @@ input[type="text"] {
     border-bottom: 2px solid #d8d8d8;
 }
 
+input[type="text"]:invalid {
+    box-shadow: none;
+}
+
 input[type="text"]:focus {
     border-bottom-color: #b300ff;
     color: #464c57;
