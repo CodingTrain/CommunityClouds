@@ -35,11 +35,11 @@ function mouseReleased() {
 
 function keyReleased() {
     if (keyCode == UP_ARROW || keyCode == LEFT_ARROW) {
-        selectionInput.CurIndex--;
+        selectionInput.CurIndex = selectionInput.CurIndex - 1;
         if (selectionInput.CurIndex < 2) selectionInput.CurIndex = generators.length;
         redraw();
     } else if (keyCode == DOWN_ARROW || keyCode == RIGHT_ARROW) {
-        selectionInput.CurIndex++;
+        selectionInput.CurIndex = selectionInput.CurIndex + 1;
         if (selectionInput.CurIndex < 3 || selectionInput.CurIndex >= generators.length) selectionInput.CurIndex = 2;
         redraw();
     }
