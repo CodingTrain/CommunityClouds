@@ -162,13 +162,13 @@ function kazakhCloud(radius = 200, min = 8, max = 10) {
     // min and max values.
     let points = [];
     let offset = radius / 5;
-    let numPoints = Math.round(Math.random()*(max-min)+min);
+    let numPoints = Math.round(random(min, max));
     for (let i = 0; i < numPoints; i++) {
         // generating "peak" points of a cloud away from the center
         let angle = (TWO_PI / numPoints) * i;
         let away;
         while (true) {
-            away = Math.round(Math.random() * radius + offset);
+            away = Math.round(random(radius) + offset);
             if (Math.abs(away - radius) <= offset) {
                 break;
             }
@@ -988,8 +988,8 @@ function bitStoneRectCloud() {
     let size;
 
     while(currentX < BS_CLOUD_WIDTH - (BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
-        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(random() * size / 2.0 - (size / 4.0));
 
         if(currentX < BS_CLOUD_WIDTH / 2.0) {
             type = (nextY <= currentY ? BS_RECT_TOP_LEFT : BS_RECT_TOP);
@@ -1027,8 +1027,8 @@ function bitStoneRectCloud() {
     type = 0;
 
     while(currentX < BS_CLOUD_WIDTH - BS_CLOUD_MAX_SIZE) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
-        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(random() * size / 2.0 - (size / 4.0));
 
         if(currentX < BS_CLOUD_WIDTH / 2.0) {
             type = (nextY <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_LEFT);
@@ -1064,7 +1064,7 @@ function bitStoneRectCloud() {
     currentY = topRectList[0].y + topRectList[0].size;
 
     while(currentY < (bottomRectList[0].y - bottomRectList[0].size - BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
 
         type = BS_RECT_LEFT;
 
@@ -1092,7 +1092,7 @@ function bitStoneRectCloud() {
     currentY = topRectList[topRectList.length - 1].y + topRectList[topRectList.length - 1].size;
 
     while(currentY < (bottomRectList[bottomRectList.length - 1].y - BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
         type = BS_RECT_RIGHT;
 
         rightRectList.push({
@@ -1348,23 +1348,23 @@ function MaxTaylorCloud() {
     const showTransparency = false;
     const puffyNess = 40
     const radius = 150
-    
+
     for (let i = 0; i < puffyNess; i++) {
-        let x = width/2 + map(Math.random(), 0, 1, -200, 200)
-        let y = height/2 + map(Math.random(), 0, 1, -100, 100)
+        let x = width/2 + random(-200, 200)
+        let y = height/2 + random(-100, 100)
         clouds.push({ x, y })
 
         if (!showBorder) { continue; }
-        
+
         noFill()
         strokeWeight(5)
         stroke(0)
         ellipse(x, y, radius, radius)
     }
-    
+
     for (let cloud of clouds) {
         noStroke()
-        fill(255, 255, 255, (!showBorder && showTransparency) ? map(Math.random(), 0, 1, 170, 255) : 255);
+        fill(255, 255, 255, (!showBorder && showTransparency) ? random(170, 255) : 255);
         ellipse(cloud.x, cloud.y, radius, radius)
     }
 
@@ -1428,4 +1428,3 @@ function AbdulCloud(){
 }
 
 register(AbdulCloud, "SillyBlob", "Abdul Shaikh");
-
