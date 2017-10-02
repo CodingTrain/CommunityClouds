@@ -1229,49 +1229,114 @@ function curveVertexCloud() {
 register(curveVertexCloud, "curveVertex() Cloud", "xperion");
 
 function noCloud() {
-    function drawCloud(points) {
-	stroke(bg);
-	beginShape();
-	for (var i = 0; i < points.length; i++) {
-	    vertex(points[i].x, points[i].y);
-	}
-	endShape(CLOSE);
+  var bg, p, p1, p2, p3, p4, p5, center;
+  function drawCloud(points) {
+    stroke(bg);
+    beginShape();
+    for (var i = 0; i < points.length; i++) {
+      vertex(points[i].x, points[i].y);
+    }
+    endShape(CLOSE);
 
-	stroke(0);
-	p = points[0];
-	for (var i = 1; i < points.length; i++) {
-    	    drawCloudArc(p, points[i]);
-	    p = points[i];
-	}
-
-	line(points[0].x, points[0].y, points[points.length-1].x, points[points.length-1].y);
+    stroke(0);
+    p = points[0];
+    for (var i = 1; i < points.length; i++) {
+      drawCloudArc(p, points[i]);
+      p = points[i];
     }
 
-    function drawCloudArc(begin, end) {
-	function f(p,d) {
-	    return p[d] - ((center[d] - p[d])/2);
-	}
-	center = {"x": width/2, "y": height/2};
-	bezier(begin.x, begin.y, f(begin, "x"), f(begin,"y")-200, f(end, "x"), f(end, "y")-200, end.x, end.y);
+    line(points[0].x, points[0].y, points[points.length-1].x, points[points.length-1].y);
+  }
+
+  function drawCloudArc(begin, end) {
+    function f(p,d) {
+      return p[d] - ((center[d] - p[d])/2);
     }
+    center = {"x": width/2, "y": height/2};
+    bezier(begin.x, begin.y, f(begin, "x"), f(begin,"y")-200, f(end, "x"), f(end, "y")-200, end.x, end.y);
+  }
 
-    function randomOffset(n) {
-	return random(n*2)-n;
-    }
+  function randomOffset(n) {
+    return random(n*2)-n;
+  }
 
-    p1 = {"x":200, "y":height-300};
-    p2 = {"x":(width/4)+randomOffset(100), "y":240+randomOffset(50)};
-    p3 = {"x":width*2/4+randomOffset(100), "y":150+randomOffset(50)};
-    p4 = {"x":150+(width*3/4)+randomOffset(100), "y":270+randomOffset(50)};
-    p5 = {"x":width-200, "y":height-300};
+  p1 = {"x":200, "y":height-300};
+  p2 = {"x":(width/4)+randomOffset(100), "y":240+randomOffset(50)};
+  p3 = {"x":width*2/4+randomOffset(100), "y":150+randomOffset(50)};
+  p4 = {"x":150+(width*3/4)+randomOffset(100), "y":270+randomOffset(50)};
+  p5 = {"x":width-200, "y":height-300};
 
-    bg = 150;
-    fill(bg);
-    drawCloud([p1,p2,p3,p4,p5].map(function(e){return {"x":e.x+100,"y":e.y}}));
-    bg = 255;
-    fill(bg);
-    drawCloud([p1,p2,p3,p4,p5]);
+  bg = 150;
+  fill(bg);
+  drawCloud([p1,p2,p3,p4,p5].map(function(e){return {"x":e.x+100,"y":e.y}}));
+  bg = 255;
+  fill(bg);
+  drawCloud([p1,p2,p3,p4,p5]);
 
-    return [100, 100, width - 200, height - 200];
+  return [100, 100, width - 200, height - 200];
 }
 register(noCloud, "There is no cloud", "rnoennig");
+
+/**
+ * To draw a square cloud composed of other squares
+ */
+function squareBlueCloud()
+{
+
+  noStroke();
+  rectMode(CENTER);
+
+  // Blue palette
+  var palette = ['#012f4b', '#6697bb', '#03396f', '#012345', '#345577', '#00a9ff', '#007199', '#0000ff' ];
+  var maxSquare = 40;
+
+  // Function to draw n concentric squares from a center (x, y)
+  function putSquare(x, y, s, n) {
+
+    for (var i = n - 1; i >= 0; --i) {
+
+      fill(palette[floor(random(0, palette.length))]);
+      rect(x, y, s * (i + 1), s * (i + 1));
+    }
+  }
+
+  // Main body
+  var maxLen = floor(min(width, height) / 20);
+  putSquare(width / 2, height / 2, maxLen, 15);
+
+  // Sub clouds
+  for (var i = 0; i < maxSquare; ++i) {
+
+  	putSquare(
+      random((width / 2) - maxLen * 8, (width / 2) + maxLen * 8),
+      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8),
+      maxLen,
+      floor(random(1, 6))
+    );
+  }
+
+  return [width / 2, height / 2, maxLen * 15, maxLen * 15, "77F"];
+}
+
+register(squareBlueCloud, "Square Blue Cloud", "Juan Sebastian Robles");
+
+function CloudyCloud()
+{
+	//I'm really sorry about this one xD
+	translate(width/2,height/2);
+	noStroke();
+	for(let i = 0; i < 30; i++)
+		ellipse(random(-130,130),random(-15,25),random(50,200));
+
+  return [-130,-50,130*2,50*2];
+}
+register(CloudyCloud, "Radnomly Generated Cloud", "this.Zohir")
+
+function CloudyMcCloudson(){
+  for(var i = 0; i<15;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+  return [700, 200, 400,400];
+}
+register(CloudyMcCloudson, "Cloudy McCloudson", "Marius Bauer");
