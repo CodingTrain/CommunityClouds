@@ -1414,3 +1414,18 @@ function kochSnowCloud() {
 
 // Register your function with register(function, style_name, author_name)
 register(kochSnowCloud, "Koch Snow-Cloud", "Kristian Wichmann");
+
+function AbdulCloud(){
+  const canvas = document.querySelector('#defaultCanvas0');
+  noStroke();
+  c = {h:parseInt(canvas.style.height.replace('px',''))/2, w:parseInt(canvas.style.width.replace('px',''))/2};
+  const numberOfElip = random(1,500)
+  for(var i = 0; i<numberOfElip;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+  return [700, 200, 400,400];
+}
+
+register(AbdulCloud, "SillyBlob", "Abdul Shaikh");
+
