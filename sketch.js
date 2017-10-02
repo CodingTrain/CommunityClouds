@@ -33,6 +33,19 @@ function mouseReleased() {
     redraw();
 }
 
+function keyReleased() {
+    if (keyCode == UP_ARROW || keyCode == LEFT_ARROW) {
+        selectionInput.CurIndex--;
+        if (selectionInput.CurIndex < 2) selectionInput.CurIndex = generators.length;
+        redraw();
+    } else if (keyCode == DOWN_ARROW || keyCode == RIGHT_ARROW) {
+        selectionInput.CurIndex++;
+        if (selectionInput.CurIndex < 3 || selectionInput.CurIndex >= generators.length) selectionInput.CurIndex = 2;
+        redraw();
+    }
+    return false;
+}
+
 // On setup
 function setup() {
     // Default canvas size
