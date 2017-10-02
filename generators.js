@@ -358,10 +358,12 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 function unstableCloud() {
 
   // Utils
-  const DEBUG = true
+  const DEBUG = false
   const debugColor = (alpha=150) => color(random(255), random(255), random(255), alpha)
   const cloudColor = (alpha=255) => color(255, alpha)
-  const createCloud = (pos, d) => {return{pos: pos, d: d}}
+  const createCloud = (pos, d) => {
+    return {pos: pos, d: d}
+  }
   const drawCanvasBackground = () => {
     noStroke()
     fill(0,0,0,25)
@@ -378,31 +380,101 @@ function unstableCloud() {
     ellipse(cloud.pos.x, cloud.pos.y, cloud.d, cloud.d)
   }
 
+  // const drawGuidLine = () =>
+  const getArcCenter = (A, B, C) => {
+
+    // Mid-points AB and BC
+    const midAB = A.copy().add(B).div(2)
+    const midBC = B.copy().add(C).div(2)
+
+    // Slopes AB and BC
+    const slopeAB = (B.y-A.y)/(B.x-A.x)
+    const slopeBC = (C.y-B.y)/(C.x-B.x)
+
+    // Perpendicular lines runing through mid-points AB and BC
+    const slopePerpAB = -Math.pow(slopeAB, -1)
+    const slopePerpBC = -Math.pow(slopeBC, -1)
+
+    // determine b to get linear equation standard form y = mx + b
+    const bAB = midAB.y - slopePerpAB * midAB.x
+    const bBC = midBC.y - slopePerpBC * midBC.x
+
+    // get intersection point
+    const x = (bBC - bAB)/(slopePerpAB - slopePerpBC)
+    const y = slopePerpBC * x + bBC
+
+    if(DEBUG) {
+      stroke(255)
+      strokeWeight(5)
+      line(midAB.x, midAB.y, x, y)
+      line(midBC.x, midBC.y, x, y)
+      line(B.x, B.y, C.x, C.y)
+      line(B.x, B.y, A.x, A.y)
+      noStroke()
+      fill(0, 200)
+      ellipse(A.x, A.y, 20, 20)
+      ellipse(B.x, B.y, 20, 20)
+      ellipse(C.x, C.y, 20, 20)
+      ellipse(x, y, 20, 20)
+    }
+
+    return createVector(x, y)
+  }
+
   // Variable factores
   const sizeFactor = 1
-  const rndBaseHeight = 50
+  const rndBaseHeight = 250 + random(50)
+  const rndArcCenterHeight = -25 + random(75)
+  const nPuffyClouds = Math.round(6+random(1))
+  const puffyCloudsBaseSize = 300 * sizeFactor
+  const puffyCloudsSizeOffset = 100 * sizeFactor
 
   // Cloud base
   const baseWidth = 1100 * sizeFactor
-  const baseHeight = (250 + random(rndBaseHeight)) * sizeFactor
+  const baseHeight = rndBaseHeight * sizeFactor
   const baseCenter = createVector(width*.5, height*.6)
   const basePos = createVector(baseCenter.x - baseWidth *.5, baseCenter.y - baseHeight *.5)
 
   // Puffy clouds
-  let puffyDiameter = baseHeight
-  let puffyRadius = puffyDiameter*.5
-  let puffyPos = createVector(basePos.x, basePos.y + baseHeight - puffyRadius)
+  let puffyClouds = []
+  const puffyDiameter = baseHeight
+  const puffyRadius = puffyDiameter*.5
+  const puffyPos = createVector(basePos.x, basePos.y + baseHeight - puffyRadius)
   const puffyLeft = createCloud(puffyPos, puffyDiameter)
   const puffyRight = createCloud(puffyPos.copy().add(baseWidth, 0), puffyDiameter)
+  puffyClouds.push(puffyLeft)
+  puffyClouds.push(puffyRight)
+
+  // Create arc from 3 points
+  const A = puffyLeft.pos.copy().sub(puffyRadius*.5, 0)
+  const B = baseCenter.copy().sub(0, baseHeight*.5).sub(0, rndArcCenterHeight)
+  const C = puffyRight.pos.copy().add(puffyRadius*.5, 0)
+  const arcCenter = getArcCenter(A, B, C)
+  const arcRadius = B.dist(arcCenter)
+  const arcDiameter = arcRadius * 2
+  const arcOffsetAngle = atan(-(C.y - arcCenter.y) / (C.x - arcCenter.x))
+  const arcTotalAngle = PI - 2*arcOffsetAngle
+  const arcAngleStep = arcTotalAngle/(nPuffyClouds-1)
+
+  for(let i = 1; i < nPuffyClouds-1; i++) {
+    const x = cos(i*(arcAngleStep)+arcOffsetAngle)*arcRadius
+    const y = -sin(i*(arcAngleStep)+arcOffsetAngle)*arcRadius
+    const sizeOffset = map(y, -sin(arcOffsetAngle) * arcRadius, -arcRadius, 0, puffyCloudsSizeOffset, true)
+    const r = puffyCloudsBaseSize + random(sizeOffset)
+    puffyClouds.push(createCloud(createVector(x, y).add(arcCenter), r))
+  }
 
   // Draw
-  if(DEBUG) drawCanvasBackground()
+  if(DEBUG) {
+    drawCanvasBackground()
+    stroke(0)
+    noFill()
+    arc(arcCenter.x, arcCenter.y, arcDiameter, arcDiameter, PI+arcOffsetAngle, -arcOffsetAngle)
+  }
   drawCloudBase(basePos, baseWidth, baseHeight)
-  drawPuffyCloud(puffyLeft)
-  drawPuffyCloud(puffyRight)
+  puffyClouds.forEach(drawPuffyCloud)
   
   return [basePos.x, basePos.y - baseHeight*.1, baseWidth, baseHeight]
-
 }
 
 register(unstableCloud, "A Cloud", "@unstablectrl")
