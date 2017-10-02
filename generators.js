@@ -1553,3 +1553,49 @@ function AbdulCloud(){
 }
 
 register(AbdulCloud, "SillyBlob", "Abdul Shaikh");
+
+function dryCloud(){
+  
+  var cloudWidth = width * 9/10;
+
+  var startPoint = createVector((width - cloudWidth)/2, height * 3/5);
+  var endPoint = createVector((width + cloudWidth)/2, height * 3/5);
+
+  var points = [];
+
+  points.push(startPoint);
+  stroke(255);
+  line(startPoint.x,startPoint.y,endPoint.x,endPoint.y);
+
+  for (var i = 1; i < 100; i++) {
+    points.push(createVector(random(points[i-1].x + 10, points[i-1].x + 20), random(points[i-1].y - 60,endPoint.y)));
+    var radius = dist(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
+    var from = points[i-1].copy().sub(points[i]).heading();
+    var to = endPoint.copy().sub(points[i]).heading();
+    if (to < from) {  
+      to += TWO_PI;
+    }
+    fill(255);
+    if (points[i-1].x + radius*2 < endPoint.x) {
+
+      arc(points[i].x, points[i].y, radius*2, radius*2, from, to, PIE);
+    } else {
+      from = startPoint.copy().sub(points[i]).heading();
+      if (to < from) {  
+        to += TWO_PI;
+      }
+      radius = dist(endPoint.x, endPoint.y, points[points.length - 1].x, points[points.length - 1].y);
+      arc(points[i].x, points[i].y, radius*2, radius*2, from, to, PIE);
+      ellipse(points[i].x, points[i].y,2*(startPoint.y - points[i].y), 2*(startPoint.y - points[i].y));
+      break;
+    }
+  }
+  points.push(endPoint);
+  beginShape();
+  for(var i = 0; i < points.length; i++) {
+    vertex(points[i].x, points[i].y);
+  }
+  endShape(CLOSE);
+}
+
+register(dryCloud, "Dry Cloud", "DryCreations");
