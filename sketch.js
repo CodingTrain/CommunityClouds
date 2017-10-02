@@ -37,7 +37,6 @@ function keyReleased() {
         redraw();
     }
     selectionInput.curOpt = Object.keys(selectionInput.selectableOptions)[selectionInput.curIndex];
-    selectionInput.curOptNode = selectionInput.curOpt;
     
     return false;
 }
