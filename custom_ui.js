@@ -332,6 +332,10 @@ class MaterialSelect extends FormFields{
     get Value(){
         return this._value;
     }
+    
+    get SelectableOptions(){
+        return this._selectableOptions;
+    }
 
     get Options(){
         return this._optionsNodes;
