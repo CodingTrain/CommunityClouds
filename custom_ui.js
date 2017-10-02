@@ -269,15 +269,27 @@ class MaterialSelect extends FormFields {
         return s;
     }
 
-    chooseOptions(e) { // selectionInput.containerNode
+    clickOffReset(e) {
+        let target = e.target;
+        let resetCallback = this.clickOffReset.bind(this);
+        if(!this.containerNode.contains(target)){
+            this.containerNode.classList.remove("showing");
+            window.removeEventListener("click", resetCallback);
+        }
+    }
+
+    chooseOptions(e) {
         let target = e.target;
         let isCurOpt = target === this.curOptNode;
+        let resetCallback = this.clickOffReset.bind(this);
+        window.addEventListener("click", resetCallback);
         if(isCurOpt) {
             this.containerNode.classList.toggle("showing");
             return;
         }
         else {
             this.containerNode.classList.remove("showing");
+            window.removeEventListener("click", resetCallback);
         }
         if(target.classList.contains("material-select-option")) {
             this.curOpt = target.dataset.optionVal;
@@ -291,27 +303,7 @@ class MaterialSelect extends FormFields {
     }
 
     addSelectorListeners(){
-            window.addEventListener("click", this.chooseOptions.bind(this));
-    }
-
-    set Value(input){
-        this._value = input;
-    }
-
-    get Value(){
-        return this._value;
-    }
-    
-    get SelectableOptions(){
-        return this._selectableOptions;
-    }
-
-    get Options(){
-        return this._optionsNodes;
-    }
-
-    addSelectorListeners(){
         let chooseOptions = this.chooseOptions.bind(this);
-        window.addEventListener("click", chooseOptions);
+        this.containerNode.addEventListener("click", chooseOptions);
     }
 }
