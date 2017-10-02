@@ -36,7 +36,8 @@ function keyReleased() {
         if (selectionInput.curIndex < 3 || selectionInput.curIndex >= generators.length) selectionInput.curIndex = 2;
         redraw();
     }
-    selectionInput.curOpt = Object.keys(selectionInput.selectableOptions)[selectionInput.curIndex]
+    selectionInput.curOpt = Object.keys(selectionInput.selectableOptions)[selectionInput.curIndex];
+    selectionInput.curOptNode = selectionInput.curOpt;
     
     return false;
 }
