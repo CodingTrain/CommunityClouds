@@ -1,6 +1,3 @@
-/* background: #77B5FE; */
-
-/* Import Open Sans Normal 400, Normal 400 Italic, Bold 700, and Bold 700 Italic from Google Web Fonts */
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic);
 
 * {
@@ -39,7 +36,6 @@ html {
     font-size: 0;
     height: 100%;
     width: 100%;
-    padding: 42px;
 }
 
 .form-contain,
@@ -73,6 +69,42 @@ input[type="submit"] {
     bottom: 36px;
     left: 36px;
     padding: 12px;
+}
+
+.download-svg {
+    opacity: .3;
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    text-align: left;
+    position:absolute;
+    bottom: 36px;
+    right: 36px;
+    padding: 12px;
+    background: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2);
+
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    transition: all .3s cubic-bezier(.57,.01,.1,1);
+
+    cursor: pointer;
+}
+
+.download-svg:hover {
+
+    opacity: 1;
+    -webkit-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -moz-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    -o-transition: all .3s cubic-bezier(.57,.01,.1,1);
+    transition: all .3s cubic-bezier(.57,.01,.1,1);
 }
 
 .field-information {
@@ -273,6 +305,10 @@ input[type="text"] {
     color: #8c8c8c;
     background: transparent;
     border-bottom: 2px solid #d8d8d8;
+}
+
+input[type="text"]:invalid {
+    box-shadow: none;
 }
 
 input[type="text"]:focus {

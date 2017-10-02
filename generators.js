@@ -162,13 +162,13 @@ function kazakhCloud(radius = 200, min = 8, max = 10) {
     // min and max values.
     let points = [];
     let offset = radius / 5;
-    let numPoints = Math.round(Math.random()*(max-min)+min);
+    let numPoints = Math.round(random(min, max));
     for (let i = 0; i < numPoints; i++) {
         // generating "peak" points of a cloud away from the center
         let angle = (TWO_PI / numPoints) * i;
         let away;
         while (true) {
-            away = Math.round(Math.random() * radius + offset);
+            away = Math.round(random(radius) + offset);
             if (Math.abs(away - radius) <= offset) {
                 break;
             }
@@ -988,8 +988,8 @@ function bitStoneRectCloud() {
     let size;
 
     while(currentX < BS_CLOUD_WIDTH - (BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
-        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(random() * size / 2.0 - (size / 4.0));
 
         if(currentX < BS_CLOUD_WIDTH / 2.0) {
             type = (nextY <= currentY ? BS_RECT_TOP_LEFT : BS_RECT_TOP);
@@ -1027,8 +1027,8 @@ function bitStoneRectCloud() {
     type = 0;
 
     while(currentX < BS_CLOUD_WIDTH - BS_CLOUD_MAX_SIZE) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
-        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(random() * size / 2.0 - (size / 4.0));
 
         if(currentX < BS_CLOUD_WIDTH / 2.0) {
             type = (nextY <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_LEFT);
@@ -1064,7 +1064,7 @@ function bitStoneRectCloud() {
     currentY = topRectList[0].y + topRectList[0].size;
 
     while(currentY < (bottomRectList[0].y - bottomRectList[0].size - BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
 
         type = BS_RECT_LEFT;
 
@@ -1092,7 +1092,7 @@ function bitStoneRectCloud() {
     currentY = topRectList[topRectList.length - 1].y + topRectList[topRectList.length - 1].size;
 
     while(currentY < (bottomRectList[bottomRectList.length - 1].y - BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
         type = BS_RECT_RIGHT;
 
         rightRectList.push({
@@ -1340,3 +1340,91 @@ function CloudyMcCloudson(){
   return [700, 200, 400,400];
 }
 register(CloudyMcCloudson, "Cloudy McCloudson", "Marius Bauer");
+
+function MaxTaylorCloud() {
+    let clouds = []
+    // Play with these to get the desired effect
+    const showBorder = true
+    const showTransparency = false;
+    const puffyNess = 40
+    const radius = 150
+
+    for (let i = 0; i < puffyNess; i++) {
+        let x = width/2 + random(-200, 200)
+        let y = height/2 + random(-100, 100)
+        clouds.push({ x, y })
+
+        if (!showBorder) { continue; }
+
+        noFill()
+        strokeWeight(5)
+        stroke(0)
+        ellipse(x, y, radius, radius)
+    }
+
+    for (let cloud of clouds) {
+        noStroke()
+        fill(255, 255, 255, (!showBorder && showTransparency) ? random(170, 255) : 255);
+        ellipse(cloud.x, cloud.y, radius, radius)
+    }
+
+    return [width/2 - 150, height/2 - 50, 300, 100]
+}
+
+register(MaxTaylorCloud, "Cloudy McCloudFace", "Max Taylor");
+
+// Koch snowflake-shaped cloud
+function kochSnowCloud() {
+  stroke(0);
+  strokeWeight(2);
+  fill(255);
+
+  let pos = createVector(450, 600);
+  let angle = 0;
+  let yscale = 0.8;
+
+  function move(r) {
+    pos.add(createVector(r * Math.cos(angle), r * Math.sin(angle) * yscale));
+  }
+
+  beginShape();
+  for (let i = 0; i < 13; i++) {
+    koch(250);
+    angle -= 2 * PI / 13;
+  }
+  endShape(CLOSE);
+
+  function koch(r) {
+    if (r > 5) {
+      koch(r / 3);
+      angle += PI / 3;
+      koch(r / 3);
+      angle -= 2 * PI / 3;
+      koch(r / 3);
+      angle += PI / 3
+      koch(r / 3);
+    } else {
+      vertex(pos.x, pos.y);
+      move(r);
+    }
+  }
+
+  return [150, 0, 850, 400];
+}
+
+// Register your function with register(function, style_name, author_name)
+register(kochSnowCloud, "Koch Snow-Cloud", "Kristian Wichmann");
+
+function AbdulCloud(){
+  const canvas = document.querySelector('#defaultCanvas0');
+  noStroke();
+  c = {h:parseInt(canvas.style.height.replace('px',''))/2, w:parseInt(canvas.style.width.replace('px',''))/2};
+  const numberOfElip = random(1,500)
+  for(var i = 0; i<numberOfElip;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+  return [700, 200, 400,400];
+}
+
+register(AbdulCloud, "SillyBlob", "Abdul Shaikh");

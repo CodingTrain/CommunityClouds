@@ -2,29 +2,27 @@ let nameInput,
     selectionInput,
     canvas,
     generators = [],
+    generator,
+    bounds,
+    formContainer = document.querySelectorAll(".form-contain")[0],
     titleElement = document.getElementById("attrib-title"),
     authorElement = document.getElementById("author-name"),
-    backgroundColor = "#77B5FE";
+    backgroundColor = "#77B5FE",
+    download = document.getElementById("download"),
+    canvasSvg,
+    theSeed;
 
 // Resizes the canvas to match the CSS
 function resize() {
     let parStyle = window.getComputedStyle(canvas.elt.parentNode),
         cWidth = parseInt(parStyle.width),
         cHeight = parseInt(parStyle.height);
-
-    cHeight -= parseInt(parStyle.paddingTop) + parseInt(parStyle.paddingBottom);
-    cWidth -= parseInt(parStyle.paddingLeft) + parseInt(parStyle.paddingRight);
     resizeCanvas(cWidth, cHeight, true);
 }
 
 // When the window resizes
 function windowResized() {
     resize();
-    redraw();
-}
-
-// When clicked
-function mouseReleased() {
     redraw();
 }
 
@@ -77,6 +75,7 @@ function setup() {
     select("#clouds-form-options").elt.appendChild(nameInput.nodesRef);
     // Listen for value changes to redraw()
     nameInput.inputNode.addEventListener("input", redraw);
+
 }
 
 function updateBg(color) {
@@ -84,19 +83,14 @@ function updateBg(color) {
     redraw();
 }
 
-function draw() {
-    document.body.style.background = backgroundColor;
+function handleDrawing(){
+    push();
+
+    document.getElementsByTagName("body")[0].style.background = backgroundColor;
     background(backgroundColor);
-    let generator;
-    if(selectionInput.curOpt !== "random") {
-        // Get generator chosen
-        generator = generators[selectionInput.curIndex - 2];
-    } else {
-        // Chose a random generator
-        generator = random(generators);
-    }
-    scale(0.5);
-    translate(width * 0.5, height * 0.5);
+
+    scale(.7);
+    translate(width * .2, height * .2);
 
     // Establish our default cloud drawing paremeters.
     rectMode(CORNER);
@@ -106,7 +100,7 @@ function draw() {
     stroke("#000");
     fill("#FFF");
     // Render the chosen cloud and
-    var bounds = generator.fn();
+    bounds = generator.fn();
 
     if (bounds) {
       // Reset styles for the text
@@ -125,6 +119,59 @@ function draw() {
     // Describe which design
     titleElement.innerHTML = generator.name;
     authorElement.innerHTML = generator.creator;
+
+    pop();
+}
+
+function genRandomSeed(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function setSvgDownload(e){
+    let tmpContext = canvas.drawingContext;
+
+    let canStyleWidth  = parseInt(canvas.elt.style.width),
+        canStyleHeight = parseInt(canvas.elt.style.height);
+
+    canvasSvg = new C2S(canStyleWidth, canStyleHeight);
+    canvas.drawingContext = canvasSvg;
+
+    randomSeed(theSeed);
+    handleDrawing();
+    let theSVG   = canvasSvg.getSerializedSvg(true),
+        svgBlob  = new Blob([theSVG], {type:"image/svg+xml;charset=utf-8"}),
+        svgUrl   = URL.createObjectURL(svgBlob);
+
+    download.setAttribute("href", svgUrl);
+    canvas.drawingContext = tmpContext;
+}
+
+function draw() {
+
+    download.removeEventListener("mousedown", setSvgDownload);
+
+    theSeed = genRandomSeed(1, 100);
+
+    if (selectionInput.curOpt !== 'random') {
+        // Get generator chosen
+        generator = generators[selectionInput.curIndex - 2];
+    } else {
+        // Chose a random generator
+        generator = random(generators);
+
+    }
+
+    randomSeed(theSeed);
+    noiseSeed(theSeed);
+    handleDrawing();
+
+    download.setAttribute("download", generator.name.split(' ').join('_') + ".svg");
+
+    download.addEventListener("mousedown", setSvgDownload);
+
+    randomSeed();
+    noiseSeed();
+
 }
 
 // Register a new cloud generator.
