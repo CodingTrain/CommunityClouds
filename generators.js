@@ -366,7 +366,7 @@ function cartoonCloud() {
       let a = angles[i];
       let deltaA = angles[(i+1)%angles.length] - a;
       if (deltaA < 0){deltaA+=2*PI;}
-      strokeWeight(random(1,4));
+      strokeWeight(random(10,14));
       bezier(
         2*radius*cos(a), radius*sin(a),
         2*1.2*radius*cos(a + deltaA/3- getRandMiniA()), 1.2*radius*sin(a + deltaA/3- getRandMiniA()),
