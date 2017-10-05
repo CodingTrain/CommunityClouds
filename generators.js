@@ -1599,3 +1599,48 @@ function dryCloud(){
 }
 
 register(dryCloud, "Dry Cloud", "DryCreations");
+
+function roundCloud() {
+  fill(255);
+  noStroke();
+  
+  // The real bit
+  
+  // How many points?
+  var num = 256;
+  var xoff = 0;
+  
+  var r = 200;
+  var rZero = r + 50 * noise(0);
+  
+  beginShape(); // Draw the shape
+  for (var i = 0; i < num; i++) {
+    
+    var a = map(i, 0, num, 0, TWO_PI);
+    
+    // Perlin Noise
+    var n = r + 50 * noise(xoff);
+    
+    // Making it a loop (so you don't
+    // see any cut on the right)
+    if (i == 0) {
+      rZero = n;
+    } else if (i > num*0.95) {
+      var percent = map(i, num*0.95, num, 0, 1);
+      n = lerp(n, rZero, percent);
+    }
+    
+    // Polar to Cartesian
+    // coordinate transformation
+    var x = width/2 + n * cos(a);
+    var y = height/2 + n * sin(a);
+    
+    vertex(x, y);
+    
+    xoff += 0.1;
+    
+  }
+  endShape(CLOSE);
+}
+
+register(roundCloud, "Round Cloud", "Simon Tiger");
