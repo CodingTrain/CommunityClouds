@@ -297,10 +297,6 @@ class MaterialSelect extends FormFields {
         this.containerNode.addEventListener("click", chooseOptions);
     }
 
-    getInverseIndex(theIndex){
-        return this._preSortIndex.indexOf(theIndex);
-    }
-
     setOptionByIndex(presortIndex){
         let keys = Object.keys(this.selectableOptions),
             curOption = this.selectableOptions[keys[presortIndex]];
