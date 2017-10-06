@@ -26,6 +26,15 @@ function windowResized() {
     redraw();
 }
 
+function keyReleased() {
+    if (keyCode == UP_ARROW || keyCode == LEFT_ARROW) {
+        selectionInput.previousItem();
+    } else if (keyCode == DOWN_ARROW || keyCode == RIGHT_ARROW) {
+        selectionInput.nextItem();
+    }
+    return false;
+}
+
 // On setup
 function setup() {
     // Default canvas size
@@ -39,8 +48,10 @@ function setup() {
     // Create list of selectable items
     // Begin selectable options object
     let selectOptions = {
-            "default": "random",
-            "random": "Random"
+            "random": {
+                value : "Random",
+                group : "default"
+            }
         };
     // Finish populating selectOptions
     generators.forEach((n, i) => {
@@ -139,7 +150,7 @@ function draw() {
 
     if (selectionInput.curOpt !== 'random') {
         // Get generator chosen
-        generator = generators[selectionInput.curIndex - 2];
+        generator = generators[selectionInput.Index - 1];
     } else {
         // Chose a random generator
         generator = random(generators);
