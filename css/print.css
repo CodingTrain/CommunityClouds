@@ -1,0 +1,36 @@
+div {
+  position: relative;
+  max-width: 500px;
+  max-height: 300px;
+  display: inline-block;
+}
+
+div svg {
+  width: 100%;
+  height: auto;
+}
+
+div :checked + svg {
+  filter: url(filter.svg#stroke);
+}
+
+div div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media print {
+  div {
+    width: 49%;
+  }
+  div div {
+    display: none;
+  }
+}
+
+.hidden {
+  width: 0 !important;
+  height: 0 !important;
+}

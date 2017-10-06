@@ -1,15 +1,14 @@
 let canvas;
 let canvasSvg;
 let generators = [];
-let current = null;
 let addStrokeInput;
 
 function setup() {
   canvas = createCanvas(1600,900);
   canvas.parent("sketch-contain");
-  addStrokeInput = document.querySelector('#add-stroke');
-  addStrokeInput.addEventListener('change', stroke_change);
   noLoop();
+  // Change 9 to amount required - 1
+  setTimeout(redraw, 100, 9);
 }
 
 function draw() {
@@ -30,43 +29,42 @@ function draw() {
   //gen = generators[9];
   gen.fn();
 
+  var xmlns = "http://www.w3.org/2000/svg";
   var svg = canvasSvg.getSvg();
-
-  // Add a stroke filter
-  var defs = svg.firstChild;
-  defs.innerHTML = `
-  <filter id="f1">
-    <feGaussianBlur result="background-prev" stdDeviation="1"/>
-    <feColorMatrix result="background" in="background-prev"
-      type="matrix"
-      values="0 0 0 0 0
-              0 0 0 0 0
-              0 0 0 0 0
-              0 0 0 100 0" />
-    <feOffset result="foreground" in="SourceGraphic" dx="0" dy="0" />
-    <feBlend in="foreground" in2="background" mode="normal" />
-  </filter>`;
-
-  if(random() < 0.5) {
-    console.log("Adding shadow");
-  }
   scale_svg(svg, true);
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  var g = svg.lastChild;
+  svg.removeChild(g);
+  var container_g = document.createElementNS(xmlns, 'g');
+  container_g.appendChild(g);
+  svg.appendChild(container_g);
 
 
-  document.body.appendChild(svg);
-  current = {
-    svg: svg,
-    generator: gen,
-  };
-  stroke_change();
-}
+  var div = document.createElement('div');
+  var controls = document.createElement('div');
+  div.appendChild(controls);
 
-function stroke_change(ev) {
-  if(current == null) return;
-  if(addStrokeInput.checked) {
-    current.svg.lastChild.setAttribute('filter', 'url(#f1)');
-  } else {
-    current.svg.lastChild.setAttribute('filter', '');
+  controls.innerHTML = "Add Stroke: ";
+  var stroke_box = document.createElement('input');
+  stroke_box.type = 'checkbox';
+  controls.appendChild(stroke_box);
+
+  controls.appendChild(document.createElement('br'));
+
+  var remove = document.createElement('a');
+  remove.innerHTML = 'Remove';
+  controls.appendChild(remove);
+
+  document.body.appendChild(div);
+  div.appendChild(svg);
+
+  stroke_box.onchange = function() {
+    svg.lastChild.setAttribute('filter', this.checked ? 'url(#stroke)' : '');
+  }
+
+  remove.onclick = function() {
+    document.body.removeChild(div);
+    redraw();
   }
 }
 
