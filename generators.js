@@ -1644,3 +1644,116 @@ function roundCloud() {
 }
 
 register(roundCloud, "Round Cloud", "Simon Tiger");
+
+
+function trainCloud()
+{
+  // Draw train.
+  push();
+
+  // Position, scale, stroke weight.
+  translate(width - 420, height - 100);
+  scale(2, 2);
+  strokeWeight(3);
+
+  // Front.
+  beginShape();
+  vertex(60, 40);
+  vertex(110, 40);
+  vertex(115, 55);
+  vertex(110, 70);
+  vertex(60, 70);
+  endShape(CLOSE);
+  strokeWeight(2);
+  line(90, 50, 90, 60);
+  line(95, 50, 95, 60);
+  line(100, 50, 100, 60);
+  strokeWeight(3);
+
+  // Back.
+  beginShape();
+  vertex(0, 10);
+  vertex(70, 8);
+  vertex(65, 70);
+  vertex(10, 50);
+  endShape(CLOSE);
+
+  // Top.
+  beginShape(QUADS);
+  vertex(85, 40);
+  vertex(80, 10);
+  vertex(110, 10);
+  vertex(105, 40);
+  vertex(75, 10);
+  vertex(70, 0);
+  vertex(120, 0);
+  vertex(115, 10);
+  endShape(CLOSE);
+
+  // Bottom.
+  beginShape(QUADS);
+  vertex(60, 70);
+  vertex(110, 70);
+  vertex(110, 85);
+  vertex(50, 85);
+  vertex(95, 70);
+  vertex(110, 70);
+  vertex(125, 90);
+  vertex(100, 90);
+  endShape();
+
+  // Outer wheels.
+  ellipse(35, 70, 60);
+  ellipse(80, 89, 20);
+
+  // Inner wheels.
+  fill(0);
+  ellipse(35, 70, 10);
+  ellipse(80, 89, 5);
+  noFill();
+  pop();
+
+  // Cloud drawing function.
+  function drawCloud(cloudRadius, stepAngle, rotationOffset) {
+    noStroke();
+    ellipse(0, 0, cloudRadius * 4, cloudRadius * 2);
+    stroke(0);
+    for (let angle = rotationOffset; angle < rotationOffset + 360; angle += stepAngle)
+    {
+      const x = cloudRadius * 2 * cos(angle);
+      const y = cloudRadius * sin(angle);
+      const radius = cloudRadius + random(cloudRadius * 0.2);
+      const rotation = atan2(-x, 2 * y) - 90;
+      const gapAngle = 360 - random(70, 90);
+      const startAngle = -gapAngle + rotation;
+      const endAngle = gapAngle + rotation;
+
+      noStroke();
+      ellipse(x, y, radius * 2, radius * 2);
+      stroke(0);
+      arc(x, y, radius * 2, radius * 2, startAngle, endAngle);
+    }
+  }
+
+  // Draw big cloud.
+  push();
+  angleMode(DEGREES);
+  translate(width / 2 - 80, height / 2 - 80);
+  scale(2, 2);
+  strokeWeight(3);
+
+  const radius = 70;
+  drawCloud(radius, Math.floor(360 / random(6, 8)), random(360));
+  pop();
+
+  // Draw small cloud.
+  push();
+  translate(width - 290, height - 190);
+  strokeWeight(3);
+  drawCloud(radius / 4, Math.floor(360 / random(6, 8)), random(360));
+  pop();
+
+  // Return safe drawing area.
+  return [width / 2 - 80 - radius * 4, height / 2 - 80 - radius * 2, radius * 8, radius * 4];
+}
+register(trainCloud, "Train Cloud", "Nils Weber");
