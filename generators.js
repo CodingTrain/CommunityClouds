@@ -499,7 +499,7 @@ function unstableCloud() {
   }
   drawCloudBase(basePos, baseWidth, baseHeight)
   puffyClouds.forEach(drawPuffyCloud)
-  
+
   return [basePos.x, basePos.y - baseHeight*.1, baseWidth, baseHeight]
 }
 
@@ -1555,7 +1555,7 @@ function AbdulCloud(){
 register(AbdulCloud, "SillyBlob", "Abdul Shaikh");
 
 function dryCloud(){
-  
+
   var cloudWidth = width * 9/10;
 
   var startPoint = createVector((width - cloudWidth)/2, height * 3/5);
@@ -1572,7 +1572,7 @@ function dryCloud(){
     var radius = dist(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
     var from = points[i-1].copy().sub(points[i]).heading();
     var to = endPoint.copy().sub(points[i]).heading();
-    if (to < from) {  
+    if (to < from) {
       to += TWO_PI;
     }
     fill(255);
@@ -1581,7 +1581,7 @@ function dryCloud(){
       arc(points[i].x, points[i].y, radius*2, radius*2, from, to, PIE);
     } else {
       from = startPoint.copy().sub(points[i]).heading();
-      if (to < from) {  
+      if (to < from) {
         to += TWO_PI;
       }
       radius = dist(endPoint.x, endPoint.y, points[points.length - 1].x, points[points.length - 1].y);
@@ -1603,24 +1603,24 @@ register(dryCloud, "Dry Cloud", "DryCreations");
 function roundCloud() {
   fill(255);
   noStroke();
-  
+
   // The real bit
-  
+
   // How many points?
   var num = 256;
   var xoff = 0;
-  
+
   var r = 200;
   var rZero = r + 50 * noise(0);
-  
+
   beginShape(); // Draw the shape
   for (var i = 0; i < num; i++) {
-    
+
     var a = map(i, 0, num, 0, TWO_PI);
-    
+
     // Perlin Noise
     var n = r + 50 * noise(xoff);
-    
+
     // Making it a loop (so you don't
     // see any cut on the right)
     if (i == 0) {
@@ -1629,18 +1629,60 @@ function roundCloud() {
       var percent = map(i, num*0.95, num, 0, 1);
       n = lerp(n, rZero, percent);
     }
-    
+
     // Polar to Cartesian
     // coordinate transformation
     var x = width/2 + n * cos(a);
     var y = height/2 + n * sin(a);
-    
+
     vertex(x, y);
-    
+
     xoff += 0.1;
-    
+
   }
   endShape(CLOSE);
 }
 
 register(roundCloud, "Round Cloud", "Simon Tiger");
+
+function lightning_cloud(x=0, y=0){
+	noStroke();
+	for (let i = 0; i < 100; i++){
+		const r = random(100);
+		ellipse(x + random(-100, 100), y + random(50, 150), r, r);
+	}
+
+
+	const lightning = function(x, y, strokeweight, length, depth = 1){
+		if (length < 1) return;
+		const nextDepth = [];
+		const intensity = sqrt(depth) * 10;
+		push();
+		noiseSeed(random(100));
+		stroke(255, 255, 255);
+		strokeWeight(strokeweight);
+
+		let xCurr, yCurr;
+		let xPrev = x, yPrev = y;
+		for (let offset = 0; offset < length; offset+=10){
+			xCurr = xPrev + map(noise(offset * 0.1), 0, 1, -1, 1) * intensity;
+			yCurr = y + offset
+			line(xPrev, yPrev, xCurr , yCurr);
+			xPrev = xCurr;
+			yPrev = yCurr;
+			nextDepth.push([xCurr, yCurr]);
+		}
+
+		pop();
+
+		nextDepth.forEach((e) => {
+			for (let i = 0; i < random(-100, 4); i++)
+				lightning(e[0], e[1], strokeweight * 0.5, length * 0.4, depth + 1);
+		})
+
+	}
+
+	lightning(x , y + 100 , 5, 500);
+}
+
+register(lightning_cloud, "Lightning Cloud", "Eitan Porat")
