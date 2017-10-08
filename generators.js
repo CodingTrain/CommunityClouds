@@ -1644,3 +1644,145 @@ function roundCloud() {
 }
 
 register(roundCloud, "Round Cloud", "Simon Tiger");
+
+function p5Cloud() {
+
+  // words that are used to make cloud stroke
+  var words = [ "alpha", "blue", "brightness", "color", "green", "hue",
+    "lerpColor", "lightness", "red", "saturation", "background", "clear",
+    "colorMode", "fill", "noFill", "noStroke", "stroke", "arc",
+    "ellipse", "line", "point", "quad", "rect", "triangle",
+    "ellipseMode", "noSmooth", "rectMode", "smooth", "strokeCap", "strokeJoin",
+    "strokeWeight", "bezier", "bezierPoint", "bezierTangent", "curve", "curveTightness",
+    "curvePoint", "curveTangent", "beginContour", "beginShape", "bezierVertex", "curveVertex",
+    "endContour", "endShape", "quadraticVertex", "vertex", "loadModel", "model",
+    "plane", "box", "sphere", "cylinder", "cone", "ellipsoid",
+    "torus", "HALF_PI", "PI", "QUARTER_PI", "TAU", "TWO_PI",
+    "preload", "setup", "draw", "remove", "noLoop", "loop",
+    "push", "pop", "redraw", "print", "frameCount", "focused",
+    "cursor", "frameRate", "noCursor", "displayWidth", "displayHeight", "windowWidth",
+    "windowHeight", "windowResized", "width", "height", "fullscreen", "pixelDensity",
+    "displayDensity", "getURL", "getURLPath", "getURLParams", "p5.Element", "createCanvas",
+    "resizeCanvas", "noCanvas", "createGraphics", "blendMode", "applyMatrix", "resetMatrix",
+    "rotate", "rotateX", "rotateY", "rotateZ", "scale", "shearX",
+    "shearY", "translate", "p5.TypedDict", "p5.NumberDict", "append", "arrayCopy",
+    "concat", "reverse", "shorten", "shuffle", "sort", "splice",
+    "subset", "float", "int", "str", "boolean", "byte",
+    "char", "unchar", "hex", "unhex", "join", "match",
+    "matchAll", "nf", "nfc", "nfp", "nfs", "split",
+    "splitTokens", "trim", "deviceOrientation", "accelerationX", "accelerationY", "accelerationZ",
+    "pAccelerationX", "pAccelerationY", "pAccelerationZ", "rotationX", "rotationY", "rotationZ",
+    "pRotationX", "pRotationY", "pRotationZ", "setMoveThreshold", "setShakeThreshold", "deviceMoved",
+    "deviceTurned", "deviceShaken", "keyIsPressed", "key", "keyCode", "keyPressed",
+    "keyReleased", "keyTyped", "keyIsDown", "mouseX", "mouseY", "pmouseX",
+    "pmouseY", "winMouseX", "winMouseY", "pwinMouseX", "pwinMouseY", "mouseButton",
+    "mouseIsPressed", "mouseMoved", "mouseDragged", "mousePressed", "mouseReleased", "mouseClicked",
+    "doubleClicked", "mouseWheel", "touches", "touchStarted", "touchMoved", "touchEnded",
+    "createImage", "saveCanvas", "saveFrames", "p5.Image", "loadImage", "image",
+    "tint", "noTint", "imageMode", "pixels", "blend", "copy",
+    "filter", "get", "loadPixels", "set", "updatePixels", "loadJSON",
+    "loadStrings", "loadTable", "loadXML", "httpGet", "httpPost", "httpDo",
+    "save", "saveJSON", "saveStrings", "saveTable", "p5.Table", "p5.TableRow",
+    "p5.XML", "day", "hour", "minute", "millis", "month",
+    "second", "year", "createVector", "p5.Vector", "abs", "ceil",
+    "constrain", "dist", "exp", "floor", "lerp", "log",
+    "mag", "map", "max", "min", "norm", "pow",
+    "round", "sq", "sqrt", "noise", "noiseDetail", "noiseSeed",
+    "randomSeed", "random", "randomGaussian", "acos", "asin", "atan",
+    "atan2", "cos", "sin", "tan", "degrees", "radians",
+    "angleMode", "textAlign", "textLeading", "textSize", "textStyle", "textWidth",
+    "textAscent", "textDescent", "loadFont", "text", "textFont", "p5.Font",
+    "camera", "perspective", "ortho", "ambientLight", "directionalLight", "pointLight",
+    "loadShader", "shader", "normalMaterial", "texture", "ambientMaterial", "specularMaterial",
+    "p5.Texture", "p5.RendererGL", "p5.Shader"
+  ];
+
+  // vertices of the cloud shape (calculated manually)
+  var cloudPoints = [
+    createVector(557, 592),
+    createVector(468, 464),
+    createVector(497, 318),
+    createVector(657, 228),
+    createVector(713, 86),
+    createVector(874, 26),
+    createVector(949, 54),
+    createVector(1104, 28),
+    createVector(1224, 109),
+    createVector(1255, 226),
+    createVector(1404, 275),
+    createVector(1467, 421),
+    createVector(1370, 592),
+    createVector(557, 592),
+  ]
+
+  // function to draw text under angle
+  function angledText(textToDraw, x, y, angle) {
+      push();
+      translate(x,y);
+      rotate(-angle);
+      text(textToDraw, 0, 0);
+      pop();
+  }
+
+  // used in getStringByLength to continue from the last cut position
+  var remainderString = "";
+  // function that returns randomly generated string containing words that
+  // has approximate length in pixels of argument
+  function getStringByLength(length) {
+    ret = remainderString;
+
+    while(textWidth(ret) < length) {
+      word = words[int(random(words.length))];
+      ret += word + " ";
+    }
+
+    remainderString = "";
+    while(textWidth(ret) > length) {
+      remainderString = ret.charAt(ret.length - 1) + remainderString;
+      ret = ret.substring(0, ret.length - 1);
+    }
+
+    return ret;
+  }
+
+  //save font and other settings
+  push();
+  // draw the cloud shape
+  strokeWeight(50);
+  stroke(255,255,255);
+  strokeJoin(ROUND);
+  beginShape();
+  for(var i = 0; i < cloudPoints.length; i++) {
+    vertex(cloudPoints[i].x, cloudPoints[i].y);
+  }
+  endShape(CLOSE);
+
+  // draw the textual cloud stroke
+  textFont("monospace", 30);
+  textStyle(BOLD);
+  strokeWeight(0);
+  fill(0);
+  for(var i = 0; i < cloudPoints.length - 1; i++) {
+    var startingPoint = cloudPoints[i];
+    var endingPoint = cloudPoints[i+1];
+
+    var distance = startingPoint.dist(endingPoint);
+    var angle = p5.Vector.sub(endingPoint, startingPoint).heading();
+
+    // use negative angle because math and canvase use different coordinate system
+    angledText(getStringByLength(distance), startingPoint.x, startingPoint.y, -angle);
+  }
+  // restore font and other settings
+  pop();
+
+  // write cloud title
+  var titleRect = [763, 106, 420, 224];
+  textSize(56);
+  textAlign(CENTER,TOP);
+  text("Processing\nCommunity Day", titleRect[0], titleRect[1], titleRect[2], titleRect[3]);
+
+  // return rectangle for text (calculated manually)
+  return [563, 306, 805, 224];
+}
+
+register(p5Cloud, "P5.js Cloud", "RedAnt333");
