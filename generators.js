@@ -1978,3 +1978,37 @@ function letThereBeClouds(){
 
 register(letThereBeClouds, "Let There Be Clouds", "Red Hen dev");
 
+
+function bumpCloud(){
+
+  let ROOT_TWO = sqrt(2);
+
+  noStroke();
+  fill(255);
+
+  let x, y, r1, r2;
+
+  x = width/2;
+  y = height/2;
+  r1 = width*3/5;   //horizontal radius of ellipse
+  r2 = width*3/10;  //vertical radius of ellipse
+
+  ellipse(x, y, r1, r2);
+
+  beginShape();
+
+  for(let Oangle = 0; Oangle < TWO_PI; Oangle+=0.35){   //Oangle = outer angle
+    let r = random(.75,1);
+    for(let Iangle = 0; Iangle < TWO_PI; Iangle+=0.01){  //Iangle = inner angle
+      vertex(x + (r1/2 * r * cos(Oangle)) + (width/10 * r * cos(Iangle)), y + (r2/2 * r * sin(Oangle)) + (width/10 * r * sin(Iangle)));
+    }
+  }
+
+  endShape();
+
+  //calculate rectangle inscribed in ellipse
+  return([-(r1/ROOT_TWO/2)+x , -(r2/ROOT_TWO/2)+y , ROOT_TWO/2*r1 , ROOT_TWO/2*r2]);
+
+}
+
+register(bumpCloud, "bumpCloud", "Xalkor");
