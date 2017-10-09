@@ -21,6 +21,9 @@ register(rectangle, "Example", "example");
 
 /* ------  Add your custom cloud generators below! ------ */
 
+
+//*************************************************
+
 function ellipseCloud() {
   const circleRadius = width / 8;
 
@@ -1940,3 +1943,35 @@ function p5Cloud() {
 }
 
 register(p5Cloud, "P5.js Cloud", "RedAnt333");
+
+// Let there be clouds :)
+function letThereBeClouds(){
+  // Very classy.
+  class CloudNode{
+    constructor(_x, _y, _index){
+      this.pos = createVector(_x, _y);
+      this.size = noise(_index)*width/4;
+    }
+
+    render(){
+      stroke(0);
+      strokeWeight(4);
+      fill(255,200);
+      ellipse(this.pos.x, this.pos.y, this.size, this.size * 0.618);
+    }
+
+  }
+  var cloudNodes = [];
+
+  for (let i = 0; i < 123; i++){
+
+    let x = width/2 + random()*width/8;
+    let y = height/2 + random()*height/12;
+
+    cloudNodes.push(new CloudNode(x, y, i));
+    cloudNodes[i].render();
+  }
+
+}
+
+register(letThereBeClouds, "Let There Be Clouds", "Red Hen dev");
