@@ -21,6 +21,9 @@ register(rectangle, "Example", "example");
 
 /* ------  Add your custom cloud generators below! ------ */
 
+
+//*************************************************
+
 function ellipseCloud() {
   const circleRadius = width / 8;
 
@@ -162,13 +165,13 @@ function kazakhCloud(radius = 200, min = 8, max = 10) {
     // min and max values.
     let points = [];
     let offset = radius / 5;
-    let numPoints = Math.round(Math.random()*(max-min)+min);
+    let numPoints = Math.round(random(min, max));
     for (let i = 0; i < numPoints; i++) {
         // generating "peak" points of a cloud away from the center
         let angle = (TWO_PI / numPoints) * i;
         let away;
         while (true) {
-            away = Math.round(Math.random() * radius + offset);
+            away = Math.round(random(radius) + offset);
             if (Math.abs(away - radius) <= offset) {
                 break;
             }
@@ -366,7 +369,7 @@ function cartoonCloud() {
       let a = angles[i];
       let deltaA = angles[(i+1)%angles.length] - a;
       if (deltaA < 0){deltaA+=2*PI;}
-      strokeWeight(random(1,4));
+      strokeWeight(random(10,14));
       bezier(
         2*radius*cos(a), radius*sin(a),
         2*1.2*radius*cos(a + deltaA/3- getRandMiniA()), 1.2*radius*sin(a + deltaA/3- getRandMiniA()),
@@ -380,6 +383,130 @@ function cartoonCloud() {
 }
 
 register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
+
+function unstableCloud() {
+
+  // Utils
+  const DEBUG = false
+  const debugColor = (alpha=150) => color(random(255), random(255), random(255), alpha)
+  const cloudColor = (alpha=255) => color(255, alpha)
+  const createCloud = (pos, d) => {
+    return {pos: pos, d: d}
+  }
+  const drawCanvasBackground = () => {
+    noStroke()
+    fill(0,0,0,25)
+    rect(0, 0, width, height)
+  }
+  const drawCloudBase = (pos, w, h) => {
+    noStroke()
+    DEBUG ? fill(debugColor()) : fill(cloudColor())
+    rect(pos.x, pos.y, w, h)
+  }
+  const drawPuffyCloud = (cloud) => {
+    noStroke()
+    DEBUG ? fill(debugColor()) : fill(cloudColor())
+    ellipse(cloud.pos.x, cloud.pos.y, cloud.d, cloud.d)
+  }
+
+  // const drawGuidLine = () =>
+  const getArcCenter = (A, B, C) => {
+
+    // Mid-points AB and BC
+    const midAB = A.copy().add(B).div(2)
+    const midBC = B.copy().add(C).div(2)
+
+    // Slopes AB and BC
+    const slopeAB = (B.y-A.y)/(B.x-A.x)
+    const slopeBC = (C.y-B.y)/(C.x-B.x)
+
+    // Perpendicular lines runing through mid-points AB and BC
+    const slopePerpAB = -Math.pow(slopeAB, -1)
+    const slopePerpBC = -Math.pow(slopeBC, -1)
+
+    // determine b to get linear equation standard form y = mx + b
+    const bAB = midAB.y - slopePerpAB * midAB.x
+    const bBC = midBC.y - slopePerpBC * midBC.x
+
+    // get intersection point
+    const x = (bBC - bAB)/(slopePerpAB - slopePerpBC)
+    const y = slopePerpBC * x + bBC
+
+    if(DEBUG) {
+      stroke(255)
+      strokeWeight(5)
+      line(midAB.x, midAB.y, x, y)
+      line(midBC.x, midBC.y, x, y)
+      line(B.x, B.y, C.x, C.y)
+      line(B.x, B.y, A.x, A.y)
+      noStroke()
+      fill(0, 200)
+      ellipse(A.x, A.y, 20, 20)
+      ellipse(B.x, B.y, 20, 20)
+      ellipse(C.x, C.y, 20, 20)
+      ellipse(x, y, 20, 20)
+    }
+
+    return createVector(x, y)
+  }
+
+  // Variable factores
+  const sizeFactor = 1
+  const rndBaseHeight = 250 + random(50)
+  const rndArcCenterHeight = -25 + random(75)
+  const nPuffyClouds = Math.round(6+random(1))
+  const puffyCloudsBaseSize = 300 * sizeFactor
+  const puffyCloudsSizeOffset = 100 * sizeFactor
+
+  // Cloud base
+  const baseWidth = 1100 * sizeFactor
+  const baseHeight = rndBaseHeight * sizeFactor
+  const baseCenter = createVector(width*.5, height*.6)
+  const basePos = createVector(baseCenter.x - baseWidth *.5, baseCenter.y - baseHeight *.5)
+
+  // Puffy clouds
+  let puffyClouds = []
+  const puffyDiameter = baseHeight
+  const puffyRadius = puffyDiameter*.5
+  const puffyPos = createVector(basePos.x, basePos.y + baseHeight - puffyRadius)
+  const puffyLeft = createCloud(puffyPos, puffyDiameter)
+  const puffyRight = createCloud(puffyPos.copy().add(baseWidth, 0), puffyDiameter)
+  puffyClouds.push(puffyLeft)
+  puffyClouds.push(puffyRight)
+
+  // Create arc from 3 points
+  const A = puffyLeft.pos.copy().sub(puffyRadius*.5, 0)
+  const B = baseCenter.copy().sub(0, baseHeight*.5).sub(0, rndArcCenterHeight)
+  const C = puffyRight.pos.copy().add(puffyRadius*.5, 0)
+  const arcCenter = getArcCenter(A, B, C)
+  const arcRadius = B.dist(arcCenter)
+  const arcDiameter = arcRadius * 2
+  const arcOffsetAngle = atan(-(C.y - arcCenter.y) / (C.x - arcCenter.x))
+  const arcTotalAngle = PI - 2*arcOffsetAngle
+  const arcAngleStep = arcTotalAngle/(nPuffyClouds-1)
+
+  for(let i = 1; i < nPuffyClouds-1; i++) {
+    const x = cos(i*(arcAngleStep)+arcOffsetAngle)*arcRadius
+    const y = -sin(i*(arcAngleStep)+arcOffsetAngle)*arcRadius
+    const sizeOffset = map(y, -sin(arcOffsetAngle) * arcRadius, -arcRadius, 0, puffyCloudsSizeOffset, true)
+    const r = puffyCloudsBaseSize + random(sizeOffset)
+    puffyClouds.push(createCloud(createVector(x, y).add(arcCenter), r))
+  }
+
+  // Draw
+  if(DEBUG) {
+    drawCanvasBackground()
+    stroke(0)
+    noFill()
+    arc(arcCenter.x, arcCenter.y, arcDiameter, arcDiameter, PI+arcOffsetAngle, -arcOffsetAngle)
+  }
+  drawCloudBase(basePos, baseWidth, baseHeight)
+  puffyClouds.forEach(drawPuffyCloud)
+
+  return [basePos.x, basePos.y - baseHeight*.1, baseWidth, baseHeight]
+}
+
+register(unstableCloud, "A Cloud", "@unstablectrl")
 
 function someCloud(){
     angleMode(DEGREES);
@@ -988,8 +1115,8 @@ function bitStoneRectCloud() {
     let size;
 
     while(currentX < BS_CLOUD_WIDTH - (BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
-        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(random() * size / 2.0 - (size / 4.0));
 
         if(currentX < BS_CLOUD_WIDTH / 2.0) {
             type = (nextY <= currentY ? BS_RECT_TOP_LEFT : BS_RECT_TOP);
@@ -1027,8 +1154,8 @@ function bitStoneRectCloud() {
     type = 0;
 
     while(currentX < BS_CLOUD_WIDTH - BS_CLOUD_MAX_SIZE) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
-        nextY += Math.round(Math.random() * size / 2.0 - (size / 4.0));
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        nextY += Math.round(random() * size / 2.0 - (size / 4.0));
 
         if(currentX < BS_CLOUD_WIDTH / 2.0) {
             type = (nextY <= currentY ? BS_RECT_BOTTOM : BS_RECT_BOTTOM_LEFT);
@@ -1064,7 +1191,7 @@ function bitStoneRectCloud() {
     currentY = topRectList[0].y + topRectList[0].size;
 
     while(currentY < (bottomRectList[0].y - bottomRectList[0].size - BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
 
         type = BS_RECT_LEFT;
 
@@ -1092,7 +1219,7 @@ function bitStoneRectCloud() {
     currentY = topRectList[topRectList.length - 1].y + topRectList[topRectList.length - 1].size;
 
     while(currentY < (bottomRectList[bottomRectList.length - 1].y - BS_CLOUD_MAX_SIZE)) {
-        size = Math.round(Math.random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
+        size = Math.round(random() * BS_CLOUD_RANDOM_VALUE) + BS_CLOUD_MIN_SIZE;
         type = BS_RECT_RIGHT;
 
         rightRectList.push({
@@ -1229,50 +1356,51 @@ function curveVertexCloud() {
 register(curveVertexCloud, "curveVertex() Cloud", "xperion");
 
 function noCloud() {
-    function drawCloud(points) {
-	stroke(bg);
-	beginShape();
-	for (var i = 0; i < points.length; i++) {
-	    vertex(points[i].x, points[i].y);
-	}
-	endShape(CLOSE);
+  var bg, p, p1, p2, p3, p4, p5, center;
+  function drawCloud(points) {
+    stroke(bg);
+    beginShape();
+    for (var i = 0; i < points.length; i++) {
+      vertex(points[i].x, points[i].y);
+    }
+    endShape(CLOSE);
 
-	stroke(0);
-	p = points[0];
-	for (var i = 1; i < points.length; i++) {
-    	    drawCloudArc(p, points[i]);
-	    p = points[i];
-	}
-
-	line(points[0].x, points[0].y, points[points.length-1].x, points[points.length-1].y);
+    stroke(0);
+    p = points[0];
+    for (var i = 1; i < points.length; i++) {
+      drawCloudArc(p, points[i]);
+      p = points[i];
     }
 
-    function drawCloudArc(begin, end) {
-	function f(p,d) {
-	    return p[d] - ((center[d] - p[d])/2);
-	}
-	center = {"x": width/2, "y": height/2};
-	bezier(begin.x, begin.y, f(begin, "x"), f(begin,"y")-200, f(end, "x"), f(end, "y")-200, end.x, end.y);
+    line(points[0].x, points[0].y, points[points.length-1].x, points[points.length-1].y);
+  }
+
+  function drawCloudArc(begin, end) {
+    function f(p,d) {
+      return p[d] - ((center[d] - p[d])/2);
     }
+    center = {"x": width/2, "y": height/2};
+    bezier(begin.x, begin.y, f(begin, "x"), f(begin,"y")-200, f(end, "x"), f(end, "y")-200, end.x, end.y);
+  }
 
-    function randomOffset(n) {
-	return random(n*2)-n;
-    }
+  function randomOffset(n) {
+    return random(n*2)-n;
+  }
 
-    p1 = {"x":200, "y":height-300};
-    p2 = {"x":(width/4)+randomOffset(100), "y":240+randomOffset(50)};
-    p3 = {"x":width*2/4+randomOffset(100), "y":150+randomOffset(50)};
-    p4 = {"x":150+(width*3/4)+randomOffset(100), "y":270+randomOffset(50)};
-    p5 = {"x":width-200, "y":height-300};
+  p1 = {"x":200, "y":height-300};
+  p2 = {"x":(width/4)+randomOffset(100), "y":240+randomOffset(50)};
+  p3 = {"x":width*2/4+randomOffset(100), "y":150+randomOffset(50)};
+  p4 = {"x":150+(width*3/4)+randomOffset(100), "y":270+randomOffset(50)};
+  p5 = {"x":width-200, "y":height-300};
 
-    bg = 150;
-    fill(bg);
-    drawCloud([p1,p2,p3,p4,p5].map(function(e){return {"x":e.x+100,"y":e.y}}));
-    bg = 255;
-    fill(bg);
-    drawCloud([p1,p2,p3,p4,p5]);
+  bg = 150;
+  fill(bg);
+  drawCloud([p1,p2,p3,p4,p5].map(function(e){return {"x":e.x+100,"y":e.y}}));
+  bg = 255;
+  fill(bg);
+  drawCloud([p1,p2,p3,p4,p5]);
 
-    return [100, 100, width - 200, height - 200];
+  return [100, 100, width - 200, height - 200];
 }
 register(noCloud, "There is no cloud", "rnoennig");
 
@@ -1320,3 +1448,533 @@ function squareNotBlueCloud()
 }
 
 register(squareNotBlueCloud, "Square Not Blue Cloud", "Juan Sebastian Robles");
+
+function CloudyCloud()
+{
+	//I'm really sorry about this one xD
+	translate(width/2,height/2);
+	noStroke();
+	for(let i = 0; i < 30; i++)
+		ellipse(random(-130,130),random(-15,25),random(50,200));
+
+  return [-130,-50,130*2,50*2];
+}
+register(CloudyCloud, "Radnomly Generated Cloud", "this.Zohir")
+
+function CloudyMcCloudson(){
+  for(var i = 0; i<15;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+  return [700, 200, 400,400];
+}
+register(CloudyMcCloudson, "Cloudy McCloudson", "Marius Bauer");
+
+function MaxTaylorCloud() {
+    let clouds = []
+    // Play with these to get the desired effect
+    const showBorder = true
+    const showTransparency = false;
+    const puffyNess = 40
+    const radius = 150
+
+    for (let i = 0; i < puffyNess; i++) {
+        let x = width/2 + random(-200, 200)
+        let y = height/2 + random(-100, 100)
+        clouds.push({ x, y })
+
+        if (!showBorder) { continue; }
+
+        noFill()
+        strokeWeight(5)
+        stroke(0)
+        ellipse(x, y, radius, radius)
+    }
+
+    for (let cloud of clouds) {
+        noStroke()
+        fill(255, 255, 255, (!showBorder && showTransparency) ? random(170, 255) : 255);
+        ellipse(cloud.x, cloud.y, radius, radius)
+    }
+
+    return [width/2 - 150, height/2 - 50, 300, 100]
+}
+
+register(MaxTaylorCloud, "Cloudy McCloudFace", "Max Taylor");
+
+// Koch snowflake-shaped cloud
+function kochSnowCloud() {
+  stroke(0);
+  strokeWeight(2);
+  fill(255);
+
+  let flake_size = width / 5;
+
+  let pos = createVector((width - flake_size) / 2, 3 * height / 4);
+  let angle = 0;
+  let yscale = height / width;
+
+  function move(r) {
+    pos.add(createVector(r * Math.cos(angle), r * Math.sin(angle) * yscale));
+  }
+
+  beginShape();
+  for (let i = 0; i < 13; i++) {
+    koch(flake_size);
+    angle -= 2 * PI / 13;
+  }
+  endShape(CLOSE);
+
+  function koch(r) {
+    if (r > 5) {
+      koch(r / 3);
+      angle += PI / 3;
+      koch(r / 3);
+      angle -= 2 * PI / 3;
+      koch(r / 3);
+      angle += PI / 3
+      koch(r / 3);
+    } else {
+      vertex(pos.x, pos.y);
+      move(r);
+    }
+  }
+
+  return [(width - 3.5 * flake_size) / 2, height / 6, flake_size * 3.5, height / 3];
+}
+
+register(kochSnowCloud, "Koch Snow-Cloud", "Kristian Wichmann");
+
+function AbdulCloud(){
+  const canvas = document.querySelector('#defaultCanvas0');
+  noStroke();
+  c = {h:parseInt(canvas.style.height.replace('px',''))/2, w:parseInt(canvas.style.width.replace('px',''))/2};
+  const numberOfElip = random(1,500)
+  for(var i = 0; i<numberOfElip;i++){
+    noStroke();
+    ellipse(random(600,1400),random(200,450),random(300,400),random(300,400));
+  }
+  return [700, 200, 400,400];
+}
+
+register(AbdulCloud, "SillyBlob", "Abdul Shaikh");
+
+function dryCloud(){
+
+  var cloudWidth = width * 9/10;
+
+  var startPoint = createVector((width - cloudWidth)/2, height * 3/5);
+  var endPoint = createVector((width + cloudWidth)/2, height * 3/5);
+
+  var points = [];
+
+  points.push(startPoint);
+  stroke(255);
+  line(startPoint.x,startPoint.y,endPoint.x,endPoint.y);
+
+  for (var i = 1; i < 100; i++) {
+    points.push(createVector(random(points[i-1].x + 10, points[i-1].x + 20), random(points[i-1].y - 60,endPoint.y)));
+    var radius = dist(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
+    var from = points[i-1].copy().sub(points[i]).heading();
+    var to = endPoint.copy().sub(points[i]).heading();
+    if (to < from) {
+      to += TWO_PI;
+    }
+    fill(255);
+    if (points[i-1].x + radius*2 < endPoint.x) {
+
+      arc(points[i].x, points[i].y, radius*2, radius*2, from, to, PIE);
+    } else {
+      from = startPoint.copy().sub(points[i]).heading();
+      if (to < from) {
+        to += TWO_PI;
+      }
+      radius = dist(endPoint.x, endPoint.y, points[points.length - 1].x, points[points.length - 1].y);
+      arc(points[i].x, points[i].y, radius*2, radius*2, from, to, PIE);
+      ellipse(points[i].x, points[i].y,2*(startPoint.y - points[i].y), 2*(startPoint.y - points[i].y));
+      break;
+    }
+  }
+  points.push(endPoint);
+  beginShape();
+  for(var i = 0; i < points.length; i++) {
+    vertex(points[i].x, points[i].y);
+  }
+  endShape(CLOSE);
+}
+
+register(dryCloud, "Dry Cloud", "DryCreations");
+
+function roundCloud() {
+  fill(255);
+  noStroke();
+
+  // The real bit
+
+  // How many points?
+  var num = 256;
+  var xoff = 0;
+
+  var r = 200;
+  var rZero = r + 50 * noise(0);
+
+  beginShape(); // Draw the shape
+  for (var i = 0; i < num; i++) {
+
+    var a = map(i, 0, num, 0, TWO_PI);
+
+    // Perlin Noise
+    var n = r + 50 * noise(xoff);
+
+    // Making it a loop (so you don't
+    // see any cut on the right)
+    if (i == 0) {
+      rZero = n;
+    } else if (i > num*0.95) {
+      var percent = map(i, num*0.95, num, 0, 1);
+      n = lerp(n, rZero, percent);
+    }
+
+    // Polar to Cartesian
+    // coordinate transformation
+    var x = width/2 + n * cos(a);
+    var y = height/2 + n * sin(a);
+
+    vertex(x, y);
+
+    xoff += 0.1;
+
+  }
+  endShape(CLOSE);
+}
+
+register(roundCloud, "Round Cloud", "Simon Tiger");
+
+function lightning_cloud(x=0, y=0){
+	noStroke();
+	for (let i = 0; i < 100; i++){
+		const r = random(100);
+		ellipse(x + random(-100, 100), y + random(50, 150), r, r);
+	}
+
+
+	const lightning = function(x, y, strokeweight, length, depth = 1){
+		if (length < 1) return;
+		const nextDepth = [];
+		const intensity = sqrt(depth) * 10;
+		push();
+		noiseSeed(random(100));
+		stroke(255, 255, 255);
+		strokeWeight(strokeweight);
+
+		let xCurr, yCurr;
+		let xPrev = x, yPrev = y;
+		for (let offset = 0; offset < length; offset+=10){
+			xCurr = xPrev + map(noise(offset * 0.1), 0, 1, -1, 1) * intensity;
+			yCurr = y + offset
+			line(xPrev, yPrev, xCurr , yCurr);
+			xPrev = xCurr;
+			yPrev = yCurr;
+			nextDepth.push([xCurr, yCurr]);
+		}
+
+		pop();
+
+		nextDepth.forEach((e) => {
+			for (let i = 0; i < random(-100, 4); i++)
+				lightning(e[0], e[1], strokeweight * 0.5, length * 0.4, depth + 1);
+		})
+
+	}
+
+	lightning(x , y + 100 , 5, 500);
+}
+
+register(lightning_cloud, "Lightning Cloud", "Eitan Porat")
+
+function trainCloud()
+{
+  // Draw train.
+  push();
+
+  // Position, scale, stroke weight.
+  translate(width - 420, height - 100);
+  scale(2, 2);
+  strokeWeight(3);
+
+  // Front.
+  beginShape();
+  vertex(60, 40);
+  vertex(110, 40);
+  vertex(115, 55);
+  vertex(110, 70);
+  vertex(60, 70);
+  endShape(CLOSE);
+  strokeWeight(2);
+  line(90, 50, 90, 60);
+  line(95, 50, 95, 60);
+  line(100, 50, 100, 60);
+  strokeWeight(3);
+
+  // Back.
+  beginShape();
+  vertex(0, 10);
+  vertex(70, 8);
+  vertex(65, 70);
+  vertex(10, 50);
+  endShape(CLOSE);
+
+  // Top.
+  beginShape(QUADS);
+  vertex(85, 40);
+  vertex(80, 10);
+  vertex(110, 10);
+  vertex(105, 40);
+  vertex(75, 10);
+  vertex(70, 0);
+  vertex(120, 0);
+  vertex(115, 10);
+  endShape(CLOSE);
+
+  // Bottom.
+  beginShape(QUADS);
+  vertex(60, 70);
+  vertex(110, 70);
+  vertex(110, 85);
+  vertex(50, 85);
+  vertex(95, 70);
+  vertex(110, 70);
+  vertex(125, 90);
+  vertex(100, 90);
+  endShape();
+
+  // Outer wheels.
+  ellipse(35, 70, 60);
+  ellipse(80, 89, 20);
+
+  // Inner wheels.
+  fill(0);
+  ellipse(35, 70, 10);
+  ellipse(80, 89, 5);
+  noFill();
+  pop();
+
+  // Cloud drawing function.
+  function drawCloud(cloudRadius, stepAngle, rotationOffset) {
+    noStroke();
+    ellipse(0, 0, cloudRadius * 4, cloudRadius * 2);
+    stroke(0);
+    for (let angle = rotationOffset; angle < rotationOffset + 360; angle += stepAngle)
+    {
+      const x = cloudRadius * 2 * cos(angle);
+      const y = cloudRadius * sin(angle);
+      const radius = cloudRadius + random(cloudRadius * 0.2);
+      const rotation = atan2(-x, 2 * y) - 90;
+      const gapAngle = 360 - random(70, 90);
+      const startAngle = -gapAngle + rotation;
+      const endAngle = gapAngle + rotation;
+
+      noStroke();
+      ellipse(x, y, radius * 2, radius * 2);
+      stroke(0);
+      arc(x, y, radius * 2, radius * 2, startAngle, endAngle);
+    }
+  }
+
+  // Draw big cloud.
+  push();
+  angleMode(DEGREES);
+  translate(width / 2 - 80, height / 2 - 80);
+  scale(2, 2);
+  strokeWeight(3);
+
+  const radius = 70;
+  drawCloud(radius, Math.floor(360 / random(6, 8)), random(360));
+  pop();
+
+  // Draw small cloud.
+  push();
+  translate(width - 290, height - 190);
+  strokeWeight(3);
+  drawCloud(radius / 4, Math.floor(360 / random(6, 8)), random(360));
+  pop();
+
+  // Return safe drawing area.
+  return [width / 2 - 80 - radius * 4, height / 2 - 80 - radius * 2, radius * 8, radius * 4];
+}
+register(trainCloud, "Train Cloud", "Nils Weber");
+
+function p5Cloud() {
+
+  // words that are used to make cloud stroke
+  var words = [ "alpha", "blue", "brightness", "color", "green", "hue",
+    "lerpColor", "lightness", "red", "saturation", "background", "clear",
+    "colorMode", "fill", "noFill", "noStroke", "stroke", "arc",
+    "ellipse", "line", "point", "quad", "rect", "triangle",
+    "ellipseMode", "noSmooth", "rectMode", "smooth", "strokeCap", "strokeJoin",
+    "strokeWeight", "bezier", "bezierPoint", "bezierTangent", "curve", "curveTightness",
+    "curvePoint", "curveTangent", "beginContour", "beginShape", "bezierVertex", "curveVertex",
+    "endContour", "endShape", "quadraticVertex", "vertex", "loadModel", "model",
+    "plane", "box", "sphere", "cylinder", "cone", "ellipsoid",
+    "torus", "HALF_PI", "PI", "QUARTER_PI", "TAU", "TWO_PI",
+    "preload", "setup", "draw", "remove", "noLoop", "loop",
+    "push", "pop", "redraw", "print", "frameCount", "focused",
+    "cursor", "frameRate", "noCursor", "displayWidth", "displayHeight", "windowWidth",
+    "windowHeight", "windowResized", "width", "height", "fullscreen", "pixelDensity",
+    "displayDensity", "getURL", "getURLPath", "getURLParams", "p5.Element", "createCanvas",
+    "resizeCanvas", "noCanvas", "createGraphics", "blendMode", "applyMatrix", "resetMatrix",
+    "rotate", "rotateX", "rotateY", "rotateZ", "scale", "shearX",
+    "shearY", "translate", "p5.TypedDict", "p5.NumberDict", "append", "arrayCopy",
+    "concat", "reverse", "shorten", "shuffle", "sort", "splice",
+    "subset", "float", "int", "str", "boolean", "byte",
+    "char", "unchar", "hex", "unhex", "join", "match",
+    "matchAll", "nf", "nfc", "nfp", "nfs", "split",
+    "splitTokens", "trim", "deviceOrientation", "accelerationX", "accelerationY", "accelerationZ",
+    "pAccelerationX", "pAccelerationY", "pAccelerationZ", "rotationX", "rotationY", "rotationZ",
+    "pRotationX", "pRotationY", "pRotationZ", "setMoveThreshold", "setShakeThreshold", "deviceMoved",
+    "deviceTurned", "deviceShaken", "keyIsPressed", "key", "keyCode", "keyPressed",
+    "keyReleased", "keyTyped", "keyIsDown", "mouseX", "mouseY", "pmouseX",
+    "pmouseY", "winMouseX", "winMouseY", "pwinMouseX", "pwinMouseY", "mouseButton",
+    "mouseIsPressed", "mouseMoved", "mouseDragged", "mousePressed", "mouseReleased", "mouseClicked",
+    "doubleClicked", "mouseWheel", "touches", "touchStarted", "touchMoved", "touchEnded",
+    "createImage", "saveCanvas", "saveFrames", "p5.Image", "loadImage", "image",
+    "tint", "noTint", "imageMode", "pixels", "blend", "copy",
+    "filter", "get", "loadPixels", "set", "updatePixels", "loadJSON",
+    "loadStrings", "loadTable", "loadXML", "httpGet", "httpPost", "httpDo",
+    "save", "saveJSON", "saveStrings", "saveTable", "p5.Table", "p5.TableRow",
+    "p5.XML", "day", "hour", "minute", "millis", "month",
+    "second", "year", "createVector", "p5.Vector", "abs", "ceil",
+    "constrain", "dist", "exp", "floor", "lerp", "log",
+    "mag", "map", "max", "min", "norm", "pow",
+    "round", "sq", "sqrt", "noise", "noiseDetail", "noiseSeed",
+    "randomSeed", "random", "randomGaussian", "acos", "asin", "atan",
+    "atan2", "cos", "sin", "tan", "degrees", "radians",
+    "angleMode", "textAlign", "textLeading", "textSize", "textStyle", "textWidth",
+    "textAscent", "textDescent", "loadFont", "text", "textFont", "p5.Font",
+    "camera", "perspective", "ortho", "ambientLight", "directionalLight", "pointLight",
+    "loadShader", "shader", "normalMaterial", "texture", "ambientMaterial", "specularMaterial",
+    "p5.Texture", "p5.RendererGL", "p5.Shader"
+  ];
+
+  // vertices of the cloud shape (calculated manually)
+  var cloudPoints = [
+    createVector(557, 592),
+    createVector(468, 464),
+    createVector(497, 318),
+    createVector(657, 228),
+    createVector(713, 86),
+    createVector(874, 26),
+    createVector(949, 54),
+    createVector(1104, 28),
+    createVector(1224, 109),
+    createVector(1255, 226),
+    createVector(1404, 275),
+    createVector(1467, 421),
+    createVector(1370, 592),
+    createVector(557, 592),
+  ]
+
+  // function to draw text under angle
+  function angledText(textToDraw, x, y, angle) {
+      push();
+      translate(x,y);
+      rotate(-angle);
+      text(textToDraw, 0, 0);
+      pop();
+  }
+
+  // used in getStringByLength to continue from the last cut position
+  var remainderString = "";
+  // function that returns randomly generated string containing words that
+  // has approximate length in pixels of argument
+  function getStringByLength(length) {
+    ret = remainderString;
+
+    while(textWidth(ret) < length) {
+      word = words[int(random(words.length))];
+      ret += word + " ";
+    }
+
+    remainderString = "";
+    while(textWidth(ret) > length) {
+      remainderString = ret.charAt(ret.length - 1) + remainderString;
+      ret = ret.substring(0, ret.length - 1);
+    }
+
+    return ret;
+  }
+
+  //save font and other settings
+  push();
+  // draw the cloud shape
+  strokeWeight(50);
+  stroke(255,255,255);
+  strokeJoin(ROUND);
+  beginShape();
+  for(var i = 0; i < cloudPoints.length; i++) {
+    vertex(cloudPoints[i].x, cloudPoints[i].y);
+  }
+  endShape(CLOSE);
+
+  // draw the textual cloud stroke
+  textFont("monospace", 30);
+  textStyle(BOLD);
+  strokeWeight(0);
+  fill(0);
+  for(var i = 0; i < cloudPoints.length - 1; i++) {
+    var startingPoint = cloudPoints[i];
+    var endingPoint = cloudPoints[i+1];
+
+    var distance = startingPoint.dist(endingPoint);
+    var angle = p5.Vector.sub(endingPoint, startingPoint).heading();
+
+    // use negative angle because math and canvase use different coordinate system
+    angledText(getStringByLength(distance), startingPoint.x, startingPoint.y, -angle);
+  }
+  // restore font and other settings
+  pop();
+
+  // write cloud title
+  var titleRect = [763, 106, 420, 224];
+  textSize(56);
+  textAlign(CENTER,TOP);
+  text("Processing\nCommunity Day", titleRect[0], titleRect[1], titleRect[2], titleRect[3]);
+
+  // return rectangle for text (calculated manually)
+  return [563, 306, 805, 224];
+}
+
+register(p5Cloud, "P5.js Cloud", "RedAnt333");
+
+// Let there be clouds :)
+function letThereBeClouds(){
+  // Very classy.
+  class CloudNode{
+    constructor(_x, _y, _index){
+      this.pos = createVector(_x, _y);
+      this.size = noise(_index)*width/4;
+    }
+
+    render(){
+      stroke(0);
+      strokeWeight(4);
+      fill(255,200);
+      ellipse(this.pos.x, this.pos.y, this.size, this.size * 0.618);
+    }
+
+  }
+  var cloudNodes = [];
+
+  for (let i = 0; i < 123; i++){
+
+    let x = width/2 + random()*width/8;
+    let y = height/2 + random()*height/12;
+
+    cloudNodes.push(new CloudNode(x, y, i));
+    cloudNodes[i].render();
+  }
+
+}
+
+register(letThereBeClouds, "Let There Be Clouds", "Red Hen dev");
+

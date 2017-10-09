@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CommunityClouds</title>
+    <link rel="stylesheet" href="../css/print.css">
+</head>
+<body style="background:#F00;">
+  <svg class="hidden" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="0" height="0"><defs>
+    <filter id="stroke">
+      <feGaussianBlur stdDeviation="5" result=""></feGaussianBlur>
+      <feColorMatrix result="background" type="matrix" values="0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 100 0" in=""></feColorMatrix>
+      <feOffset result="foreground" in="SourceGraphic" dx="0" dy="0"></feOffset>
+      <feBlend in="foreground" in2="background" mode="normal"></feBlend>
+    </filter></defs>
+  </svg>
+
+    <div id="sketch-contain" style="display: none;"></div>
+    <script src="https://cdn.rawgit.com/gliffy/canvas2svg/master/canvas2svg.js" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/addons/p5.dom.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/addons/p5.sound.min.js" type="text/javascript"></script>
+
+    <script src="print.js" type="text/javascript"></script>
+    <script src="../generators.js" type="text/javascript"></script>
+</body>
+</html>
