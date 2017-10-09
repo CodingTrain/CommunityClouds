@@ -1412,7 +1412,7 @@ function squareNotBlueCloud()
   
   push();
   fill(255);
-  stroke(0);
+  stroke(200);
   rectMode(CENTER);
   
   var maxSquare = 60;
