@@ -26,6 +26,21 @@ function windowResized() {
     redraw();
 }
 
+function keyReleased() {
+    if (keyCode == UP_ARROW || keyCode == LEFT_ARROW) {
+        selectionInput.curIndex--;
+        if (selectionInput.curIndex < 2) selectionInput.curIndex = generators.length;
+        redraw();
+    } else if (keyCode == DOWN_ARROW || keyCode == RIGHT_ARROW) {
+        selectionInput.curIndex++;
+        if (selectionInput.curIndex < 3 || selectionInput.curIndex >= generators.length) selectionInput.curIndex = 2;
+        redraw();
+    }
+    selectionInput.curOpt = Object.keys(selectionInput.selectableOptions)[selectionInput.curIndex];
+    
+    return false;
+}
+
 // On setup
 function setup() {
     // Default canvas size
