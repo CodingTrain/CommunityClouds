@@ -231,6 +231,7 @@ class MaterialSelect extends FormFields {
             let tmp = document.createElement("li");
             tmp.innerText                  = item.value;
             this.passedOrder[preSortIndex] = key;
+            tmp.dataset.optionIndex        = index;
             tmp.id                         = key.split(" ").join("_");
             tmp.classList.add("material-select-option");
             this.optionsNodes.push(tmp);
