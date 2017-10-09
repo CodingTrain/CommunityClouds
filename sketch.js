@@ -49,8 +49,14 @@ function setup() {
     // Begin selectable options object
     let selectOptions = {
             "random": {
-                value : "Random",
-                group : "default"
+                value          : "Random",
+                group          : "_default", // Added underscore to sort before "community"
+                default        : true   /** Group names should be used solely
+                                         *  to differentiate visual groups.
+                                         *  the default property allows users to
+                                         *  set a default, but keep it inline
+                                         *  with whichever group they're using.
+                                         */
             }
         };
     // Finish populating selectOptions
@@ -150,7 +156,7 @@ function draw() {
 
     if (selectionInput.curOpt !== 'random') {
         // Get generator chosen
-        generator = generators[selectionInput.Index - 1];
+        generator = generators[selectionInput.PresortIndex - 1];
     } else {
         // Chose a random generator
         generator = random(generators);

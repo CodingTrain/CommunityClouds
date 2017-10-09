@@ -176,10 +176,14 @@ class MaterialSelect extends FormFields {
         this.ulNode            = "";
         this.curOpt            = "";
         this.curIndex          = "";
-        this._preSortIndex     = [];
+        this.passedOrder       = [];
+        this.optionsInOrder    = [];
         this.curOptNode        = "";
         this.optAllNode        = "";
         this.optionsNodes      = [];
+        this.groupNodes        = [];
+        this.groups            = {};
+        this.default           = "";
         this.selectableOptions = selectableOptions || {};
         this.sorted            = sorted || false;
         this.changeCallback    = changeCallback || null;
@@ -196,8 +200,11 @@ class MaterialSelect extends FormFields {
 
         s.id = this.id;
         s.classList.add("selection-container");
+        s.appendChild(u);
 
         u.classList.add("select-input");
+        u.appendChild(c);
+        u.appendChild(a);
 
         c.id = "opt-cur";
         c.classList.add("opt-cur");
@@ -205,60 +212,94 @@ class MaterialSelect extends FormFields {
         a.id = "opt-all";
         a.classList.add("opt-all");
 
-        s.appendChild(u);
-        u.appendChild(c);
-        u.appendChild(a);
-
-        let _selectableKeys = Object.keys(this.selectableOptions),
-            selectableKeys  = _selectableKeys.slice();
-        if(this.sorted) {
-            selectableKeys.sort((a, b) => a.localeCompare(b));
-        }
-
-        let groups = {};
-        selectableKeys.forEach(key => {
-            let n            = this.selectableOptions[key],
-                preSortIndex = _selectableKeys.indexOf(key),
-                index        = selectableKeys.indexOf(key);
-
-            if(n.group.toLowerCase() === "default") {
-                this.curOpt               = key;
-                this.curIndex             = index;
-                this.value                = n.value;
-            }
-
-            let tmp = document.createElement("li");
-            tmp.innerText             = n.value;
-            tmp.dataset.optionVal     = key;
-            tmp.dataset.optionIndex   = index;
-            this._preSortIndex[index] = preSortIndex;
-            tmp.id                    = key.split(" ").join("-");
-            this.curOptNode           = tmp;
-            tmp.classList.add("material-select-option");
-            this.optionsNodes.push(tmp);
-
-            if(!(n.group in groups)) {
-                let g     = document.createElement("div"), // Group container
-                    group = n.group;
-                g.classList.add("group");
-                g.id = "group-" + group;
-                groups[group] = g;
-            }
-            groups[n.group].appendChild(tmp);
-        });
-
-        Object.keys(groups)
-            .sort((a, b) => b === "default" ? true : (a === "default" ? false : a.localeCompare(b)))
-            .forEach(key => a.appendChild(groups[key]));
-
-        c.innerText = this.value;
-
         this.containerNode = s;
         this.ulNode        = u;
         this.curOptNode    = c;
         this.optAllNode    = a;
 
+        this.handleGrouping();
+
+        this.handleSorting();
+
+        // Generate all options
+        this.optionsInOrder.forEach(key => {
+            let item         = this.selectableOptions[key],
+                preSortIndex = this.passedOrder.indexOf(key),
+                index        = item.index,
+                group        = item.group;
+
+            let tmp = document.createElement("li");
+            tmp.innerText                  = item.value;
+            this.passedOrder[preSortIndex] = key;
+            tmp.id                         = key.split(" ").join("_");
+            tmp.classList.add("material-select-option");
+            this.optionsNodes.push(tmp);
+
+            this.groupNodes[group].appendChild(tmp);
+        });
+
+        for(let key in this.groupNodes) {
+            a.appendChild(this.groupNodes[key]);
+        }
+
+        this.setOptionByIndex(this.selectableOptions[this.default].index);
+
         return s;
+    }
+
+    handleGrouping() {
+        for(let key in this.selectableOptions){
+            let curItem      = this.selectableOptions[key],
+                curItemGroup = curItem.group,
+                isDefault    = curItem.default || false;
+            if(isDefault){
+                if(this.default){
+                    throw new Error("Only one default option may be set.");
+                }
+                this.default = key;
+            }
+            if(!curItemGroup){
+                curItem.group = "no-group";
+                curItemGroup = "no-group";
+            }
+            if(!(curItemGroup in this.groups)) {
+                this.groups[curItemGroup] = {};
+            }
+            this.groups[curItemGroup][key] = curItem;
+        }
+        // Generate top-level group nodes
+        for(let key in this.groups){
+            let g     = document.createElement("div"); // Group container
+            g.classList.add("group");
+            g.id = "group-" + key;
+            this.groupNodes[key] = g;
+        };
+    }
+
+    handleSorting() {
+        let opts = this.selectableOptions,
+            k    = Object.keys;
+        this.passedOrder = k(opts);
+        if(this.sorted) {
+            // Sort group names before sorting elements in groups
+            let groupSort = k(this.groups).sort((a, b) => a.localeCompare(b)),
+                indexTmp = -1;
+            for(let i in groupSort){
+                let itemSort = k(this.groups[groupSort[i]]).sort((a, b) => a.localeCompare(b));
+                itemSort.forEach(key => {
+                    indexTmp++;
+                    opts[key].index = indexTmp;
+                    this.optionsInOrder[indexTmp] = key;
+                });
+            }
+        } else {
+            let indexTmp = -1;
+            k(opts).forEach(key => {
+                indexTmp++;
+                opts[key].index = indexTmp;
+                this.optionsInOrder[indexTmp] = key;
+            });
+        }
     }
 
     clickOffReset(e) {
@@ -271,9 +312,9 @@ class MaterialSelect extends FormFields {
     }
 
     chooseOptions(e) {
-        let target = e.target;
-        let isCurOpt = target === this.curOptNode;
-        let resetCallback = this.clickOffReset.bind(this);
+        let target = e.target,
+            isCurOpt = target === this.curOptNode,
+            resetCallback = this.clickOffReset.bind(this);
         window.addEventListener("click", resetCallback);
         if(isCurOpt) {
             this.containerNode.classList.toggle("showing");
@@ -285,7 +326,7 @@ class MaterialSelect extends FormFields {
         }
         if(target.classList.contains("material-select-option")) {
             this.curIndex = target.dataset.optionIndex;
-            this.setOptionByIndex(this.Index);
+            this.setOptionByIndex(this.curIndex);
         }
         if(this.changeCallback !== null) {
             this.changeCallback();
@@ -297,18 +338,18 @@ class MaterialSelect extends FormFields {
         this.containerNode.addEventListener("click", chooseOptions);
     }
 
-    setOptionByIndex(presortIndex){
-        let keys = Object.keys(this.selectableOptions),
-            curOption = this.selectableOptions[keys[presortIndex]];
-        this.curOpt = keys[presortIndex];
-        this.value  = curOption.value;
+    setOptionByIndex(ind){
+        let opts      = this.selectableOptions,
+            curOption = this.optionsInOrder[ind];
+        this.curOpt               = curOption;
+        this.value                = opts[curOption].value;
         this.curOptNode.innerText = this.value;
     }
 
     nextItem(){
-        if(this.curIndex < this._preSortIndex.length - 1){
+        if(this.curIndex < this.optionsInOrder.length - 1){
             this.curIndex++;
-            this.setOptionByIndex(this.Index);
+            this.setOptionByIndex(this.curIndex);
             if(this.changeCallback) {
                 this.changeCallback();
             }
@@ -319,7 +360,7 @@ class MaterialSelect extends FormFields {
     previousItem(){
         if(this.curIndex > 0){
             this.curIndex--;
-            this.setOptionByIndex(this.Index);
+            this.setOptionByIndex(this.curIndex);
             if(this.changeCallback) {
                 this.changeCallback();
             }
@@ -327,8 +368,8 @@ class MaterialSelect extends FormFields {
         return;
     }
 
-    get Index(){
-        return this._preSortIndex[this.curIndex];
+    get PresortIndex(){
+        return this.passedOrder.indexOf(this.curOpt);
     }
 
 }
