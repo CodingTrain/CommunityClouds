@@ -159,6 +159,7 @@ function add_to_page() {
   if(currentPage.elements === 6) {
     currentPage = new_page();
   }
+  redraw();
 }
 
 // Register a new cloud generator.
