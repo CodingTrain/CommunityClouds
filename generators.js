@@ -386,10 +386,16 @@ register(cartoonCloud, "Cartoon cloud", "@JeBoyJurriaan");
 
 function unstableCloud() {
 
+  // You can change:
+  // sizeFactor (how big/small the cloud will be)
+  // all colors
+  // DEBUG (to see how it's made)
+
   // Utils
   const DEBUG = false
   const debugColor = (alpha=150) => color(random(255), random(255), random(255), alpha)
   const cloudColor = (alpha=255) => color(255, alpha)
+  const shadowColor = (alpha=255) => color(20, alpha)
   const createCloud = (pos, d) => {
     return {pos: pos, d: d}
   }
@@ -409,7 +415,12 @@ function unstableCloud() {
     ellipse(cloud.pos.x, cloud.pos.y, cloud.d, cloud.d)
   }
 
-  // const drawGuidLine = () =>
+  const drawShadowCloud = (cloud) => {
+    noStroke()
+    DEBUG ? fill(debugColor()) : fill(shadowColor())
+    ellipse(cloud.pos.x, cloud.pos.y, cloud.d * shadowThickness, cloud.d * shadowThickness)
+  }
+
   const getArcCenter = (A, B, C) => {
 
     // Mid-points AB and BC
@@ -457,6 +468,7 @@ function unstableCloud() {
   const nPuffyClouds = Math.round(6+random(1))
   const puffyCloudsBaseSize = 300 * sizeFactor
   const puffyCloudsSizeOffset = 100 * sizeFactor
+  const shadowThickness = 1.05
 
   // Cloud base
   const baseWidth = 1100 * sizeFactor
@@ -500,8 +512,13 @@ function unstableCloud() {
     noFill()
     arc(arcCenter.x, arcCenter.y, arcDiameter, arcDiameter, PI+arcOffsetAngle, -arcOffsetAngle)
   }
+  puffyClouds.forEach(drawShadowCloud)
   drawCloudBase(basePos, baseWidth, baseHeight)
+  // line(basePos.x, basePos.y + baseHeigth, basePos.x + baseWidth, basePos.y + baseHeigth)
   puffyClouds.forEach(drawPuffyCloud)
+  stroke(shadowColor())
+  strokeWeight(shadowThickness * 5.5 * sizeFactor)
+  line(basePos.x, basePos.y + baseHeight*1.013, basePos.x + baseWidth, basePos.y + baseHeight*1.013)
 
   return [basePos.x, basePos.y - baseHeight*.1, baseWidth, baseHeight]
 }
