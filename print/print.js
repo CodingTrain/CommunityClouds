@@ -6,9 +6,9 @@ let currentSvg;
 let container;
 let generatorSelect;
 let sizeAdjust;
-let filterSelect;
 let backgroundSelect;
 let addToPage;
+let addOneOfEach;
 
 let currentPage;
 let pageContainer;
@@ -20,10 +20,10 @@ function setup() {
   container = document.getElementById('svg-contain');
   sizeAdjust = document.getElementById('size-adjust');
   generatorSelect = document.getElementById('generator');
-  filterSelect = document.getElementById('filter');
   backgroundSelect = document.getElementById('background');
   pageContainer = document.getElementById('pages');
   addToPage = document.getElementById('add-to-page');
+  addOneOfEach = document.getElementById('add-one-of-each');
 
   currentPage = new_page();
 
@@ -46,14 +46,24 @@ function setup() {
 
   generatorSelect.onchange = redraw;
 
-  filterSelect.onchange = applyFilter;
-
   container.className = backgroundSelect.value;
   backgroundSelect.onchange = function() {
     container.className = backgroundSelect.value;
   }
 
   addToPage.onclick = add_to_page;
+
+  addOneOfEach.onclick = function() {
+    generators.forEach(function(gen, i) {
+      generatorSelect.value = i;
+      if(custom_size[i]) {
+        resizeCanvas(custom_size[i], custom_size[i] / 4 * 3);
+      } else {
+        resizeCanvas(1200, 900);
+      }
+      add_to_page();
+    });
+  }
 }
 
 function draw() {
@@ -69,8 +79,9 @@ function draw() {
   fill("#000");
   stroke("#000");
   fill("#FFF");
-  gen = generators[generatorSelect.value];
-  console.log(generators.indexOf(gen), gen);
+  var idx = +generatorSelect.value;
+  gen = generators[idx];
+  console.log(idx, gen);
   gen.fn();
 
   var xmlns = "http://www.w3.org/2000/svg";
@@ -83,9 +94,11 @@ function draw() {
   currentSvg.removeChild(g);
   var container_g = document.createElementNS(xmlns, 'g');
   container_g.appendChild(g);
+  if(needs_stroke_added.indexOf(idx) > -1) {
+    container_g.appendChild(g.cloneNode(true));
+    alter_stroke(20, g);
+  }
   currentSvg.appendChild(container_g);
-
-  applyFilter();
 
   while(container.lastChild) {
     container.removeChild(container.lastChild);
@@ -117,11 +130,26 @@ function scale_svg(svg, append, margin) {
   }
 }
 
-function applyFilter() {
-  if(filterSelect.value !== 'none') {
-    currentSvg.lastChild.setAttribute('filter', `url(#${filterSelect.value})`);
-  } else {
-    currentSvg.lastChild.setAttribute('filter', '');
+function alter_stroke(size, elem) {
+  if(elem.transform) {
+    for(let i = 0; i < elem.transform.baseVal.length; i++) {
+      let transform = elem.transform.baseVal.getItem(i);
+      if(transform.type === SVGTransform.SVG_TRANSFORM_SCALE) {
+        let scale_mult = min(transform.matrix.a, transform.matrix.d);
+        size /= scale_mult;
+        console.log(transform);
+      }
+    }
+  }
+  let color = elem.getAttribute('stroke');
+  let width = elem.getAttribute('stroke-width') || 0;
+  width = +width;
+  color = "#000";
+  width += size;
+  elem.setAttribute('stroke', color);
+  elem.setAttribute('stroke-width', width);
+  for(child of elem.children) {
+    alter_stroke(size, child);
   }
 }
 

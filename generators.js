@@ -1353,8 +1353,8 @@ function curveVertexCloud() {
   translate(width/2, height/2);
 
   noFill();
-  stroke(255);
-  strokeWeight(2);
+  stroke(0);
+  strokeWeight(20);
 
   for (let i = 0; i < cloud.length-1; i++) {
     beginShape();
@@ -1426,41 +1426,41 @@ register(noCloud, "There is no cloud", "rnoennig");
  */
 function squareNotBlueCloud()
 {
-  
+
   push();
   fill(255);
   stroke(200);
   rectMode(CENTER);
-  
+
   var maxSquare = 60;
-  
+
   // Function to draw n concentric squares from a center (x, y)
   function putSquare(x, y, s, n) {
-    
+
     for (var i = n - 1; i >= 0; --i) {
-     
+
       rect(x, y, s * (i + 1), s * (i + 1));
     }
   }
-  
+
   // Main body
   var maxLen = floor(min(width, height) / 20);
   putSquare((width / 4) + 3 * maxLen, height / 2, maxLen, 15);
   putSquare((3 * width / 4) - 3 * maxLen, height / 2, maxLen, 15);
-  
+
   // Sub clouds
   for (var i = 0; i < maxSquare; ++i) {
-  
+
   	putSquare(
-      random((width / 4) - maxLen * 6, (3 * width / 4) + maxLen * 6), 
-      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8), 
-      maxLen, 
+      random((width / 4) - maxLen * 6, (3 * width / 4) + maxLen * 6),
+      random((height / 2) - maxLen * 8, (height / 2) + maxLen * 8),
+      maxLen,
       floor(random(1, 6))
     );
   }
-  
+
   pop();
-  
+
   return [width / 2, height / 2, maxLen * 15, maxLen * 15, "77F"];
 }
 
@@ -2039,7 +2039,7 @@ strokeWeight(7);
   endShape();
 
   noStroke();
-  
+
   ellipse(x, y, r1, r2);
 
   return([-(r1/ROOT_TWO/2)+x , -(r2/ROOT_TWO/2)+y , ROOT_TWO/2*r1 , ROOT_TWO/2*r2]);
