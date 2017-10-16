@@ -2074,7 +2074,6 @@ function EllipseNameTag(){
   	//Create "Processing Text" underneath name
   	//Original Concept from 'P5.js Cloud' by RedAnt33
   	textFont("monospace", 30);
-  	textStyle(BOLD);
   	strokeWeight(0);
   	fill(0);
   	textSize(24);
