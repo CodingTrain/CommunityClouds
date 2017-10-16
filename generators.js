@@ -2047,3 +2047,149 @@ strokeWeight(7);
 }
 
 register(bumpCloud, "bumpCloud", "Xalkor");
+
+function britishCloud()
+{
+  h = height/3;
+  w = width/2;
+  position = createVector(width/2, height/2);
+  numberOfFluffies = 15;
+  
+     angleMode(DEGREES);
+    // First draw the main inner ellipse;
+    push();
+    fill(255);
+    stroke(255);
+    ellipseMode(CENTER);    
+    // Draw the outer "fluffy" bits/
+    for (let i = 0; i < numberOfFluffies; i++)
+    {
+      angle = 360/numberOfFluffies * i;
+      pX = position.x + ((w/2) * cos(angle));
+      pY = position.y + ((h/2) * sin(angle));
+      r = random(width/22, width/15);
+      if (pY > position.y)
+      {
+        push();
+        stroke(200,200,200);
+        fill(210,210,210);
+        ellipse(pX-(h/15), pY+(h/15), r*2, r*2);
+        pop();
+      }
+      ellipse(pX, pY, r*2, r*2);
+    }
+    
+    // Now draw some weather!!!!!!
+    type = int(random(1, 4));
+    switch(type)
+    {
+      case 1:     // Lightening!!!
+        for(let i = 1; i <= 3; i++)
+        {
+          //bX = (this.position.x - this.w/2 * 0.8) + (this.w/3*0.8)*i;
+          bX = position.x + ((w/2) * cos((i*45)));
+          bY = position.y + ((h/2) * sin((i*45)));
+          bScale = random(h/250, h/150);
+          dir = int(random(0, 2));
+          if (dir === 0)
+            bDir = -1;
+          else
+            bDir = 1;
+          col = random(210, 255);
+          var bColour = color(160,210,col,200);
+          drawBolt(bX, bY, bScale, bDir, bColour);
+        }
+        break;
+        
+      case 2:     // Rain!!!
+        push();
+        for(let i = 1; i <= 10; i++)
+        {
+          rX = (position.x + (w/25) + ((w/2+(w/12)) * cos(45 + i * 9)));
+          rY = (position.y + ((h/2-(h/12)) * sin(50)));
+          col = random(100, 255);
+          rColour = color(10,65,col,180);
+          stroke(rColour);
+          strokeWeight(h/12);
+          strokeCap(ROUND);
+          push();
+          translate(rX, rY);
+          rotate(20);
+          line(0, 0, 0, (h*0.66)+(i%2*(h/6)));
+          pop();
+        }
+        pop();
+        break;
+        
+      case 3:     // Snow!!!
+        push();
+        for(let i = 1; i <= 5; i++)
+        {
+          sX = (position.x + (w/25) + ((w/2+(w/12)) * cos(45 + i * 18)));
+          sY = (position.y + (w/12) + ((h/2) * sin(50)));
+          drawSnowflake(sX, sY+(w/12));
+        }
+        pop();
+        
+      default:
+        break;
+    }
+    // Now fill the middle with white.
+    ellipse(position.x, position.y, w, h);
+    pop();
+
+    return [position.x - w/2, position.y - h/2, w, h];
+
+    function drawBolt(startX, startY, scl, direction, colour)
+    {
+      push();
+      fill(colour);
+      noStroke();
+      translate(startX, startY);
+      scale(scl);
+      quad(0*direction, 0,
+           35*direction, 10,
+           15*direction, 110,
+           0*direction, 75);
+      quad(0*direction, 75,
+           15*direction, 110,
+           -15*direction, 95,
+           -45*direction, 60);
+      triangle(-45*direction, 60,
+               -15*direction, 95,
+               -20*direction, 190);
+      pop();
+    }
+
+    function drawSnowflake(centreX, centreY)
+    {
+      push();
+      stroke(255);
+      strokeWeight(w/250);
+      strokeCap(ROUND);
+      translate(centreX, centreY);
+      for (let flake = 0; flake < 3; flake++)
+      {
+        push();
+        scale(random(h/450, h/300));
+        translate(0, 0 + flake*(h/4));
+        rotate(random(0,59));
+        for (let branch = 0; branch < 6; branch++)
+        {
+          // Draw a branch, and then rotate by 60 degrees.
+          line(0, 0, 0, 50);
+          line(0, 20, 7, 20)
+          line(0, 20, -7, 20);
+          line(0, 30, 15, 37);
+          line(0, 30, -15, 37);
+          line(0, 40, 10, 45);
+          line(0, 40, -10, 45);
+          rotate(60);
+        }
+        pop();
+      }
+      pop();
+    }
+}
+
+register(britishCloud, "British Cloud", "Jools");
