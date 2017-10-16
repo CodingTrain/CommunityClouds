@@ -2047,3 +2047,42 @@ strokeWeight(7);
 }
 
 register(bumpCloud, "bumpCloud", "Xalkor");
+
+function EllipseNameTag(){
+
+	//Create ellipse background which Cloud will rest on
+	fill(122, 182, 250)	//Color of background
+	stroke(255)
+	strokeWeight(14)
+	ellipse(width/2, height/2, width/2, height/2.5);
+
+	//Create cloud shadow
+	const m = random(25,50)
+	fill(255, 50)
+	noStroke()
+	for (var i = 0; i < m; i++){
+		ellipse(random(width/3,2*width/3),random((window.height/2) + window.height/10,(window.height/2) + window.height/8),random(60,100),random(30,50));
+	}
+
+	//Create Cloud
+	fill(255)
+	const n = random(150,250)
+  	for(var i = 0; i<n;i++){
+    	ellipse(random(width/3,2*width/3),random(height/3,(height/2) + height/15),random(60,100),random(60,100));
+  	}
+
+  	//Create "Processing Text" underneath name
+  	//Original Concept from 'P5.js Cloud' by RedAnt33
+  	textFont("monospace", 30);
+  	textStyle(BOLD);
+  	strokeWeight(0);
+  	fill(0);
+  	textSize(24);
+  	textAlign(CENTER,CENTER);
+  	text("Processing Community Day\nOctober 21, 2017", width/2, 9*height/16);
+
+  	//return bounding box for name text
+  	return [width/3, 8.5*height/24, width/3, height/6];
+}
+
+register(EllipseNameTag, "Ellipse Cloud Name Tag", "Cole Spears");
