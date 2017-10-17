@@ -13,7 +13,8 @@ var needs_stroke_added = [
   32,
   33,
   34,
-  39
+  39,
+  40
 ];
 
 var custom_size = {

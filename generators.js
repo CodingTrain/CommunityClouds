@@ -2054,13 +2054,13 @@ function britishCloud()
   w = width/2;
   position = createVector(width/2, height/2);
   numberOfFluffies = 15;
-  
+
      angleMode(DEGREES);
     // First draw the main inner ellipse;
     push();
     fill(255);
     stroke(255);
-    ellipseMode(CENTER);    
+    ellipseMode(CENTER);
     // Draw the outer "fluffy" bits/
     for (let i = 0; i < numberOfFluffies; i++)
     {
@@ -2078,7 +2078,7 @@ function britishCloud()
       }
       ellipse(pX, pY, r*2, r*2);
     }
-    
+
     // Now draw some weather!!!!!!
     type = int(random(1, 4));
     switch(type)
@@ -2100,7 +2100,7 @@ function britishCloud()
           drawBolt(bX, bY, bScale, bDir, bColour);
         }
         break;
-        
+
       case 2:     // Rain!!!
         push();
         for(let i = 1; i <= 10; i++)
@@ -2120,7 +2120,7 @@ function britishCloud()
         }
         pop();
         break;
-        
+
       case 3:     // Snow!!!
         push();
         for(let i = 1; i <= 5; i++)
@@ -2130,7 +2130,7 @@ function britishCloud()
           drawSnowflake(sX, sY+(w/12));
         }
         pop();
-        
+
       default:
         break;
     }
@@ -2193,3 +2193,41 @@ function britishCloud()
 }
 
 register(britishCloud, "British Cloud", "Jools");
+
+function EllipseNameTag(){
+
+	//Create ellipse background which Cloud will rest on
+	fill(122, 182, 250)	//Color of background
+	stroke(255)
+	strokeWeight(14)
+	ellipse(width/2, height/2, width/2, height/2.5);
+
+	//Create cloud shadow
+	const m = random(25,50)
+	fill(255, 50)
+	noStroke()
+	for (var i = 0; i < m; i++){
+		ellipse(random(width/3,2*width/3),random((window.height/2) + window.height/10,(window.height/2) + window.height/8),random(60,100),random(30,50));
+	}
+
+	//Create Cloud
+	fill(255)
+	const n = random(150,250)
+  	for(var i = 0; i<n;i++){
+    	ellipse(random(width/3,2*width/3),random(height/3,(height/2) + height/15),random(60,100),random(60,100));
+  	}
+
+  	//Create "Processing Text" underneath name
+  	//Original Concept from 'P5.js Cloud' by RedAnt33
+  	textFont("monospace", 30);
+  	strokeWeight(0);
+  	fill(0);
+  	textSize(24);
+  	textAlign(CENTER,CENTER);
+  	text("Processing Community Day\nOctober 21, 2017", width/2, 9*height/16);
+
+  	//return bounding box for name text
+  	return [width/3, 8.5*height/24, width/3, height/6];
+}
+
+register(EllipseNameTag, "Ellipse Cloud Name Tag", "Cole Spears");
