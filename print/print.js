@@ -177,8 +177,8 @@ function update_link(page) {
 
 function add_to_page() {
   let id = currentPage.elements;
-  let offsetX = (id % 2) * outputWidth;
-  let offsetY = Math.floor(id / 2) * outputHeight;
+  let offsetX = (id % 2) * outputWidth + 25;
+  let offsetY = Math.floor(id / 2) * outputHeight + 100;
   let newPart = currentSvg.lastChild.cloneNode(true);
   currentPage.svg.appendChild(newPart);
   newPart.setAttribute('transform', `translate(${offsetX}, ${offsetY})`);

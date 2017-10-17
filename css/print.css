@@ -42,3 +42,15 @@
   height: auto;
   margin: 10px;
 }
+
+@media print {
+  #Current {
+    display: none;
+  }
+
+  #pages svg {
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+}
