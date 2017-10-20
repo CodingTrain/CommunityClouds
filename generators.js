@@ -2231,3 +2231,80 @@ function EllipseNameTag(){
 }
 
 register(EllipseNameTag, "Ellipse Cloud Name Tag", "Cole Spears");
+
+function swirlyCloud() {
+    function rotate(point, around, angle) {
+        let s = sin(angle);
+        let c = cos(angle);
+        point.x -= around.x;
+        point.y -= around.y;
+        let xnew = point.x * c - point.y * s;
+        let ynew = point.x * s + point.y * c;
+        point.x = xnew + around.x;
+        point.y = ynew + around.y;
+        return point;
+    }
+    push();
+    let points = floor(random(8, 14));
+    var step = 2 * PI / points + 0.001;
+    var w = width / 2;
+    var k = height / 2;
+    var r = min(height, width) / 1.6;
+    let guideline = [];
+    let start = random(0, -PI);
+    for (var theta = start; theta < start + 2 * PI; theta += step) {
+        var x = w + r * cos(theta);
+        var y = k - 0.5 * r * sin(theta);
+        guideline.push({
+            x,
+            y
+        });
+    }
+
+    noFill();
+    let p = {
+        x: guideline[0].x,
+        y: guideline[0].y
+    };
+    let arr = [];
+    let precision = 50;
+    for (let i = 1; i < guideline.length; i++) {
+        arr = [];
+        beginShape();
+        center = guideline[i];
+        yDiff = abs(p.y - center.y);
+        xDiff = abs(p.x - center.x);
+        distance = sqrt(yDiff * yDiff + xDiff * xDiff)
+        for (let j = 0; j < precision; j++) {
+            vertex(p.x, p.y);
+            if (precision / 3 < j && j < precision / 2)
+                arr.push({
+                    x: p.x,
+                    y: p.y
+                });
+            p = rotate(p, center, -PI / precision * 2);
+            let delta_x = center.x - p.x;
+            let delta_y = center.y - p.y;
+            let mag = sqrt(delta_x * delta_x + delta_y * delta_y)
+            delta_x = delta_x / mag * distance;
+            delta_y = delta_y / mag * distance;
+            p.x += delta_x / precision;
+            p.y += delta_y / precision;
+        }
+        p = random(arr);
+        strokeWeight(5);
+        stroke(0);
+        endShape();
+    }
+    let offset = floor(guideline.length / 6);
+    let p1 = guideline[guideline.length - offset];
+    let p2 = arr[arr.length - 1];
+    let p3 = guideline[0];
+    let p4 = guideline[offset]
+    curve(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y) ///TODO: make this curve better looking
+
+    pop();
+    return [w - r, k - r, 2 * r, 2 * r];
+}
+
+register(swirlyCloud, "Swirly cloud", "mdatsev");
