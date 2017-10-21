@@ -6,6 +6,28 @@
 // register(perlinNoiseCloud, "Perlin Noise Cloud", "Daniel Shiffman");
 // Here's an example below!
 
+function PCDCloud(){
+	translate(width/2, height/2);
+	let radius = random(50, 100)
+	noFill();
+	strokeWeight(4);
+  	let stepsize=slider.value();
+ 	beginShape();
+	let a = 0;
+  	for(let angle=0; angle<360; angle+=stepsize){
+    		let offset = sin(a) * 20;
+ 		let xradius = 200 + offset;
+    		let yradius = 100 + offset;
+    		let x = xradius * cos(angle);
+		let y = yradius * sin(angle);
+    		vertex(x, y);
+    		a = a + 55;
+ 	}
+  	endShape(CLOSE);
+	angle++;
+	
+}
+
 
 // Example rounded rectangle cloud
 function rectangle() {
@@ -17,7 +39,7 @@ function rectangle() {
 }
 
 // Register your function with register(function, style_name, author_name)
-register(rectangle, "Example", "example");
+register(PCDCloud, "Saber", "Cowabunga");
 
 /* ------  Add your custom cloud generators below! ------ */
 
