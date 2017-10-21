@@ -6,6 +6,28 @@
 // register(perlinNoiseCloud, "Perlin Noise Cloud", "Daniel Shiffman");
 // Here's an example below!
 
+function PCDCloud() {
+  translate(width / 2, height / 2);
+  strokeWeight(1);
+  noFill();
+  let stepsize = 5;
+  beginShape();
+  let a = 0;
+
+  for (let angle = 0; angle < 360; angle += stepsize) {
+    let offset = abs(sin(a)) * 20;
+    let xradius = 200 + offset;
+    let yradius = 100 + offset;
+    let x = xradius * cos(angle);
+    let y = yradius * sin(angle);
+    vertex(x, y);
+    a = a + 55;
+  }
+  endShape(CLOSE);	
+}
+
+register(PCDCloud, "PCD Day", "Processing Community");
+
 
 // Example rounded rectangle cloud
 function rectangle() {
