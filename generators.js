@@ -2308,3 +2308,35 @@ function swirlyCloud() {
 }
 
 register(swirlyCloud, "Swirly cloud", "mdatsev");
+
+function geomCloud() {
+  var time = random() * 100000000;//millis() * 0.005;
+  strokeWeight(1);
+  stroke(0,0,0,10);
+  const circles = 20;
+  const startX = width / 2;
+  const startY = height / 2;
+  const radius = height * 0.2;
+  for(var j = 0.0; j < circles; j++) {
+    fill(255, 255, 255, 30);
+    // 200 + map(sin(j + time * 0.5),-1,1,0, 50),
+    // 110 + map(sin(j + 0.3 + time * 0.6),-1,1,0, 80),
+    // 100 + map(sin(j + 0.8 + time * 0.3),-1,1,0, 80)
+    // );
+    beginShape();
+    var points = map(sin(0.5 + time * 0.01), -1, 1, 3, 40);
+    for(var i = 0.0; i < points; i++) {
+      var angle = TWO_PI * i / points;
+      var r = radius * map(sin(j * 2 + 0.4 + time * 0.8),-1,1,0.5,0.7) + 
+        sin(i + time * 0.1) * 10;
+      r *= map(j, 0, circles, 4, 0.0);
+      vertex(
+        startX + cos(map(sin(time * 0.2),-1,1,0,0.1) + angle) * r, 
+        startY + sin(map(cos(0.2 + time * 0.15),-1,1,0,0.1) + angle) * r
+      );
+    }
+    endShape();
+  }
+  return [75, 75, width - 150, height - 150];
+}
+register(geomCloud, "Geometric Cloud", "fernandoramallo");
