@@ -8,6 +8,7 @@
 
 function PCDCloud() {
   translate(width / 2, height / 2);
+  angleMode(DEGREES);
   strokeWeight(1);
   noFill();
   let stepsize = 5;
