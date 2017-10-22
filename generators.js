@@ -6,6 +6,23 @@
 // register(perlinNoiseCloud, "Perlin Noise Cloud", "Daniel Shiffman");
 // Here's an example below!
 
+// Example rounded rectangle cloud
+function rectangle() {
+  // Draw your cloud here
+  rect(50, 50, width - 100, height - 100, 50);
+  // Return an internal rectangle that it is safe to draw text within. Of the
+  // form [top_left, top_right, width, height]
+  return [100, 100, width - 200, height - 200];
+}
+
+// Register your function with register(function, style_name, author_name)
+register(rectangle, "Example", "example");
+
+/* ------  Add your custom cloud generators below! ------ */
+
+
+//*************************************************
+
 function PCDCloud() {
   translate(width / 2, height / 2);
   angleMode(DEGREES);
@@ -29,23 +46,6 @@ function PCDCloud() {
 
 register(PCDCloud, "PCD Day", "Processing Community");
 
-
-// Example rounded rectangle cloud
-function rectangle() {
-  // Draw your cloud here
-  rect(50, 50, width - 100, height - 100, 50);
-  // Return an internal rectangle that it is safe to draw text within. Of the
-  // form [top_left, top_right, width, height]
-  return [100, 100, width - 200, height - 200];
-}
-
-// Register your function with register(function, style_name, author_name)
-register(rectangle, "Example", "example");
-
-/* ------  Add your custom cloud generators below! ------ */
-
-
-//*************************************************
 
 function ellipseCloud() {
   const circleRadius = width / 8;
