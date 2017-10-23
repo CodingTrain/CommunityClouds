@@ -2363,3 +2363,19 @@ function geomCloud() {
   return [75, 75, width - 150, height - 150];
 }
 register(geomCloud, "Geometric Cloud", "fernandoramallo");
+
+function loopyCloud() {
+	angleMode(DEGREES);
+	translate(width/2,height/2)	
+	let radius = 100;
+	let a = 15;
+	strokeWeight(2);	
+	beginShape();
+	for (let angle =0; angle<360; angle+=1) {	
+          let x = (1.4*radius+20*cos(a*(angle)))*cos(angle);
+          let y = (radius+20*sin(a*(angle)))*sin(angle);
+          vertex(x,y);	
+	}
+	endShape(CLOSE);
+ }
+register(loopyCloud,"Cloud with loops","deepaki");
