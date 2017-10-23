@@ -2365,24 +2365,17 @@ function geomCloud() {
 register(geomCloud, "Geometric Cloud", "fernandoramallo");
 
 function loopyCloud() {
-  function setup() { 
-    createCanvas(400, 400);
-    angleMode(DEGREES);
-    let angleoff = 0.1;   
- } 	
- function draw() { 
   	background(220);
 	translate(width/2,height/2)	
 	let radius = 100;
 	let a = 15;
-	strokeWeight(1);	
+	strokeWeight(2);	
 	beginShape();
 	for (let angle =0; angle<360; angle+=1) {	
-          let x = (1.4*radius+20*cos(a*(angle-5*angleoff)))*cos(angle+angleoff);
-          let y = (radius+20*sin(a*(angle-5*angleoff)))*sin(angle+angleoff);
+          let x = (1.4*radius+20*cos(a*(angle)))*cos(angle);
+          let y = (radius+20*sin(a*(angle)))*sin(angle);
           vertex(x,y);	
 	}
 	endShape(CLOSE);
-  angleoff = angleoff + 0.1
-  }
-}
+ }
+register(loopyCloud,"Cloud with loops","deepaki");
