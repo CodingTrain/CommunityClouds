@@ -4,7 +4,7 @@ This software is for generating clouds for name tags for the Processing
 Community Day. You can try out all of the current submissions on the GitHub
 pages site:
 
-https://codingtrain.github.io/CommunityClouds/
+[Community Clouds App][0]
 
 
 ## About Processing Community Day
