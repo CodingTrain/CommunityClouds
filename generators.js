@@ -2417,3 +2417,21 @@ function simpleCloud()
 
 register(simpleCloud, "Simple Cloud", "GreenMoonArt");
 
+function strange_thing() {
+  let r = 400;
+  push();
+  translate(width / 2, height / 2);
+  fill(255);
+  strokeWeight(0.5);
+  beginShape();
+  for (let a = 0; a < 360; a += 2) {
+    let x = sin(a) * r;
+    let y = cos(a) * r;
+    vertex(x, y);
+  }
+  endShape();
+  pop();
+  return [315, 450, width - 600, height - 800];
+}
+
+register(strange_thing, "strange thing", "Gruselhaus");
